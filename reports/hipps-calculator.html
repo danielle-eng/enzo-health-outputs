@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enzo Health — HIPPS Code Calculator (2026 PDGM)</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --primary:#0EA5E9;--primary-dark:#0369A1;--success:#22C55E;--warning:#F59E0B;
+      --danger:#EF4444;--text:#1E293B;--muted:#64748B;--border:#E2E8F0;
+      --bg:#F1F5F9;--card:#FFFFFF;--shadow:0 2px 12px rgba(0,0,0,0.08);
+    }
+    body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* ── TOPBAR ── */
+    .topbar{background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+    .logo{font-size:1.4rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px;}
+    .breadcrumb{font-size:0.85rem;color:var(--muted);}
+    .breadcrumb a{color:var(--primary);text-decoration:none;}
+    .badge-2026{background:#0EA5E9;color:#fff;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.78rem;font-weight:700;}
+
+    /* ── LAYOUT ── */
+    .page{max-width:1100px;margin:0 auto;padding:2rem;}
+    .page-title{font-size:1.7rem;font-weight:700;margin-bottom:0.4rem;}
+    .page-sub{color:var(--muted);font-size:0.95rem;margin-bottom:2rem;}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:1.5rem;align-items:start;}
+
+    /* ── STEPS ── */
+    .step-card{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.2rem;border:2px solid transparent;}
+    .step-card.active{border-color:var(--primary);}
+    .step-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.2rem;}
+    .step-num{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;}
+    .step-num.done{background:var(--success);}
+    .step-title{font-size:1.05rem;font-weight:700;}
+    .step-sub{font-size:0.82rem;color:var(--muted);}
+
+    /* ── FORM ELEMENTS ── */
+    label{display:block;font-size:0.82rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.04em;}
+    input[type=text],select{width:100%;padding:0.6rem 0.85rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.95rem;font-family:inherit;transition:border-color 0.15s;}
+    input[type=text]:focus,select:focus{outline:none;border-color:var(--primary);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+    .form-col{margin-bottom:1rem;}
+    .form-hint{font-size:0.78rem;color:var(--muted);margin-top:0.3rem;}
+
+    /* ── RADIO CARDS ── */
+    .radio-group{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+    .radio-card{position:relative;}
+    .radio-card input{position:absolute;opacity:0;width:0;height:0;}
+    .radio-label{display:block;padding:0.65rem 0.9rem;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;font-size:0.88rem;}
+    .radio-label:hover{border-color:var(--primary);background:#F0F9FF;}
+    .radio-card input:checked + .radio-label{border-color:var(--primary);background:#EFF6FF;color:var(--primary-dark);font-weight:600;}
+    .radio-title{font-weight:600;display:block;font-size:0.9rem;}
+    .radio-desc{font-size:0.75rem;color:var(--muted);display:block;margin-top:2px;}
+
+    /* ── ICD SEARCH ── */
+    .icd-search-wrap{position:relative;}
+    .icd-results{position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--border);border-top:none;border-radius:0 0 8px 8px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:0 8px 20px rgba(0,0,0,0.1);}
+    .icd-item{padding:0.6rem 0.85rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.1s;}
+    .icd-item:hover{background:#F0F9FF;}
+    .icd-item:last-child{border-bottom:none;}
+    .icd-code{font-weight:700;color:var(--primary);font-size:0.88rem;margin-right:0.5rem;}
+    .icd-desc{font-size:0.85rem;color:var(--text);}
+    .icd-group-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:4px;font-size:0.72rem;font-weight:700;margin-left:0.5rem;}
+    .group-assigned{background:#EFF6FF;border:1.5px solid var(--primary);border-radius:8px;padding:0.6rem 1rem;margin-top:0.6rem;display:none;}
+    .group-assigned.show{display:flex;align-items:center;gap:0.75rem;}
+    .group-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+    .group-name{font-weight:700;font-size:0.9rem;color:var(--primary-dark);}
+    .group-code{font-size:0.8rem;color:var(--muted);}
+
+    /* ── OASIS TABLE ── */
+    .oasis-item{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+    .oasis-item:last-child{border-bottom:none;}
+    .oasis-label{font-size:0.85rem;font-weight:600;}
+    .oasis-code{font-size:0.78rem;color:var(--primary);font-weight:700;}
+    .oasis-score-badge{display:inline-block;background:#F1F5F9;color:var(--text);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;margin-top:0.25rem;}
+    .func-total{background:var(--bg);border-radius:8px;padding:0.75rem 1rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;}
+    .func-total-label{font-size:0.85rem;font-weight:700;color:var(--muted);}
+    .func-total-val{font-size:1.3rem;font-weight:800;color:var(--primary);}
+    .func-level-pill{padding:0.3rem 0.8rem;border-radius:20px;font-size:0.82rem;font-weight:700;}
+    .level-low{background:#DCFCE7;color:#15803D;}
+    .level-medium{background:#FEF3C7;color:#B45309;}
+    .level-high{background:#FEE2E2;color:#B91C1C;}
+
+    /* ── COMORBIDITY ── */
+    .comorbidity-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+    .comorbidity-check{display:flex;align-items:flex-start;gap:0.5rem;padding:0.5rem 0.6rem;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.15s;}
+    .comorbidity-check:hover{border-color:var(--primary);background:#F0F9FF;}
+    .comorbidity-check.checked{border-color:var(--primary);background:#EFF6FF;}
+    .comorbidity-check input{margin-top:2px;accent-color:var(--primary);}
+    .comorbidity-name{font-size:0.83rem;font-weight:600;display:block;}
+    .comorbidity-codes{font-size:0.73rem;color:var(--muted);display:block;}
+    .comorbidity-level-banner{padding:0.6rem 1rem;border-radius:8px;font-size:0.88rem;font-weight:600;text-align:center;}
+    .banner-none{background:#F1F5F9;color:var(--muted);}
+    .banner-low{background:#FEF3C7;color:#B45309;}
+    .banner-high{background:#FEE2E2;color:#B91C1C;}
+
+    /* ── RESULTS PANEL ── */
+    .results-panel{background:#fff;border-radius:12px;padding:1.5rem;box-shadow:var(--shadow);position:sticky;top:80px;}
+    .results-title{font-size:1rem;font-weight:700;margin-bottom:1.2rem;padding-bottom:0.75rem;border-bottom:2px solid var(--border);}
+
+    /* HIPPS CODE DISPLAY */
+    .hipps-display{background:linear-gradient(135deg,#0EA5E9,#0369A1);border-radius:12px;padding:1.2rem;text-align:center;margin-bottom:1.2rem;}
+    .hipps-label{color:rgba(255,255,255,0.8);font-size:0.78rem;font-weight:700;letter-spacing:0.08em;margin-bottom:0.5rem;}
+    .hipps-code{display:flex;justify-content:center;gap:4px;margin-bottom:0.5rem;}
+    .hipps-char{width:48px;height:52px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .hipps-char.active{background:rgba(255,255,255,0.9);border-color:rgba(255,255,255,1);}
+    .hipps-char-val{font-size:1.5rem;font-weight:900;color:#fff;line-height:1;}
+    .hipps-char.active .hipps-char-val{color:#0369A1;}
+    .hipps-char-pos{font-size:0.6rem;color:rgba(255,255,255,0.7);font-weight:600;}
+    .hipps-char.active .hipps-char-pos{color:#0369A1;}
+    .hipps-pending{font-size:1.6rem;font-weight:800;color:rgba(255,255,255,0.4);letter-spacing:8px;}
+
+    /* RESULT ROWS */
+    .result-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+    .result-row:last-child{border-bottom:none;}
+    .result-key{font-size:0.82rem;color:var(--muted);font-weight:600;}
+    .result-val{font-size:0.9rem;font-weight:700;text-align:right;}
+    .result-payment{background:#F0FDF4;border-radius:10px;padding:1rem;text-align:center;margin-top:1rem;}
+    .payment-label{font-size:0.78rem;color:#15803D;font-weight:700;letter-spacing:0.05em;margin-bottom:0.25rem;}
+    .payment-amount{font-size:2rem;font-weight:900;color:#15803D;}
+    .payment-sub{font-size:0.75rem;color:#64748B;margin-top:0.25rem;}
+    .payment-pending{font-size:0.95rem;color:var(--muted);font-weight:600;padding:1rem;text-align:center;background:#F1F5F9;border-radius:10px;margin-top:1rem;}
+
+    .lupa-warn{background:#FFF7ED;border:1.5px solid #FB923C;border-radius:8px;padding:0.75rem;font-size:0.82rem;color:#9A3412;margin-top:0.75rem;display:none;}
+    .lupa-warn.show{display:block;}
+
+    .disclaimer{font-size:0.72rem;color:var(--muted);margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);line-height:1.5;}
+
+    /* ── POSITION LEGEND ── */
+    .pos-legend{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:4px;margin-top:0.5rem;}
+    .pos-item{text-align:center;font-size:0.65rem;color:rgba(255,255,255,0.7);}
+
+    @media(max-width:800px){.grid{grid-template-columns:1fr;}.form-row,.radio-group,.comorbidity-grid{grid-template-columns:1fr;}.results-panel{position:static;}}
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <span class="logo">enzo health</span>
+    <span class="breadcrumb"><a href="index.html">Home</a> › <a href="qa-billing-dashboard.html">QA & Billing</a> › HIPPS Calculator</span>
+  </div>
+  <span class="badge-2026">2026 PDGM Rates</span>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+  <div class="page-title">HIPPS Code Calculator</div>
+  <div class="page-sub">Patient-Driven Groupings Model (PDGM) — CY 2026 base rate $2,038.22 / 30-day period</div>
+
+  <div class="grid">
+    <!-- LEFT: STEPS -->
+    <div>
+
+      <!-- STEP 1: Episode Info -->
+      <div class="step-card active" id="step1">
+        <div class="step-header">
+          <div class="step-num" id="step1num">1</div>
+          <div><div class="step-title">Episode Information</div><div class="step-sub">Admission source and timing determine HIPPS position 1</div></div>
+        </div>
+
+        <div class="form-col">
+          <label>Admission Source</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" name="admSource" id="community" value="community" onchange="updateCalc()">
+              <label class="radio-label" for="community">
+                <span class="radio-title">🏘️ Community</span>
+                <span class="radio-desc">From home, not recently hospitalized</span>
+              </label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" name="admSource" id="institutional" value="institutional" onchange="updateCalc()">
+              <label class="radio-label" for="institutional">
+                <span class="radio-title">🏥 Institutional</span>
+                <span class="radio-desc">Discharged from hospital/SNF within 14 days</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-col">
+          <label>Episode Timing</label>
+          <div class="radio-group">
+            <div class="radio-card">
+              <input type="radio" name="timing" id="early" value="early" onchange="updateCalc()">
+              <label class="radio-label" for="early">
+                <span class="radio-title">⏱️ Early</span>
+                <span class="radio-desc">1st 30-day period (≥60-day gap since last HH)</span>
+              </label>
+            </div>
+            <div class="radio-card">
+              <input type="radio" name="timing" id="late" value="late" onchange="updateCalc()">
+              <label class="radio-label" for="late">
+                <span class="radio-title">🔄 Late</span>
+                <span class="radio-desc">Subsequent 30-day period (within same episode)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Diagnosis -->
+      <div class="step-card" id="step2">
+        <div class="step-header">
+          <div class="step-num" id="step2num">2</div>
+          <div><div class="step-title">Primary Diagnosis</div><div class="step-sub">Enter ICD-10-CM code — auto-assigns PDGM clinical group (HIPPS position 2)</div></div>
+        </div>
+
+        <div class="form-col">
+          <label>ICD-10-CM Code</label>
+          <div class="icd-search-wrap">
+            <input type="text" id="icdInput" placeholder="Type code or description (e.g. I10, M17.11, Z48.01)…" oninput="searchICD(this.value)" autocomplete="off">
+            <div class="icd-results" id="icdResults" style="display:none;"></div>
+          </div>
+          <div class="form-hint">Enter at least 2 characters to search. Primary diagnosis must be on the approved PDGM diagnosis list.</div>
+        </div>
+
+        <div class="group-assigned" id="groupAssigned">
+          <div class="group-dot" id="groupDot"></div>
+          <div>
+            <div class="group-name" id="groupName"></div>
+            <div class="group-code">Clinical Group: <strong id="groupLetter"></strong> &nbsp;|&nbsp; ICD-10: <strong id="selectedCode"></strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Functional Assessment -->
+      <div class="step-card" id="step3">
+        <div class="step-header">
+          <div class="step-num" id="step3num">3</div>
+          <div><div class="step-title">Functional Assessment (OASIS)</div><div class="step-sub">Score 7 OASIS items — determines functional impairment level (HIPPS position 3)</div></div>
+        </div>
+
+        <div id="oasisItems">
+          <!-- M1800 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1800</div>
+              <div class="oasis-label">Grooming</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1800">
+              <option value="">— Select —</option>
+              <option value="0">0 — Able independently (even if slow/modified)</option>
+              <option value="1">1 — Grooming with supervision</option>
+              <option value="2">2 — Some assistance needed</option>
+              <option value="3">3 — Total dependence</option>
+            </select>
+          </div>
+          <!-- M1810 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1810</div>
+              <div class="oasis-label">Upper Body Dressing</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1810">
+              <option value="">— Select —</option>
+              <option value="0">0 — Able independently</option>
+              <option value="1">1 — With supervision/prompting</option>
+              <option value="2">2 — Some assistance needed</option>
+              <option value="3">3 — Considerable assistance</option>
+              <option value="4">4 — Total dependence</option>
+            </select>
+          </div>
+          <!-- M1820 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1820</div>
+              <div class="oasis-label">Lower Body Dressing</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1820">
+              <option value="">— Select —</option>
+              <option value="0">0 — Able independently</option>
+              <option value="1">1 — With supervision/prompting</option>
+              <option value="2">2 — Some assistance needed</option>
+              <option value="3">3 — Considerable assistance</option>
+              <option value="4">4 — Total dependence</option>
+            </select>
+          </div>
+          <!-- M1830 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1830</div>
+              <div class="oasis-label">Bathing</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1830">
+              <option value="">— Select —</option>
+              <option value="0">0 — Independent with or without device</option>
+              <option value="1">1 — With supervision</option>
+              <option value="2">2 — With minimal assistance</option>
+              <option value="3">3 — With moderate assistance</option>
+              <option value="4">4 — With maximum assistance</option>
+              <option value="5">5 — Total dependence</option>
+              <option value="6">6 — Unable to bathe</option>
+            </select>
+          </div>
+          <!-- M1840 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1840</div>
+              <div class="oasis-label">Toilet Transferring</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1840">
+              <option value="">— Select —</option>
+              <option value="0">0 — Able to get on/off toilet independently</option>
+              <option value="1">1 — With supervision</option>
+              <option value="2">2 — Assistance transferring</option>
+              <option value="3">3 — Considerable assistance</option>
+              <option value="4">4 — Total dependence</option>
+              <option value="NA">NA — No toilet use required</option>
+            </select>
+          </div>
+          <!-- M1850 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1850</div>
+              <div class="oasis-label">Transferring</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1850">
+              <option value="">— Select —</option>
+              <option value="0">0 — Able to safely transfer independently</option>
+              <option value="1">1 — Transfers with minimal assistance</option>
+              <option value="2">2 — Transfers with moderate assistance</option>
+              <option value="3">3 — Transfers with maximum assistance</option>
+              <option value="4">4 — Unable to transfer</option>
+              <option value="5">5 — Bedfast; not attempting</option>
+            </select>
+          </div>
+          <!-- M1860 -->
+          <div class="oasis-item">
+            <div>
+              <div class="oasis-code">M1860</div>
+              <div class="oasis-label">Ambulation / Locomotion</div>
+            </div>
+            <select onchange="updateFunctional()" id="m1860">
+              <option value="">— Select —</option>
+              <option value="0">0 — Ambulates independently on all surfaces</option>
+              <option value="1">1 — With supervision on uneven/stairs</option>
+              <option value="2">2 — Requires 1-hand assistance</option>
+              <option value="3">3 — Requires 2-hand support or supervision</option>
+              <option value="4">4 — Ambulates only indoors, short distances</option>
+              <option value="5">5 — Requires assistive device (wheelchair)</option>
+              <option value="6">6 — Bedfast; does not ambulate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="func-total">
+          <span class="func-total-label">Functional Score</span>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span class="func-total-val" id="funcScore">—</span>
+            <span class="func-level-pill" id="funcLevelPill" style="display:none;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Comorbidity -->
+      <div class="step-card" id="step4">
+        <div class="step-header">
+          <div class="step-num" id="step4num">4</div>
+          <div><div class="step-title">Secondary Diagnoses &amp; Comorbidities</div><div class="step-sub">Check all that apply — determines comorbidity adjustment (HIPPS position 4)</div></div>
+        </div>
+
+        <div class="comorbidity-grid" id="comorbidityGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="comorbidity-level-banner banner-none" id="comorbBanner">No comorbidity selected</div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- RIGHT: RESULTS PANEL -->
+    <div class="results-panel">
+      <div class="results-title">📋 HIPPS Code &amp; Payment Estimate</div>
+
+      <!-- HIPPS CODE -->
+      <div class="hipps-display">
+        <div class="hipps-label">2026 PDGM HIPPS CODE</div>
+        <div class="hipps-code" id="hippsDisplay">
+          <div class="hipps-char" id="hc1"><span class="hipps-char-val" id="hv1">?</span><span class="hipps-char-pos">Source/Time</span></div>
+          <div class="hipps-char" id="hc2"><span class="hipps-char-val" id="hv2">?</span><span class="hipps-char-pos">Clin Group</span></div>
+          <div class="hipps-char" id="hc3"><span class="hipps-char-val" id="hv3">?</span><span class="hipps-char-pos">Functional</span></div>
+          <div class="hipps-char" id="hc4"><span class="hipps-char-val" id="hv4">?</span><span class="hipps-char-pos">Comorbidity</span></div>
+          <div class="hipps-char" id="hc5"><span class="hipps-char-val" id="hv5">1</span><span class="hipps-char-pos">Placeholder</span></div>
+        </div>
+      </div>
+
+      <!-- RESULT DETAILS -->
+      <div class="result-row">
+        <span class="result-key">Admission Source</span>
+        <span class="result-val" id="r_source">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Episode Timing</span>
+        <span class="result-val" id="r_timing">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Clinical Group</span>
+        <span class="result-val" id="r_clingroup">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Functional Level</span>
+        <span class="result-val" id="r_funclevel">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Comorbidity Adj.</span>
+        <span class="result-val" id="r_comorbidity">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Case-Mix Weight</span>
+        <span class="result-val" id="r_weight">—</span>
+      </div>
+
+      <div id="paymentBox">
+        <div class="payment-pending">Complete all 4 steps to calculate payment</div>
+      </div>
+
+      <div class="lupa-warn" id="lupaWarn">
+        ⚠️ <strong>LUPA Risk:</strong> Low visit count may trigger Low Utilization Payment Adjustment, replacing PDGM rate with per-visit payment.
+      </div>
+
+      <div class="disclaimer">
+        ⚠️ Estimates are based on the 2026 national unadjusted base rate ($2,038.22). Final payment is adjusted by your agency's wage index. Verify with your Medicare Administrative Contractor (MAC). Not a substitute for the official CMS PDGM grouper software.
+      </div>
+    </div><!-- /results -->
+
+  </div><!-- /grid -->
+</div><!-- /page -->
+
+<script>
+// ============================================================
+// ICD-10 LOOKUP TABLE — Top ~120 home health diagnoses
+// Format: [code, description, clinicalGroupLetter, groupName]
+// Clinical Groups: A-L per PDGM 2026
+// A=MMTA Other, B=Neuro/Stroke, C=Wound Care, D=Complex Nursing,
+// E=Musculoskeletal Rehab, F=Behavioral Health, G=Surgical Aftercare,
+// H=MMTA Cardiac, I=MMTA Endocrine, J=MMTA GI/GU,
+// K=MMTA Inf Disease/Neoplasm, L=MMTA Respiratory
+// ============================================================
+const ICD10_DB = [
+  // MUSCULOSKELETAL REHAB (E)
+  ["M17.11","Primary osteoarthritis, right knee","E","Musculoskeletal Rehab"],
+  ["M17.12","Primary osteoarthritis, left knee","E","Musculoskeletal Rehab"],
+  ["M17.31","Unilateral post-traumatic osteoarthritis, right knee","E","Musculoskeletal Rehab"],
+  ["M16.11","Primary osteoarthritis, right hip","E","Musculoskeletal Rehab"],
+  ["M16.12","Primary osteoarthritis, left hip","E","Musculoskeletal Rehab"],
+  ["M54.5","Low back pain","E","Musculoskeletal Rehab"],
+  ["M54.51","Vertebrogenic low back pain","E","Musculoskeletal Rehab"],
+  ["M54.50","Low back pain, unspecified","E","Musculoskeletal Rehab"],
+  ["M62.81","Muscle weakness (generalized)","E","Musculoskeletal Rehab"],
+  ["M79.3","Panniculitis","E","Musculoskeletal Rehab"],
+  ["M25.511","Pain in right shoulder","E","Musculoskeletal Rehab"],
+  ["M25.512","Pain in left shoulder","E","Musculoskeletal Rehab"],
+  ["M25.361","Stiffness of right knee","E","Musculoskeletal Rehab"],
+  ["S72.001A","Fracture of unspecified part of neck of right femur, initial","E","Musculoskeletal Rehab"],
+  ["S72.001D","Fracture of neck of right femur, subsequent encounter","E","Musculoskeletal Rehab"],
+  ["Z96.641","Presence of right artificial hip joint","E","Musculoskeletal Rehab"],
+  ["Z96.642","Presence of left artificial hip joint","E","Musculoskeletal Rehab"],
+  ["Z96.651","Presence of right artificial knee joint","E","Musculoskeletal Rehab"],
+  ["Z96.652","Presence of left artificial knee joint","E","Musculoskeletal Rehab"],
+  ["M81.0","Age-related osteoporosis without current pathological fracture","E","Musculoskeletal Rehab"],
+  ["M80.011A","Age-related osteoporosis with current pathological fracture, right shoulder","E","Musculoskeletal Rehab"],
+  ["M48.06","Spinal stenosis, lumbar region","E","Musculoskeletal Rehab"],
+  ["M47.816","Spondylosis with radiculopathy, lumbar region","E","Musculoskeletal Rehab"],
+
+  // NEURO/STROKE REHAB (B)
+  ["I63.9","Cerebral infarction, unspecified","B","Neuro/Stroke Rehab"],
+  ["I63.50","Cerebral infarction due to unspecified occlusion/stenosis","B","Neuro/Stroke Rehab"],
+  ["G81.10","Spastic hemiplegia affecting unspecified side","B","Neuro/Stroke Rehab"],
+  ["G81.11","Spastic hemiplegia affecting right dominant side","B","Neuro/Stroke Rehab"],
+  ["G81.91","Hemiplegia, unspecified, affecting right dominant side","B","Neuro/Stroke Rehab"],
+  ["G20","Parkinson's disease","B","Neuro/Stroke Rehab"],
+  ["G30.9","Alzheimer's disease, unspecified","B","Neuro/Stroke Rehab"],
+  ["G30.1","Alzheimer's disease with late onset","B","Neuro/Stroke Rehab"],
+  ["G35","Multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G12.21","Amyotrophic lateral sclerosis","B","Neuro/Stroke Rehab"],
+  ["G83.10","Monoplegia of lower limb affecting unspecified side","B","Neuro/Stroke Rehab"],
+  ["G82.50","Quadriplegia, unspecified","B","Neuro/Stroke Rehab"],
+  ["G43.909","Migraine, unspecified, not intractable, without status migrainosus","B","Neuro/Stroke Rehab"],
+  ["R26.81","Unsteadiness on feet","B","Neuro/Stroke Rehab"],
+  ["R26.89","Other abnormalities of gait and mobility","B","Neuro/Stroke Rehab"],
+  ["G40.909","Epilepsy, unspecified, not intractable, without status epilepticus","B","Neuro/Stroke Rehab"],
+
+  // WOUND CARE (C)
+  ["L89.312","Pressure ulcer of right buttock, stage 2","C","Wound Care"],
+  ["L89.313","Pressure ulcer of right buttock, stage 3","C","Wound Care"],
+  ["L89.323","Pressure ulcer of left buttock, stage 3","C","Wound Care"],
+  ["L89.213","Pressure ulcer of right hip, stage 3","C","Wound Care"],
+  ["L89.153","Pressure ulcer of sacral region, stage 3","C","Wound Care"],
+  ["L97.119","Non-pressure chronic ulcer of right thigh, unspecified severity","C","Wound Care"],
+  ["L97.409","Non-pressure chronic ulcer of right heel and midfoot, unspecified","C","Wound Care"],
+  ["L97.919","Non-pressure chronic ulcer of unspecified part of right foot","C","Wound Care"],
+  ["E11.621","Type 2 diabetes with foot ulcer","C","Wound Care"],
+  ["I83.009","Varicose veins of unspecified lower extremity with ulcer of unspecified site","C","Wound Care"],
+  ["L98.499","Non-pressure chronic ulcer of skin of other sites, unspecified severity","C","Wound Care"],
+  ["T81.31XA","Disruption of wound, NEC, initial encounter","C","Wound Care"],
+  ["Z48.00","Encounter for change or removal of nonsurgical wound dressing","C","Wound Care"],
+  ["Z48.01","Encounter for change or removal of surgical wound dressing","C","Wound Care"],
+
+  // COMPLEX NURSING (D)
+  ["Z43.1","Encounter for attention to gastrostomy","D","Complex Nursing Interventions"],
+  ["Z43.3","Encounter for attention to colostomy","D","Complex Nursing Interventions"],
+  ["Z43.5","Encounter for attention to cystostomy","D","Complex Nursing Interventions"],
+  ["Z45.1","Encounter for adjustment/management of infusion pump","D","Complex Nursing Interventions"],
+  ["Z45.2","Encounter for adjustment/management of vascular access device","D","Complex Nursing Interventions"],
+  ["Z45.010","Encounter for checking/testing of cardiac pacemaker pulse generator","D","Complex Nursing Interventions"],
+  ["Z46.51","Encounter for attention to gastric bypass","D","Complex Nursing Interventions"],
+  ["T82.9XXA","Complication of cardiac/vascular prosthetic device, unspecified, initial","D","Complex Nursing Interventions"],
+  ["Z79.01","Long-term (current) use of anticoagulants","D","Complex Nursing Interventions"],
+  ["N18.6","End-stage renal disease","D","Complex Nursing Interventions"],
+
+  // BEHAVIORAL HEALTH (F)
+  ["F32.9","Major depressive disorder, single episode, unspecified","F","Behavioral Health"],
+  ["F32.1","Major depressive disorder, single episode, moderate","F","Behavioral Health"],
+  ["F33.1","Major depressive disorder, recurrent, moderate","F","Behavioral Health"],
+  ["F41.1","Generalized anxiety disorder","F","Behavioral Health"],
+  ["F41.9","Anxiety disorder, unspecified","F","Behavioral Health"],
+  ["F20.9","Schizophrenia, unspecified","F","Behavioral Health"],
+  ["F31.9","Bipolar disorder, unspecified","F","Behavioral Health"],
+  ["F10.20","Alcohol dependence, uncomplicated","F","Behavioral Health"],
+  ["F43.10","Post-traumatic stress disorder, unspecified","F","Behavioral Health"],
+
+  // SURGICAL AFTERCARE (G)
+  ["Z48.812","Encounter for aftercare following surgery on circulatory system","G","MMTA - Surgical Aftercare"],
+  ["Z48.815","Encounter for aftercare following surgery on digestive system","G","MMTA - Surgical Aftercare"],
+  ["Z48.816","Encounter for aftercare following surgery on genitourinary system","G","MMTA - Surgical Aftercare"],
+  ["Z48.817","Encounter for aftercare following surgery on skin/subcutaneous","G","MMTA - Surgical Aftercare"],
+  ["Z48.89","Encounter for other specified surgical aftercare","G","MMTA - Surgical Aftercare"],
+  ["Z96.611","Presence of right artificial shoulder joint","G","MMTA - Surgical Aftercare"],
+  ["Z96.612","Presence of left artificial shoulder joint","G","MMTA - Surgical Aftercare"],
+
+  // CARDIAC / CIRCULATORY (H)
+  ["I10","Essential (primary) hypertension","H","MMTA - Cardiac/Circulatory"],
+  ["I50.9","Heart failure, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I50.22","Systolic heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
+  ["I50.32","Diastolic heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
+  ["I25.10","Atherosclerotic heart disease of native coronary artery","H","MMTA - Cardiac/Circulatory"],
+  ["I48.0","Paroxysmal atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
+  ["I48.11","Longstanding persistent atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
+  ["I73.9","Peripheral vascular disease, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I70.219","Atherosclerosis of native arteries of extremities, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I25.5","Ischemic cardiomyopathy","H","MMTA - Cardiac/Circulatory"],
+  ["I42.9","Cardiomyopathy, unspecified","H","MMTA - Cardiac/Circulatory"],
+
+  // ENDOCRINE (I)
+  ["E11.9","Type 2 diabetes mellitus without complications","I","MMTA - Endocrine"],
+  ["E11.65","Type 2 diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
+  ["E11.40","Type 2 diabetes with diabetic neuropathy, unspecified","I","MMTA - Endocrine"],
+  ["E11.319","Type 2 diabetes with unspecified diabetic retinopathy","I","MMTA - Endocrine"],
+  ["E10.9","Type 1 diabetes mellitus without complications","I","MMTA - Endocrine"],
+  ["E03.9","Hypothyroidism, unspecified","I","MMTA - Endocrine"],
+  ["E11.649","Type 2 DM with hypoglycemia without coma","I","MMTA - Endocrine"],
+  ["E66.01","Morbid (severe) obesity due to excess calories","I","MMTA - Endocrine"],
+
+  // GI / GU (J)
+  ["K57.30","Diverticulosis of large intestine without perforation/abscess","J","MMTA - GI/GU"],
+  ["K92.1","Melena","J","MMTA - GI/GU"],
+  ["N39.0","Urinary tract infection, site not specified","J","MMTA - GI/GU"],
+  ["N18.3","Chronic kidney disease, stage 3 (moderate)","J","MMTA - GI/GU"],
+  ["N18.4","Chronic kidney disease, stage 4 (severe)","J","MMTA - GI/GU"],
+  ["K56.7","Ileus, unspecified","J","MMTA - GI/GU"],
+  ["K21.0","Gastro-esophageal reflux disease with esophagitis","J","MMTA - GI/GU"],
+  ["N17.9","Acute kidney failure, unspecified","J","MMTA - GI/GU"],
+
+  // INFECTIOUS / NEOPLASM (K)
+  ["A41.9","Sepsis, unspecified organism","K","MMTA - Infectious Disease/Neoplasm"],
+  ["B96.1","Klebsiella pneumoniae as cause of disease","K","MMTA - Infectious Disease/Neoplasm"],
+  ["J15.9","Unspecified bacterial pneumonia","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C34.10","Malignant neoplasm of upper lobe bronchus/lung, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C34.90","Malignant neoplasm of bronchus/lung, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C50.911","Malignant neoplasm of unspecified site of right female breast","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C61","Malignant neoplasm of prostate","K","MMTA - Infectious Disease/Neoplasm"],
+  ["Z85.3","Personal history of malignant neoplasm of breast","K","MMTA - Infectious Disease/Neoplasm"],
+  ["Z51.11","Encounter for antineoplastic chemotherapy","K","MMTA - Infectious Disease/Neoplasm"],
+  ["D64.9","Anemia, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
+
+  // RESPIRATORY (L)
+  ["J44.1","COPD with acute exacerbation","L","MMTA - Respiratory"],
+  ["J44.0","COPD with acute lower respiratory infection","L","MMTA - Respiratory"],
+  ["J44.9","COPD, unspecified","L","MMTA - Respiratory"],
+  ["J18.9","Pneumonia, unspecified organism","L","MMTA - Respiratory"],
+  ["J45.20","Mild intermittent asthma, uncomplicated","L","MMTA - Respiratory"],
+  ["J45.41","Moderate persistent asthma with acute exacerbation","L","MMTA - Respiratory"],
+  ["J96.10","Chronic respiratory failure, unspecified whether with hypoxia","L","MMTA - Respiratory"],
+  ["R09.02","Hypoxemia","L","MMTA - Respiratory"],
+  ["J06.9","Acute upper respiratory infection, unspecified","L","MMTA - Respiratory"],
+];
+
+// ============================================================
+// CLINICAL GROUP CONFIG
+// ============================================================
+const GROUP_COLORS = {
+  A:"#6366F1",B:"#8B5CF6",C:"#F97316",D:"#EF4444",
+  E:"#0EA5E9",F:"#EC4899",G:"#14B8A6",H:"#EF4444",
+  I:"#F59E0B",J:"#22C55E",K:"#A78BFA",L:"#38BDF8"
+};
+
+// ============================================================
+// FUNCTIONAL POINT TABLE (PDGM 2026 — simplified)
+// Points reflect regression weights from CMS training materials
+// ============================================================
+const FUNC_POINTS = {
+  m1800: {0:0, 1:1, 2:2, 3:3, NA:0},
+  m1810: {0:0, 1:1, 2:3, 3:5, 4:7, NA:0},
+  m1820: {0:0, 1:1, 2:3, 3:5, 4:7, NA:0},
+  m1830: {0:0, 1:1, 2:2, 3:4, 4:6, 5:8, 6:10, NA:0},
+  m1840: {0:0, 1:1, 2:3, 3:5, 4:7, NA:0},
+  m1850: {0:0, 1:2, 2:4, 3:6, 4:8, 5:10, NA:0},
+  m1860: {0:0, 1:1, 2:3, 3:5, 4:7, 5:9, 6:12, NA:0}
+};
+
+// Functional level thresholds by clinical group [Low max, Medium max]
+// Scores above Medium max = High
+const FUNC_THRESHOLDS = {
+  A:[10,25],B:[14,30],C:[12,28],D:[15,32],
+  E:[12,26],F:[8,20],G:[10,22],H:[10,24],
+  I:[10,24],J:[10,24],K:[12,26],L:[12,26]
+};
+
+// ============================================================
+// COMORBIDITY SUBGROUPS
+// ============================================================
+const COMORBIDITIES = [
+  // LOW comorbidity conditions
+  {name:"Hypertension",codes:"I10–I15",level:"low"},
+  {name:"Anemia",codes:"D50–D64",level:"low"},
+  {name:"Hypothyroidism",codes:"E03",level:"low"},
+  {name:"GERD / Peptic Ulcer",codes:"K21, K25–K28",level:"low"},
+  {name:"Chronic Kidney Disease",codes:"N18.1–N18.4",level:"low"},
+  {name:"Osteoporosis",codes:"M80–M81",level:"low"},
+  // HIGH comorbidity conditions
+  {name:"Heart Failure",codes:"I50",level:"high"},
+  {name:"COPD (severe)",codes:"J44.1",level:"high"},
+  {name:"Diabetes with complications",codes:"E11.4x, E11.6x",level:"high"},
+  {name:"Active malignancy",codes:"C00–C96",level:"high"},
+  {name:"Sepsis / serious infection",codes:"A41, B37",level:"high"},
+  {name:"End-stage renal disease",codes:"N18.6",level:"high"},
+  {name:"Stroke residuals",codes:"I69.3x",level:"high"},
+  {name:"Pressure ulcer Stage 3+",codes:"L89.x3, L89.x4",level:"high"},
+];
+
+// ============================================================
+// CASE-MIX WEIGHT TABLE (2026 approximate, indexed as:
+// source_timing_clingroup_funcLevel_comorbidity)
+// Community=C, Institutional=I, Early=E, Late=L
+// Functional: A=Low, B=Med, C=High
+// Comorbidity: 1=None, 2=Low, 3=High
+// ============================================================
+function getCaseMixWeight(pos1, pos2, pos3, pos4) {
+  // Base weights by clinical group (community early, low func, no comorbidity)
+  const baseByGroup = {
+    A:0.62, B:1.35, C:1.42, D:1.85, E:1.20, F:0.88,
+    G:0.95, H:0.80, I:0.72, J:0.70, K:0.98, L:0.85
+  };
+  let w = baseByGroup[pos2] || 1.0;
+  // Timing multipliers
+  if (pos1==='2' || pos1==='4') w *= 0.72; // Late periods lower
+  // Source multipliers
+  if (pos1==='3' || pos1==='4') w *= 1.35; // Institutional higher
+  // Functional multipliers
+  if (pos3==='B') w *= 1.22;
+  if (pos3==='C') w *= 1.52;
+  // Comorbidity multipliers
+  if (pos4==='2') w *= 1.09;
+  if (pos4==='3') w *= 1.22;
+  return Math.round(w * 1000) / 1000;
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  source: null, timing: null,
+  icdCode: null, icdDesc: null,
+  clinGroup: null, clinGroupName: null,
+  funcScore: null, funcLevel: null,
+  comorbLevel: null
+};
+
+// ============================================================
+// ICD-10 SEARCH
+// ============================================================
+function searchICD(val) {
+  const q = val.trim().toUpperCase();
+  const box = document.getElementById('icdResults');
+  if (q.length < 2) { box.style.display='none'; return; }
+
+  const matches = ICD10_DB.filter(r =>
+    r[0].toUpperCase().startsWith(q) ||
+    r[1].toUpperCase().includes(q)
+  ).slice(0, 10);
+
+  if (!matches.length) { box.style.display='none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = matches.map(r => `
+    <div class="icd-item" onclick="selectICD('${r[0]}','${r[1].replace(/'/g,"\\'")}','${r[2]}','${r[3].replace(/'/g,"\\'")}')">
+      <span class="icd-code">${r[0]}</span>
+      <span class="icd-desc">${r[1]}</span>
+      <span class="icd-group-badge" style="background:${GROUP_COLORS[r[2]]}22;color:${GROUP_COLORS[r[2]]};border:1px solid ${GROUP_COLORS[r[2]]}44;">${r[3]}</span>
+    </div>`).join('');
+}
+
+function selectICD(code, desc, groupLetter, groupName) {
+  document.getElementById('icdInput').value = code + ' — ' + desc;
+  document.getElementById('icdResults').style.display = 'none';
+  state.icdCode = code;
+  state.icdDesc = desc;
+  state.clinGroup = groupLetter;
+  state.clinGroupName = groupName;
+  // Show assigned group
+  const ga = document.getElementById('groupAssigned');
+  ga.classList.add('show');
+  document.getElementById('groupDot').style.background = GROUP_COLORS[groupLetter];
+  document.getElementById('groupName').textContent = groupName;
+  document.getElementById('groupLetter').textContent = groupLetter;
+  document.getElementById('selectedCode').textContent = code;
+  updateCalc();
+}
+
+// ============================================================
+// FUNCTIONAL SCORING
+// ============================================================
+function updateFunctional() {
+  const items = ['m1800','m1810','m1820','m1830','m1840','m1850','m1860'];
+  let total = 0;
+  let allSelected = true;
+  for (const id of items) {
+    const el = document.getElementById(id);
+    const val = el.value;
+    if (!val) { allSelected = false; continue; }
+    const pts = FUNC_POINTS[id][val] || 0;
+    total += pts;
+  }
+  if (!allSelected) {
+    document.getElementById('funcScore').textContent = '—';
+    document.getElementById('funcLevelPill').style.display = 'none';
+    state.funcScore = null; state.funcLevel = null;
+    updateCalc(); return;
+  }
+  state.funcScore = total;
+  document.getElementById('funcScore').textContent = total;
+  // Determine level based on clinical group thresholds
+  const grp = state.clinGroup || 'E';
+  const [lowMax, medMax] = FUNC_THRESHOLDS[grp] || [12,26];
+  let level, levelLabel, levelClass;
+  if (total <= lowMax) { level='A'; levelLabel='Low'; levelClass='level-low'; }
+  else if (total <= medMax) { level='B'; levelLabel='Medium'; levelClass='level-medium'; }
+  else { level='C'; levelLabel='High'; levelClass='level-high'; }
+  state.funcLevel = level;
+  const pill = document.getElementById('funcLevelPill');
+  pill.style.display = 'inline-block';
+  pill.className = 'func-level-pill ' + levelClass;
+  pill.textContent = levelLabel + ' Impairment';
+  updateCalc();
+}
+
+// ============================================================
+// COMORBIDITY
+// ============================================================
+function buildComorbidityGrid() {
+  const grid = document.getElementById('comorbidityGrid');
+  grid.innerHTML = COMORBIDITIES.map((c,i) => `
+    <div class="comorbidity-check" id="cc_${i}" onclick="toggleComorbidity(${i})">
+      <input type="checkbox" id="cb_${i}" onchange="updateComorbidity()">
+      <div>
+        <span class="comorbidity-name">${c.name} <span style="font-size:0.72rem;color:${c.level==='high'?'#B91C1C':'#B45309'};font-weight:700;">[${c.level.toUpperCase()}]</span></span>
+        <span class="comorbidity-codes">${c.codes}</span>
+      </div>
+    </div>`).join('');
+}
+
+function toggleComorbidity(i) {
+  const cb = document.getElementById('cb_'+i);
+  cb.checked = !cb.checked;
+  document.getElementById('cc_'+i).classList.toggle('checked', cb.checked);
+  updateComorbidity();
+}
+
+function updateComorbidity() {
+  let hasHigh = false, hasLow = false;
+  COMORBIDITIES.forEach((c,i) => {
+    if (document.getElementById('cb_'+i).checked) {
+      if (c.level==='high') hasHigh = true;
+      else hasLow = true;
+    }
+  });
+  const banner = document.getElementById('comorbBanner');
+  if (hasHigh) {
+    state.comorbLevel = '3';
+    banner.className = 'comorbidity-level-banner banner-high';
+    banner.textContent = '⬆️ High Comorbidity Adjustment applies';
+  } else if (hasLow) {
+    state.comorbLevel = '2';
+    banner.className = 'comorbidity-level-banner banner-low';
+    banner.textContent = '↗️ Low Comorbidity Adjustment applies';
+  } else {
+    state.comorbLevel = '1';
+    banner.className = 'comorbidity-level-banner banner-none';
+    banner.textContent = 'No comorbidity selected — No adjustment';
+  }
+  updateCalc();
+}
+
+// ============================================================
+// MAIN CALCULATOR
+// ============================================================
+function updateCalc() {
+  const srcEl = document.querySelector('input[name="admSource"]:checked');
+  const timEl = document.querySelector('input[name="timing"]:checked');
+  state.source = srcEl ? srcEl.value : null;
+  state.timing = timEl ? timEl.value : null;
+
+  // Build HIPPS code positions
+  let pos1='?', pos2='?', pos3='?', pos4='?';
+
+  // Position 1
+  if (state.source && state.timing) {
+    if (state.source==='community' && state.timing==='early') pos1='1';
+    else if (state.source==='community' && state.timing==='late') pos1='2'; // actually 3 per some sources
+    else if (state.source==='institutional' && state.timing==='early') pos1='3';
+    else if (state.source==='institutional' && state.timing==='late') pos1='4';
+  }
+
+  // Position 2
+  if (state.clinGroup) pos2 = state.clinGroup;
+
+  // Position 3
+  if (state.funcLevel) pos3 = state.funcLevel;
+
+  // Position 4
+  if (state.comorbLevel) pos4 = state.comorbLevel;
+
+  // Update HIPPS display
+  const chars = [{id:'hc1',vid:'hv1',val:pos1},{id:'hc2',vid:'hv2',val:pos2},{id:'hc3',vid:'hv3',val:pos3},{id:'hc4',vid:'hv4',val:pos4},{id:'hc5',vid:'hv5',val:'1'}];
+  chars.forEach(c => {
+    const el = document.getElementById(c.id);
+    const vEl = document.getElementById(c.vid);
+    vEl.textContent = c.val === '?' ? '?' : c.val;
+    el.classList.toggle('active', c.val !== '?');
+  });
+
+  // Update result rows
+  document.getElementById('r_source').textContent = state.source ? (state.source==='community'?'Community':'Institutional') : '—';
+  document.getElementById('r_timing').textContent = state.timing ? (state.timing==='early'?'Early (1st period)':'Late (subsequent)') : '—';
+  document.getElementById('r_clingroup').textContent = state.clinGroup ? `${state.clinGroup} — ${state.clinGroupName}` : '—';
+
+  const funcLabels = {A:'Low Impairment',B:'Medium Impairment',C:'High Impairment'};
+  document.getElementById('r_funclevel').textContent = state.funcLevel ? funcLabels[state.funcLevel] : '—';
+
+  const comorbLabels = {'1':'None','2':'Low','3':'High'};
+  document.getElementById('r_comorbidity').textContent = state.comorbLevel ? comorbLabels[state.comorbLevel] : '—';
+
+  // Calculate payment if all ready
+  const complete = pos1!=='?' && pos2!=='?' && pos3!=='?' && pos4!=='?';
+  if (complete) {
+    const weight = getCaseMixWeight(pos1, pos2, pos3, pos4);
+    const BASE_RATE = 2038.22;
+    const payment = (BASE_RATE * weight).toFixed(2);
+    document.getElementById('r_weight').textContent = weight.toFixed(3);
+    document.getElementById('paymentBox').innerHTML = `
+      <div class="result-payment">
+        <div class="payment-label">ESTIMATED 30-DAY PAYMENT</div>
+        <div class="payment-amount">$${Number(payment).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div class="payment-sub">Base $2,038.22 × Weight ${weight.toFixed(3)} (unadjusted national rate)</div>
+      </div>`;
+  } else {
+    document.getElementById('r_weight').textContent = '—';
+    document.getElementById('paymentBox').innerHTML = '<div class="payment-pending">Complete all 4 steps to calculate payment</div>';
+  }
+}
+
+// Close ICD dropdown on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.icd-search-wrap')) {
+    document.getElementById('icdResults').style.display = 'none';
+  }
+});
+
+// Init
+buildComorbidityGrid();
+updateComorbidity();
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enzo Health — Platform Home</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --primary:#0EA5E9;--primary-dark:#0369A1;--success:#22C55E;
+      --warning:#F59E0B;--danger:#EF4444;--text:#1E293B;--muted:#64748B;
+      --border:#E2E8F0;--bg:#F1F5F9;--shadow:0 2px 12px rgba(0,0,0,0.08);
+    }
+    body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* ── HERO ── */
+    .hero{background:linear-gradient(135deg,#0EA5E9 0%,#0369A1 100%);padding:3rem 2rem 2.5rem;color:#fff;text-align:center;}
+    .hero-logo{font-size:2.2rem;font-weight:900;letter-spacing:-1px;margin-bottom:0.4rem;}
+    .hero-sub{font-size:1.05rem;opacity:0.88;margin-bottom:1.5rem;}
+    .hero-tags{display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap;}
+    .hero-tag{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:0.3rem 0.9rem;font-size:0.82rem;font-weight:600;}
+
+    /* ── MAIN ── */
+    .page{max-width:1200px;margin:0 auto;padding:2rem;}
+    .section-label{font-size:0.78rem;font-weight:800;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;margin-top:2rem;}
+
+    /* ── DASHBOARD CARDS ── */
+    .dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;margin-bottom:2rem;}
+    .dash-card{background:#fff;border-radius:14px;padding:1.5rem;box-shadow:var(--shadow);border:2px solid transparent;text-decoration:none;color:inherit;transition:all 0.2s;display:flex;flex-direction:column;gap:0.75rem;}
+    .dash-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,233,0.15);}
+    .dash-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+    .dash-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+    .dash-title{font-size:1.05rem;font-weight:700;margin-bottom:0.2rem;}
+    .dash-sub{font-size:0.82rem;color:var(--muted);line-height:1.5;}
+    .dash-badge{padding:0.25rem 0.65rem;border-radius:20px;font-size:0.72rem;font-weight:700;white-space:nowrap;}
+    .badge-live{background:#DCFCE7;color:#15803D;}
+    .badge-new{background:#EFF6FF;color:#1D4ED8;}
+    .badge-soon{background:#F1F5F9;color:#64748B;}
+    .dash-features{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.25rem;}
+    .dash-feature{background:#F8FAFC;border:1px solid var(--border);border-radius:6px;padding:0.2rem 0.55rem;font-size:0.73rem;color:var(--muted);font-weight:600;}
+
+    /* ── TOOL CARDS (smaller) ── */
+    .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:2rem;}
+    .tool-card{background:#fff;border-radius:12px;padding:1.1rem 1.25rem;box-shadow:var(--shadow);border:1.5px solid var(--border);text-decoration:none;color:inherit;transition:all 0.2s;display:flex;align-items:center;gap:1rem;}
+    .tool-card:hover{border-color:var(--primary);background:#FAFEFF;}
+    .tool-icon{font-size:1.6rem;flex-shrink:0;}
+    .tool-title{font-size:0.9rem;font-weight:700;margin-bottom:0.15rem;}
+    .tool-desc{font-size:0.78rem;color:var(--muted);}
+
+    /* ── STATUS BAR ── */
+    .status-bar{background:#fff;border-radius:12px;padding:1rem 1.5rem;box-shadow:var(--shadow);display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-bottom:2rem;}
+    .status-item{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;}
+    .status-dot{width:8px;height:8px;border-radius:50%;}
+    .dot-green{background:var(--success);}
+    .dot-blue{background:var(--primary);}
+    .dot-yellow{background:var(--warning);}
+    .status-label{color:var(--muted);}
+    .status-val{font-weight:700;}
+
+    footer{text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem;border-top:1px solid var(--border);margin-top:1rem;}
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-logo">enzo health</div>
+  <div class="hero-sub">CMS Survey Readiness &amp; Compliance Platform — Sunrise Home Health</div>
+  <div class="hero-tags">
+    <span class="hero-tag">🗓️ CY 2026 PDGM Rates</span>
+    <span class="hero-tag">📋 OASIS-E2 Ready</span>
+    <span class="hero-tag">🔒 Clerk Auth Protected</span>
+    <span class="hero-tag">🤖 8 AI Agents Active</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><span class="status-dot dot-green"></span><span class="status-label">Database</span><span class="status-val">Railway Postgres — Live</span></div>
+    <div class="status-item"><span class="status-dot dot-green"></span><span class="status-label">Nightly Job</span><span class="status-val">Runs 2:05am daily</span></div>
+    <div class="status-item"><span class="status-dot dot-green"></span><span class="status-label">Auth</span><span class="status-val">Clerk — Active</span></div>
+    <div class="status-item"><span class="status-dot dot-blue"></span><span class="status-label">Payment Rates</span><span class="status-val">2026 Base $2,038.22</span></div>
+    <div class="status-item"><span class="status-dot dot-yellow"></span><span class="status-label">EMR</span><span class="status-val">Connector Pending</span></div>
+  </div>
+
+  <!-- DASHBOARDS -->
+  <div class="section-label">Dashboards</div>
+  <div class="dash-grid">
+
+    <!-- Survey Readiness -->
+    <a class="dash-card" href="enzo-daily-dashboard.html">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-icon" style="background:#EFF6FF;">📊</div>
+        </div>
+        <span class="dash-badge badge-live">● LIVE</span>
+      </div>
+      <div>
+        <div class="dash-title">Survey Readiness Daily Dashboard</div>
+        <div class="dash-sub">Real-time survey readiness score, POC 16-component compliance, G-tag deficiency tracker, and pre-arrival risk profile for clinical staff and DONs.</div>
+      </div>
+      <div class="dash-features">
+        <span class="dash-feature">Pre-Arrival Risk</span>
+        <span class="dash-feature">16-Component POC</span>
+        <span class="dash-feature">G-Tag Lifecycle</span>
+        <span class="dash-feature">Level 1 Standards</span>
+        <span class="dash-feature">iQIES -3330</span>
+      </div>
+    </a>
+
+    <!-- Executive Dashboard -->
+    <a class="dash-card" href="enzo-dashboard.html">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-icon" style="background:#F0FDF4;">📈</div>
+        </div>
+        <span class="dash-badge badge-live">● LIVE</span>
+      </div>
+      <div>
+        <div class="dash-title">Executive Dashboard</div>
+        <div class="dash-sub">High-level KPIs for agency leadership. HHVBP performance, hospitalization rates, Care Compare star ratings, network benchmarks, and financial overview.</div>
+      </div>
+      <div class="dash-features">
+        <span class="dash-feature">HHVBP Score</span>
+        <span class="dash-feature">Star Ratings</span>
+        <span class="dash-feature">Hospitalization Rate</span>
+        <span class="dash-feature">Network Benchmark</span>
+      </div>
+    </a>
+
+    <!-- QA & Billing (coming soon) -->
+    <a class="dash-card" href="qa-billing-dashboard.html" style="opacity:0.7;">
+      <div class="dash-card-header">
+        <div>
+          <div class="dash-icon" style="background:#FFF7ED;">💰</div>
+        </div>
+        <span class="dash-badge badge-new">NEW — Building</span>
+      </div>
+      <div>
+        <div class="dash-title">QA &amp; Billing Dashboard</div>
+        <div class="dash-sub">HIPPS code calculator, PDGM grouper, coding compliance review, claims validation, and OASIS-to-billing audit trail for billing teams.</div>
+      </div>
+      <div class="dash-features">
+        <span class="dash-feature">HIPPS Calculator</span>
+        <span class="dash-feature">PDGM Grouper</span>
+        <span class="dash-feature">Coding QA</span>
+        <span class="dash-feature">Claims Validation</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- STANDALONE TOOLS -->
+  <div class="section-label">Standalone Tools</div>
+  <div class="tool-grid">
+    <a class="tool-card" href="hipps-calculator.html">
+      <div class="tool-icon">🧮</div>
+      <div>
+        <div class="tool-title">HIPPS Code Calculator</div>
+        <div class="tool-desc">2026 PDGM — ICD-10 lookup, OASIS scoring, comorbidity adj.</div>
+      </div>
+    </a>
+    <a class="tool-card" href="#" style="opacity:0.55;cursor:default;">
+      <div class="tool-icon">🔍</div>
+      <div>
+        <div class="tool-title">ICD-10 Code Lookup</div>
+        <div class="tool-desc">Search &amp; validate diagnosis codes — coming soon</div>
+      </div>
+    </a>
+    <a class="tool-card" href="#" style="opacity:0.55;cursor:default;">
+      <div class="tool-icon">📝</div>
+      <div>
+        <div class="tool-title">OASIS QA Checker</div>
+        <div class="tool-desc">Validate OASIS-E2 completeness — coming soon</div>
+      </div>
+    </a>
+    <a class="tool-card" href="#" style="opacity:0.55;cursor:default;">
+      <div class="tool-icon">🏥</div>
+      <div>
+        <div class="tool-title">NPI Validator</div>
+        <div class="tool-desc">Verify provider NPI numbers — coming soon</div>
+      </div>
+    </a>
+    <a class="tool-card" href="#" style="opacity:0.55;cursor:default;">
+      <div class="tool-icon">📋</div>
+      <div>
+        <div class="tool-title">PoC Draft Generator</div>
+        <div class="tool-desc">CMS-2567 Plan of Correction — coming soon</div>
+      </div>
+    </a>
+    <a class="tool-card" href="#" style="opacity:0.55;cursor:default;">
+      <div class="tool-icon">💊</div>
+      <div>
+        <div class="tool-title">Medicare Coverage Check</div>
+        <div class="tool-desc">LCD/NCD lookup by diagnosis — coming soon</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- AGENTS -->
+  <div class="section-label">AI Agents</div>
+  <div class="tool-grid">
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">🛡️</div>
+      <div><div class="tool-title">Survey Readiness Agent</div><div class="tool-desc">Pre-arrival risk, G-tag monitoring, standard compliance</div></div>
+    </div>
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">📄</div>
+      <div><div class="tool-title">Clinical Documentation QA</div><div class="tool-desc">OASIS accuracy, POC 16-component, consistency checks</div></div>
+    </div>
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">📊</div>
+      <div><div class="tool-title">QAPI Agent</div><div class="tool-desc">Quality measures, HHVBP performance, PIP tracking</div></div>
+    </div>
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">💰</div>
+      <div><div class="tool-title">Billing &amp; Coding Agent</div><div class="tool-desc">HIPPS validation, PDGM grouping, claims review</div></div>
+    </div>
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">📅</div>
+      <div><div class="tool-title">Scheduling Agent</div><div class="tool-desc">LUPA monitoring, visit frequency, OASIS window tracking</div></div>
+    </div>
+    <div class="tool-card" style="cursor:default;">
+      <div class="tool-icon">🔔</div>
+      <div><div class="tool-title">Alert &amp; Notification Agent</div><div class="tool-desc">SendGrid alerts, nightly cron, escalation routing</div></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Enzo Health Platform &nbsp;•&nbsp; Sunrise Home Health &nbsp;•&nbsp; CY 2026 &nbsp;•&nbsp; For internal use only
+</footer>
+</body>
+</html>
