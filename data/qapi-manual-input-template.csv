@@ -1,0 +1,2 @@
+PatientID,AdmissionDate,DischargeDate,Payer,PrimaryDiagnosisICD10,PrimaryDiagnosisDescription,Hospitalization,HospitalizationDate,EDVisit,DischargeDisposition,OASISSOCDate,OASISDCDate,Notes
+PT-001,YYYY-MM-DD,YYYY-MM-DD,Medicare/Medicaid/Private/Other,[ICD-10],[Description],Y/N,YYYY-MM-DD or blank,Y/N,"Home/Facility/Expired/Transferred",YYYY-MM-DD,YYYY-MM-DD or blank,[Optional notes]

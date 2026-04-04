@@ -1,0 +1,51 @@
+PatientID,AdmissionDate,DischargeDate,Payer,PrimaryDiagnosisICD10,PrimaryDiagnosisDescription,Hospitalization,HospitalizationDate,EDVisit,DischargeDisposition,OASISSOCDate,OASISDCDate,TimelyInitiation,Notes
+PT0001,01/12/2026,03/30/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,02/03/2026,0,Transferred to acute care hospital,01/27/2026,03/28/2026,0,Acute exacerbation managed in inpatient setting
+PT0002,01/03/2026,03/31/2026,Medicare Advantage,I63.9,"Cerebral infarction, unspecified",1,01/12/2026,0,Discharged to home/self-care,01/23/2026,03/31/2026,0,Acute exacerbation managed in inpatient setting
+PT0003,01/03/2026,03/06/2026,Private,Z96.641,Presence of right artificial hip joint,1,02/22/2026,0,Patient expired,01/19/2026,03/06/2026,0,Acute exacerbation managed in inpatient setting
+PT0004,01/13/2026,02/26/2026,Medicare Advantage,I10,Essential (primary) hypertension,1,01/18/2026,1,Transferred to acute care hospital,01/31/2026,02/23/2026,0,Acute exacerbation managed in inpatient setting; One ED visit during episode
+PT0005,01/14/2026,03/29/2026,Medicare,I10,Essential (primary) hypertension,1,02/07/2026,0,Discharged to home/self-care,01/16/2026,03/26/2026,1,Acute exacerbation managed in inpatient setting
+PT0006,01/14/2026,02/19/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,01/30/2026,0,Other,01/19/2026,02/19/2026,1,Acute exacerbation managed in inpatient setting
+PT0007,01/07/2026,02/22/2026,Medicaid,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,02/05/2026,0,Discharged to home/self-care,01/16/2026,02/22/2026,1,Acute exacerbation managed in inpatient setting
+PT0008,01/10/2026,03/26/2026,Medicare Advantage,Z96.641,Presence of right artificial hip joint,1,01/23/2026,1,Discharged to home/self-care,01/14/2026,03/24/2026,1,Acute exacerbation managed in inpatient setting; One ED visit during episode
+PT0009,01/12/2026,03/28/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,03/06/2026,0,Discharged to home/self-care,01/15/2026,03/28/2026,1,Acute exacerbation managed in inpatient setting
+PT0010,01/09/2026,03/28/2026,Medicare,Z96.651,Presence of right artificial knee joint,1,02/09/2026,0,Patient expired,01/19/2026,03/27/2026,1,Acute exacerbation managed in inpatient setting
+PT0011,01/06/2026,03/30/2026,Private,Z96.641,Presence of right artificial hip joint,1,01/31/2026,0,Discharged to facility (SNF/other),01/17/2026,03/29/2026,1,Acute exacerbation managed in inpatient setting
+PT0012,01/08/2026,03/26/2026,Medicare,I50.9,"Heart failure, unspecified",1,02/11/2026,0,Other,01/12/2026,03/25/2026,1,Acute exacerbation managed in inpatient setting
+PT0013,01/02/2026,02/21/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,01/14/2026,02/18/2026,1,
+PT0014,01/11/2026,03/27/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to facility (SNF/other),01/25/2026,03/25/2026,1,
+PT0015,01/12/2026,02/20/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Transferred to acute care hospital,01/19/2026,02/18/2026,1,
+PT0016,02/19/2026,03/26/2026,Medicare Advantage,I63.9,"Cerebral infarction, unspecified",0,,1,Discharged to home/self-care,02/27/2026,03/23/2026,1,One ED visit during episode
+PT0017,01/29/2026,03/27/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,01/31/2026,03/27/2026,1,
+PT0018,02/24/2026,03/27/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Patient expired,02/26/2026,03/27/2026,1,
+PT0019,02/13/2026,03/31/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Transferred to acute care hospital,02/21/2026,03/31/2026,1,
+PT0020,02/25/2026,03/28/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/02/2026,03/25/2026,1,
+PT0021,01/31/2026,03/29/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,02/08/2026,03/29/2026,1,
+PT0022,02/07/2026,03/19/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to facility (SNF/other),02/19/2026,03/19/2026,1,
+PT0023,01/16/2026,03/28/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,01/17/2026,03/26/2026,1,
+PT0024,02/20/2026,03/27/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to home/self-care,02/21/2026,03/24/2026,1,
+PT0025,02/26/2026,03/26/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/05/2026,03/25/2026,1,
+PT0026,02/18/2026,03/29/2026,Medicare,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to facility (SNF/other),03/02/2026,03/27/2026,1,
+PT0027,02/17/2026,03/26/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,02/24/2026,03/25/2026,1,
+PT0028,01/16/2026,03/22/2026,Medicare Advantage,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,01/25/2026,03/21/2026,1,
+PT0029,01/19/2026,03/30/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,1,Discharged to home/self-care,01/30/2026,03/30/2026,1,One ED visit during episode
+PT0030,02/05/2026,03/29/2026,Medicaid,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to facility (SNF/other),02/06/2026,03/27/2026,1,
+PT0031,01/23/2026,03/26/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Transferred to acute care hospital,02/03/2026,03/23/2026,1,
+PT0032,02/10/2026,03/18/2026,Medicare,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to facility (SNF/other),02/13/2026,03/18/2026,1,
+PT0033,02/10/2026,03/30/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Transferred to acute care hospital,02/17/2026,03/30/2026,1,
+PT0034,02/05/2026,03/30/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to facility (SNF/other),02/17/2026,03/29/2026,1,
+PT0035,02/12/2026,03/29/2026,Medicaid,Z96.641,Presence of right artificial hip joint,0,,0,Other,02/14/2026,03/27/2026,1,
+PT0036,03/03/2026,03/26/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,03/10/2026,03/26/2026,1,
+PT0037,03/25/2026,03/29/2026,Medicaid,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,04/07/2026,03/26/2026,1,
+PT0038,03/13/2026,03/29/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/27/2026,03/26/2026,1,
+PT0039,03/15/2026,03/26/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,03/19/2026,03/23/2026,1,
+PT0040,03/07/2026,03/26/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,03/07/2026,03/26/2026,1,
+PT0041,03/19/2026,03/26/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Other,03/26/2026,03/25/2026,1,
+PT0042,03/06/2026,03/30/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Patient expired,03/07/2026,03/29/2026,1,
+PT0043,03/08/2026,03/30/2026,Medicare,Z96.651,Presence of right artificial knee joint,0,,1,Discharged to home/self-care,03/17/2026,03/30/2026,1,One ED visit during episode
+PT0044,03/07/2026,03/28/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/17/2026,03/27/2026,1,
+PT0045,03/22/2026,03/27/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to facility (SNF/other),04/01/2026,03/25/2026,1,
+PT0046,03/20/2026,03/30/2026,Private,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,03/29/2026,03/29/2026,1,
+PT0047,03/12/2026,03/29/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to facility (SNF/other),03/26/2026,03/27/2026,1,
+PT0048,03/18/2026,03/26/2026,Private,I10,Essential (primary) hypertension,0,,0,Patient expired,03/29/2026,03/26/2026,1,
+PT0049,03/04/2026,03/28/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to home/self-care,03/18/2026,03/28/2026,1,
+PT0050,03/10/2026,03/28/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/19/2026,03/27/2026,1,
