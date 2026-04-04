@@ -1,0 +1,149 @@
+{
+  "metadata": {
+    "generated_at": "2026-04-04T12:38:08.524039",
+    "annual_revenue": 500000
+  },
+  "summary": {
+    "total_performance_score": 10.784188178428115,
+    "payment_adjustment_pct": -0.06274529891451501,
+    "payment_adjustment_dollars": -31372.649457257507
+  },
+  "performance": {
+    "improvement_in_ambulation": 48.0,
+    "improvement_in_bathing": 62.0,
+    "improvement_in_dyspnea": 54.0,
+    "improvement_in_pain": 38.0,
+    "improvement_in_medication_management": 41.0,
+    "discharge_to_community": 52.0,
+    "acute_care_hospitalization": 24.0,
+    "ed_use_without_hospitalization": 10.0,
+    "timely_initiation_of_care": 92.0,
+    "hhcahps_communication": 70.0
+  },
+  "benchmarks": {
+    "improvement_in_ambulation": 53.2,
+    "improvement_in_bathing": 67.1,
+    "improvement_in_dyspnea": 57.9,
+    "improvement_in_pain": 42.5,
+    "improvement_in_medication_management": 38.1,
+    "discharge_to_community": 61.8,
+    "acute_care_hospitalization": 14.7,
+    "ed_use_without_hospitalization": 8.2,
+    "timely_initiation_of_care": 96.3,
+    "hhcahps_communication": 72.0
+  },
+  "thresholds": {
+    "improvement_in_ambulation": 45.0,
+    "improvement_in_bathing": 58.0,
+    "improvement_in_dyspnea": 50.0,
+    "improvement_in_pain": 35.0,
+    "improvement_in_medication_management": 30.0,
+    "discharge_to_community": 53.0,
+    "acute_care_hospitalization": 22.0,
+    "ed_use_without_hospitalization": 12.0,
+    "timely_initiation_of_care": 90.0,
+    "hhcahps_communication": 65.0
+  },
+  "measure_scores": {
+    "improvement_in_ambulation": {
+      "agency_performance": 48.0,
+      "benchmark": 53.2,
+      "threshold": 45.0,
+      "achievement_score": 3.6585365853658525,
+      "bonus_score": 0.0,
+      "total_measure_score": 3.6585365853658525,
+      "weight": 0.04,
+      "weighted_points": 0.7317073170731705
+    },
+    "improvement_in_bathing": {
+      "agency_performance": 62.0,
+      "benchmark": 67.1,
+      "threshold": 58.0,
+      "achievement_score": 4.395604395604399,
+      "bonus_score": 0.0,
+      "total_measure_score": 4.395604395604399,
+      "weight": 0.04,
+      "weighted_points": 0.8791208791208798
+    },
+    "improvement_in_dyspnea": {
+      "agency_performance": 54.0,
+      "benchmark": 57.9,
+      "threshold": 50.0,
+      "achievement_score": 5.0632911392405076,
+      "bonus_score": 0.0,
+      "total_measure_score": 5.0632911392405076,
+      "weight": 0.04,
+      "weighted_points": 1.0126582278481016
+    },
+    "improvement_in_pain": {
+      "agency_performance": 38.0,
+      "benchmark": 42.5,
+      "threshold": 35.0,
+      "achievement_score": 4.0,
+      "bonus_score": 0.0,
+      "total_measure_score": 4.0,
+      "weight": 0.04,
+      "weighted_points": 0.8
+    },
+    "improvement_in_medication_management": {
+      "agency_performance": 41.0,
+      "benchmark": 38.1,
+      "threshold": 30.0,
+      "achievement_score": 10.0,
+      "bonus_score": 2.8999999999999986,
+      "total_measure_score": 12.899999999999999,
+      "weight": 0.04,
+      "weighted_points": 2.5799999999999996
+    },
+    "discharge_to_community": {
+      "agency_performance": 52.0,
+      "benchmark": 61.8,
+      "threshold": 53.0,
+      "achievement_score": 0.0,
+      "bonus_score": 0.0,
+      "total_measure_score": 0.0,
+      "weight": 0.04,
+      "weighted_points": 0.0
+    },
+    "acute_care_hospitalization": {
+      "agency_performance": 24.0,
+      "benchmark": 14.7,
+      "threshold": 22.0,
+      "achievement_score": 0.0,
+      "bonus_score": 0.0,
+      "total_measure_score": 0.0,
+      "weight": 0.055,
+      "weighted_points": 0.0
+    },
+    "ed_use_without_hospitalization": {
+      "agency_performance": 10.0,
+      "benchmark": 8.2,
+      "threshold": 12.0,
+      "achievement_score": 5.263157894736841,
+      "bonus_score": 0.0,
+      "total_measure_score": 5.263157894736841,
+      "weight": 0.055,
+      "weighted_points": 1.4473684210526312
+    },
+    "timely_initiation_of_care": {
+      "agency_performance": 92.0,
+      "benchmark": 96.3,
+      "threshold": 90.0,
+      "achievement_score": 3.174603174603176,
+      "bonus_score": 0.0,
+      "total_measure_score": 3.174603174603176,
+      "weight": 0.03,
+      "weighted_points": 0.4761904761904764
+    },
+    "hhcahps_communication": {
+      "agency_performance": 70.0,
+      "benchmark": 72.0,
+      "threshold": 65.0,
+      "achievement_score": 7.142857142857143,
+      "bonus_score": 0.0,
+      "total_measure_score": 7.142857142857143,
+      "weight": 0.08,
+      "weighted_points": 2.857142857142857
+    }
+  }
+}

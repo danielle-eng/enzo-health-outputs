@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "agency_name": "Sunrise Home Health",
+    "generated_at": "2026-04-04T12:39:33.470103"
+  },
+  "results": {
+    "composite_quality_score": 36.01225944923424,
+    "star_rating": 1
+  },
+  "measures": {
+    "improvement_in_ambulation": {
+      "agency_performance": 48.0,
+      "benchmark": 53.2,
+      "percentile_score": 43.333333333333336
+    },
+    "improvement_in_bathing": {
+      "agency_performance": 62.0,
+      "benchmark": 67.1,
+      "percentile_score": 48.0
+    },
+    "improvement_in_transferring": {
+      "agency_performance": 65.0,
+      "benchmark": 71.3,
+      "percentile_score": 46.42857142857143
+    },
+    "improvement_in_toileting": {
+      "agency_performance": 60.0,
+      "benchmark": 68.9,
+      "percentile_score": 35.714285714285715
+    },
+    "acute_care_hospitalization": {
+      "agency_performance": 24.0,
+      "benchmark": 14.7,
+      "percentile_score": 5.88235294117647
+    },
+    "ed_utilization": {
+      "agency_performance": 10.0,
+      "benchmark": 8.2,
+      "percentile_score": 36.36363636363637
+    },
+    "timely_initiation": {
+      "agency_performance": 92.0,
+      "benchmark": 96.3,
+      "percentile_score": 36.36363636363637
+    }
+  }
+}
