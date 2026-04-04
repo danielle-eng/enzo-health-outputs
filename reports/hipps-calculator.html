@@ -1635,19 +1635,6 @@ function getCaseMixWeight(pos1, pos2, pos3, pos4) {
 function getLupaThreshold(pos1, pos2, pos3, pos4) {
   const hipps = pos1 + pos2 + pos3 + pos4 + '1';
   return LUPA_TABLE[hipps] || 0;
-};
-  let w = baseByGroup[pos2] || 1.0;
-  // Timing multipliers
-  if (pos1==='2' || pos1==='4') w *= 0.72; // Late periods lower
-  // Source multipliers
-  if (pos1==='3' || pos1==='4') w *= 1.35; // Institutional higher
-  // Functional multipliers
-  if (pos3==='B') w *= 1.22;
-  if (pos3==='C') w *= 1.52;
-  // Comorbidity multipliers
-  if (pos4==='2') w *= 1.09;
-  if (pos4==='3') w *= 1.22;
-  return Math.round(w * 1000) / 1000;
 }
 
 // ============================================================
