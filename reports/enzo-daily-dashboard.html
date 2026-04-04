@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enzo Health — Daily Operations Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #059669; --green-light: #D1FAE5; --green-bg: #F0FDF4;
+      --yellow: #D97706; --yellow-light: #FEF3C7; --yellow-bg: #FFFBEB;
+      --orange: #EA580C; --orange-light: #FFEDD5; --orange-bg: #FFF7ED;
+      --red: #DC2626; --red-light: #FEE2E2; --red-bg: #FEF2F2;
+      --blue: #0EA5E9; --blue-light: #E0F7FF; --blue-bg: #F0F9FF;
+      --purple: #7C3AED; --purple-light: #EDE9FE; --purple-bg: #F5F3FF;
+      --gray: #6B7280; --gray-light: #F3F4F6; --border: #E5E7EB;
+      --text: #111827; --text-soft: #6B7280;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; background: #F9FAFB; color: var(--text); min-height: 100vh; }
+
+    /* TOP BAR */
+    .topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .topbar-left { display: flex; align-items: center; gap: 20px; }
+    .brand { font-size: 18px; font-weight: 700; color: var(--blue); letter-spacing: -0.3px; }
+    .agency-name { font-size: 14px; color: var(--gray); font-weight: 500; padding: 4px 10px; background: var(--gray-light); border-radius: 6px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .last-updated { font-size: 12px; color: var(--gray); }
+    .notif-badge { width: 32px; height: 32px; border-radius: 8px; background: var(--red-light); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    /* ROLE SWITCHER */
+    .role-switcher { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 0; }
+    .role-tab { padding: 14px 24px; font-size: 14px; font-weight: 600; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
+    .role-tab:hover { color: var(--text); }
+    .role-tab.active-don { color: var(--blue); border-bottom-color: var(--blue); }
+    .role-tab.active-admin { color: var(--purple); border-bottom-color: var(--purple); }
+    .role-tab .tab-icon { margin-right: 8px; }
+
+    /* LAYOUT */
+    .page { display: none; padding: 24px 28px; max-width: 1400px; margin: 0 auto; }
+    .page.active { display: block; }
+    .two-col { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .two-thirds-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+    /* CARDS */
+    .card { background: white; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+    .card-header { padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.1px; }
+    .card-subtitle { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+    .card-body { padding: 16px 20px 20px; }
+
+    /* HERO SCORE */
+    .hero-card { background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 24px; text-align: center; }
+    .hero-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-soft); margin-bottom: 8px; }
+    .score-gauge-wrap { position: relative; width: 180px; height: 100px; margin: 0 auto 16px; overflow: hidden; }
+    .score-gauge-wrap canvas { position: absolute; top: 0; left: 0; }
+    .score-number-overlay { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; }
+    .score-big { font-size: 42px; font-weight: 800; line-height: 1; }
+    .score-max { font-size: 16px; font-weight: 400; color: var(--text-soft); }
+    .score-band { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 12px; }
+    .band-green { background: var(--green-light); color: var(--green); }
+    .band-yellow { background: var(--yellow-light); color: var(--yellow); }
+    .band-orange { background: var(--orange-light); color: var(--orange); }
+    .band-red { background: var(--red-light); color: var(--red); }
+    .score-message { font-size: 12px; color: var(--text-soft); margin-top: 8px; line-height: 1.4; }
+    .domain-bars { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .domain-row { display: flex; align-items: center; gap: 10px; }
+    .domain-label { font-size: 11px; color: var(--text-soft); width: 130px; flex-shrink: 0; }
+    .domain-track { flex: 1; height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
+    .domain-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .domain-pts { font-size: 11px; font-weight: 600; color: var(--text); width: 42px; text-align: right; flex-shrink: 0; }
+    .trend-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .trend-label { font-size: 11px; color: var(--text-soft); }
+    .trend-up { color: var(--green); font-weight: 700; font-size: 12px; }
+    .trend-down { color: var(--red); font-weight: 700; font-size: 12px; }
+
+    /* ACTION LIST */
+    .action-list-card { background: white; border-radius: 12px; box-shadow: var(--shadow); }
+    .action-list-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .action-list-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .action-date { font-size: 12px; color: var(--text-soft); }
+    .action-tier { padding: 10px 20px 6px; }
+    .tier-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+    .tier-critical { background: var(--red-light); color: var(--red); }
+    .tier-important { background: var(--yellow-light); color: var(--yellow); }
+    .tier-fyi { background: var(--green-light); color: var(--green); }
+    .action-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--gray-light); align-items: flex-start; }
+    .action-item:last-child { border-bottom: none; }
+    .action-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .icon-red { background: var(--red-light); }
+    .icon-yellow { background: var(--yellow-light); }
+    .icon-green { background: var(--green-light); }
+    .icon-blue { background: var(--blue-light); }
+    .action-content { flex: 1; min-width: 0; }
+    .action-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 3px; }
+    .action-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .action-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+    .tag-deadline { background: var(--red-light); color: var(--red); }
+    .tag-time { background: var(--gray-light); color: var(--gray); }
+    .tag-patient { background: var(--blue-light); color: #0369A1; }
+    .tag-revenue { background: var(--purple-light); color: var(--purple); }
+    .action-cta { font-size: 11px; color: var(--blue); font-weight: 600; cursor: pointer; white-space: nowrap; margin-top: 2px; }
+    .action-tier-section { padding: 0 20px 12px; }
+
+    /* STATS ROW */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: white; border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); border-left: 3px solid; }
+    .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 800; line-height: 1; }
+    .stat-sub { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
+    .stat-change { font-size: 11px; font-weight: 600; margin-top: 4px; }
+    .change-up-bad { color: var(--red); }
+    .change-down-good { color: var(--green); }
+    .change-up-good { color: var(--green); }
+
+    /* TIME PERIOD TOGGLE */
+    .period-toggle { display: flex; gap: 2px; background: var(--gray-light); border-radius: 8px; padding: 3px; }
+    .period-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
+    .period-btn.active { background: white; color: var(--text); box-shadow: var(--shadow); }
+
+    /* QUALITY INDICATORS */
+    .qi-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--gray-light); gap: 12px; }
+    .qi-row:last-child { border-bottom: none; }
+    .qi-name { font-size: 12px; color: var(--text); flex: 1; min-width: 0; }
+    .qi-bar-wrap { width: 120px; }
+    .qi-track { height: 5px; background: var(--gray-light); border-radius: 3px; }
+    .qi-fill { height: 5px; border-radius: 3px; }
+    .qi-values { display: flex; gap: 12px; width: 140px; justify-content: flex-end; }
+    .qi-agency { font-size: 12px; font-weight: 700; width: 45px; text-align: right; }
+    .qi-bench { font-size: 11px; color: var(--text-soft); width: 55px; text-align: right; }
+    .qi-status { width: 20px; text-align: center; font-size: 13px; }
+
+    /* PIP TRACKER */
+    .pip-card { padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+    .pip-card:last-child { margin-bottom: 0; }
+    .pip-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .pip-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .pip-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+    .pip-progress-row { display: flex; align-items: center; gap: 10px; }
+    .pip-track { flex: 1; height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
+    .pip-fill-blue { height: 6px; background: var(--blue); border-radius: 3px; }
+    .pip-fill-green { height: 6px; background: var(--green); border-radius: 3px; }
+    .pip-pct { font-size: 11px; font-weight: 700; color: var(--text); width: 32px; text-align: right; }
+    .pip-meta { font-size: 11px; color: var(--text-soft); margin-top: 5px; }
+
+    /* REVENUE CARDS */
+    .rev-episode { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; gap: 14px; }
+    .rev-episode:last-child { margin-bottom: 0; }
+    .rev-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .rev-patient { flex: 1; }
+    .rev-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .rev-group { font-size: 11px; color: var(--text-soft); }
+    .rev-amount { font-size: 16px; font-weight: 800; color: var(--text); text-align: right; }
+    .rev-hipps { font-size: 10px; color: var(--text-soft); text-align: right; }
+    .rev-flag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+
+    /* MINI METRIC */
+    .mini-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mini-metric { background: var(--gray-light); border-radius: 8px; padding: 12px; text-align: center; }
+    .mini-value { font-size: 22px; font-weight: 800; }
+    .mini-label { font-size: 10px; color: var(--text-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+    /* NOTIFICATION BANNER */
+    .notif-banner { background: var(--red-bg); border: 1px solid var(--red-light); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+    .notif-icon { font-size: 20px; flex-shrink: 0; }
+    .notif-text { flex: 1; font-size: 13px; color: var(--red); font-weight: 600; }
+    .notif-dismiss { font-size: 12px; color: var(--red); cursor: pointer; font-weight: 600; white-space: nowrap; opacity: 0.7; }
+
+    /* SECTION HEADERS */
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 14px; font-weight: 700; color: var(--text); }
+    .section-link { font-size: 12px; color: var(--blue); font-weight: 600; cursor: pointer; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 32px 28px 40px; font-size: 12px; color: var(--text-soft); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .three-col { grid-template-columns: 1fr; } }
+    @media (max-width: 500px) { .page { padding: 16px; } .topbar { padding: 0 16px; } .role-switcher { padding: 0 16px; } .role-tab { padding: 12px 16px; font-size: 13px; } }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand">enzo health</div>
+    <div class="agency-name">Sunrise Home Health</div>
+  </div>
+  <div class="topbar-right">
+    <div class="last-updated">Updated today at 7:02 AM</div>
+    <div class="notif-badge" title="3 critical alerts">3</div>
+  </div>
+</div>
+
+<!-- ROLE SWITCHER -->
+<div class="role-switcher">
+  <div class="role-tab active-don" id="tab-don" onclick="switchRole('don')"><span class="tab-icon">🩺</span>DON / Clinical</div>
+  <div class="role-tab" id="tab-admin" onclick="switchRole('admin')"><span class="tab-icon">📊</span>Administrator</div>
+</div>
+
+<!-- ========== DON VIEW ========== -->
+<div class="page active" id="page-don">
+
+  <!-- ALERT BANNER -->
+  <div class="notif-banner" style="margin-top:20px;">
+    <div class="notif-icon">🚨</div>
+    <div class="notif-text">3 items need your attention today — 2 patients at LUPA risk, 1 high-risk note flagged for correction</div>
+    <div class="notif-dismiss" onclick="this.parentElement.style.display='none'">Dismiss ×</div>
+  </div>
+
+  <!-- MAIN TWO-COL LAYOUT -->
+  <div class="two-col">
+
+    <!-- LEFT: SURVEY READINESS SCORE -->
+    <div>
+      <div class="hero-card" style="margin-bottom:20px;">
+        <div class="hero-label">Survey Readiness Score</div>
+        <div style="position:relative; width:200px; height:110px; margin:0 auto 8px;">
+          <canvas id="gaugeChart" width="200" height="110"></canvas>
+          <div style="position:absolute; bottom:4px; left:0; right:0; text-align:center;">
+            <span class="score-big" style="color:#D97706;">78</span><span class="score-max">/100</span>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <span class="score-band band-yellow">⚠ Moderate Risk</span>
+          <div class="score-message">Address flagged items within 2 weeks to maintain compliance standing.</div>
+        </div>
+
+        <div class="domain-bars">
+          <div class="domain-row">
+            <div class="domain-label">Documentation Quality</div>
+            <div class="domain-track"><div class="domain-fill" style="width:80%; background:#0EA5E9;"></div></div>
+            <div class="domain-pts">24/30</div>
+          </div>
+          <div class="domain-row">
+            <div class="domain-label">Visit Compliance</div>
+            <div class="domain-track"><div class="domain-fill" style="width:85%; background:#7C3AED;"></div></div>
+            <div class="domain-pts">17/20</div>
+          </div>
+          <div class="domain-row">
+            <div class="domain-label">OASIS Accuracy</div>
+            <div class="domain-track"><div class="domain-fill" style="width:95%; background:#059669;"></div></div>
+            <div class="domain-pts">19/20</div>
+          </div>
+          <div class="domain-row">
+            <div class="domain-label">Care Planning</div>
+            <div class="domain-track"><div class="domain-fill" style="width:73%; background:#D97706;"></div></div>
+            <div class="domain-pts">11/15</div>
+          </div>
+          <div class="domain-row">
+            <div class="domain-label">Open Deficiencies</div>
+            <div class="domain-track"><div class="domain-fill" style="width:47%; background:#DC2626;"></div></div>
+            <div class="domain-pts">7/15</div>
+          </div>
+        </div>
+
+        <div class="trend-row">
+          <div class="trend-label">7-day trend:</div>
+          <canvas id="trendChart" width="130" height="36"></canvas>
+          <div class="trend-up">↑ +4 pts</div>
+        </div>
+      </div>
+
+      <!-- ACTIVE PIPs -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:12px;">
+          <div>
+            <div class="card-title">Active PIPs</div>
+            <div class="card-subtitle">3 Performance Improvement Projects in progress</div>
+          </div>
+          <div class="section-link">+ New PIP</div>
+        </div>
+        <div class="card-body" style="padding-top:4px;">
+          <div class="pip-card">
+            <div class="pip-top">
+              <div class="pip-name">Hospitalization Reduction</div>
+              <span class="pip-status" style="background:var(--yellow-light); color:var(--yellow);">ACTIVE</span>
+            </div>
+            <div class="pip-progress-row">
+              <div class="pip-track"><div class="pip-fill-blue" style="width:28%;"></div></div>
+              <div class="pip-pct">28%</div>
+            </div>
+            <div class="pip-meta">Current: 24.0% → Target: 16.0% by Q3 2026 · 2/7 interventions active</div>
+          </div>
+          <div class="pip-card">
+            <div class="pip-top">
+              <div class="pip-name">ED Utilization Reduction</div>
+              <span class="pip-status" style="background:var(--blue-light); color:#0369A1;">INITIATION</span>
+            </div>
+            <div class="pip-progress-row">
+              <div class="pip-track"><div class="pip-fill-blue" style="width:8%;"></div></div>
+              <div class="pip-pct">8%</div>
+            </div>
+            <div class="pip-meta">Current: 10.0% → Target: 8.2% by Q3 2026 · Planning phase</div>
+          </div>
+          <div class="pip-card">
+            <div class="pip-top">
+              <div class="pip-name">Timely Assessment Compliance</div>
+              <span class="pip-status" style="background:var(--green-light); color:var(--green);">ON TRACK</span>
+            </div>
+            <div class="pip-progress-row">
+              <div class="pip-track"><div class="pip-fill-green" style="width:55%;"></div></div>
+              <div class="pip-pct">55%</div>
+            </div>
+            <div class="pip-meta">Current: 94.0% → Target: 96.0% by Q2 2026 · Ahead of schedule</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: TODAY'S ACTIONS + QUALITY -->
+    <div>
+
+      <!-- TODAY'S ACTION LIST — DON -->
+      <div class="action-list-card" style="margin-bottom:20px;">
+        <div class="action-list-header">
+          <div class="action-list-title">Today's Actions</div>
+          <div class="action-date">Saturday, April 4, 2026</div>
+        </div>
+
+        <!-- CRITICAL -->
+        <div class="action-tier-section" style="padding-top:14px;">
+          <span class="tier-label tier-critical">🔴 Critical — Act Today</span>
+          <div class="action-item">
+            <div class="action-icon icon-red">⚠️</div>
+            <div class="action-content">
+              <div class="action-title">LUPA Risk: PT-2003 Robert Davis needs 1 PT visit by Apr 9</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Due Apr 9</span>
+                <span class="action-tag tag-patient">PT-2003</span>
+                <span class="action-tag tag-time">~15 min to schedule</span>
+              </div>
+              <div class="action-cta">Schedule visit → contact Angela Torres (PT)</div>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="action-icon icon-red">📋</div>
+            <div class="action-content">
+              <div class="action-title">Recert order needed: Margaret Chen — cert expires Apr 12</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Due Apr 12</span>
+                <span class="action-tag tag-patient">PT-2001</span>
+                <span class="action-tag tag-time">~30 min</span>
+              </div>
+              <div class="action-cta">Case conference note ready → send to physician for signature</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-red">📝</div>
+            <div class="action-content">
+              <div class="action-title">High audit risk: PT-007 ambulation note scored 2/5 — correct before month end</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Month end</span>
+                <span class="action-tag tag-patient">PT-007</span>
+                <span class="action-tag tag-time">~20 min</span>
+              </div>
+              <div class="action-cta">Review QA feedback → coach clinician James Okonkwo (PT)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPORTANT -->
+        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border);">
+          <span class="tier-label tier-important" style="margin-top:12px; display:inline-flex;">🟡 Important — This Week</span>
+          <div class="action-item">
+            <div class="action-icon icon-yellow">📅</div>
+            <div class="action-content">
+              <div class="action-title">Schedule case conference: Robert Williams — cert ends Apr 9</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Due Apr 9</span>
+                <span class="action-tag tag-patient">PT-2002</span>
+                <span class="action-tag tag-time">~1 hr</span>
+              </div>
+              <div class="action-cta">Case conference note drafted → schedule IDT meeting</div>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="action-icon icon-yellow">🔬</div>
+            <div class="action-content">
+              <div class="action-title">OASIS correction pending: PT-2003 ADL variance — document clinical rationale</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Before billing</span>
+                <span class="action-tag tag-patient">PT-2003</span>
+                <span class="action-tag tag-time">~15 min</span>
+              </div>
+              <div class="action-cta">Add narrative to M1800–M1860 explaining functional inconsistency</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-yellow">👩‍⚕️</div>
+            <div class="action-content">
+              <div class="action-title">Staff coaching: Angela Torres (PT) — 45% schedule fill rate, review needed</div>
+              <div class="action-meta">
+                <span class="action-tag" style="background:var(--yellow-light);color:var(--yellow);">Staffing</span>
+                <span class="action-tag tag-time">~30 min</span>
+              </div>
+              <div class="action-cta">Review scheduling compliance report → schedule 1:1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FYI -->
+        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border); padding-bottom:16px;">
+          <span class="tier-label tier-fyi" style="margin-top:12px; display:inline-flex;">🟢 FYI</span>
+          <div class="action-item">
+            <div class="action-icon icon-green">📡</div>
+            <div class="action-content">
+              <div class="action-title">New regulatory digest: CMS QSO memo on OASIS-E documentation expectations</div>
+              <div class="action-meta"><span class="action-tag tag-time">5 min read</span></div>
+              <div class="action-cta">Read digest →</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-green">📈</div>
+            <div class="action-content">
+              <div class="action-title">Hospitalization rate trending down: 22.1% (30-day rolling) vs. 24.0% last period</div>
+              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">↓ Improving</span></div>
+              <div class="action-cta">View outcomes dashboard →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROLLING QUALITY INDICATORS -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Quality Indicators</div>
+            <div class="card-subtitle">Agency vs. CMS National Benchmark</div>
+          </div>
+          <div class="period-toggle">
+            <button class="period-btn active" onclick="setPeriod(this,'30')">30d</button>
+            <button class="period-btn" onclick="setPeriod(this,'60')">60d</button>
+            <button class="period-btn" onclick="setPeriod(this,'90')">90d</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="qi-row">
+            <div class="qi-name">Acute Care Hospitalization</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#DC2626;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#DC2626;">22.1%</div>
+              <div class="qi-bench">≤14.7%</div>
+            </div>
+            <div class="qi-status">🔴</div>
+          </div>
+          <div class="qi-row">
+            <div class="qi-name">ED Use w/o Hospitalization</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#D97706;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#D97706;">9.8%</div>
+              <div class="qi-bench">≤8.2%</div>
+            </div>
+            <div class="qi-status">🟡</div>
+          </div>
+          <div class="qi-row">
+            <div class="qi-name">Discharge to Community</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:84%; background:#D97706;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#D97706;">52.1%</div>
+              <div class="qi-bench">≥61.8%</div>
+            </div>
+            <div class="qi-status">🟡</div>
+          </div>
+          <div class="qi-row">
+            <div class="qi-name">Timely Initiation of Care</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:98%; background:#059669;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#059669;">94.3%</div>
+              <div class="qi-bench">≥96.3%</div>
+            </div>
+            <div class="qi-status">🟡</div>
+          </div>
+          <div class="qi-row">
+            <div class="qi-name">Improvement in Ambulation</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:88%; background:#D97706;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#D97706;">48.8%</div>
+              <div class="qi-bench">≥53.2%</div>
+            </div>
+            <div class="qi-status">🟡</div>
+          </div>
+          <div class="qi-row">
+            <div class="qi-name">Improvement in Bathing</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:96%; background:#059669;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#059669;">64.4%</div>
+              <div class="qi-bench">≥67.1%</div>
+            </div>
+            <div class="qi-status">🟡</div>
+          </div>
+          <div class="qi-row" style="border-bottom:none;">
+            <div class="qi-name">Improvement in Med. Management</div>
+            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#059669;"></div></div></div>
+            <div class="qi-values">
+              <div class="qi-agency" style="color:#059669;">42.1%</div>
+              <div class="qi-bench">≥38.1%</div>
+            </div>
+            <div class="qi-status">🟢</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ========== ADMIN VIEW ========== -->
+<div class="page" id="page-admin">
+
+  <!-- STATS ROW -->
+  <div class="stats-row" style="margin-top:20px;">
+    <div class="stat-card" style="border-color:var(--purple);">
+      <div class="stat-label">Monthly Revenue</div>
+      <div class="stat-value" style="color:var(--purple);">$21,364</div>
+      <div class="stat-sub">3 episodes · 30-day est.</div>
+      <div class="stat-change change-up-good">↑ On track</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--red);">
+      <div class="stat-label">Revenue at Risk</div>
+      <div class="stat-value" style="color:var(--red);">$8,200</div>
+      <div class="stat-sub">LUPA exposure + coding gaps</div>
+      <div class="stat-change change-up-bad">↑ Action needed</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--yellow);">
+      <div class="stat-label">Intake Acceptance</div>
+      <div class="stat-value" style="color:var(--yellow);">33%</div>
+      <div class="stat-sub">1/3 referrals this week</div>
+      <div class="stat-change change-up-bad">↓ Below 50% target</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--green);">
+      <div class="stat-label">Schedule Compliance</div>
+      <div class="stat-value" style="color:var(--green);">85.1%</div>
+      <div class="stat-sub">Agency avg. this week</div>
+      <div class="stat-change change-down-good">↑ +2.4% vs. last week</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- LEFT: TODAY'S ADMIN ACTIONS -->
+    <div>
+      <div class="action-list-card">
+        <div class="action-list-header">
+          <div class="action-list-title">Today's Actions</div>
+          <div class="action-date">Saturday, April 4, 2026</div>
+        </div>
+
+        <!-- CRITICAL -->
+        <div class="action-tier-section" style="padding-top:14px;">
+          <span class="tier-label tier-critical">🔴 Critical — Act Today</span>
+          <div class="action-item">
+            <div class="action-icon icon-red">💸</div>
+            <div class="action-content">
+              <div class="action-title">LUPA risk: PT-2003 &amp; PT-010 — $4,200 billing impact if triggered</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">5–6 days left</span>
+                <span class="action-tag tag-revenue">~$4,200 at risk</span>
+                <span class="action-tag tag-time">~15 min</span>
+              </div>
+              <div class="action-cta">Confirm scheduling coordinator has prioritized both patients →</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-red">🏦</div>
+            <div class="action-content">
+              <div class="action-title">MA prior auth pending: REF-20260404-003 — cannot admit or bill until received</div>
+              <div class="action-meta">
+                <span class="action-tag tag-deadline">Urgent</span>
+                <span class="action-tag tag-revenue">~$3,500 episode</span>
+                <span class="action-tag tag-time">~20 min</span>
+              </div>
+              <div class="action-cta">Call MA payer to confirm auth status → escalate if >72 hrs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPORTANT -->
+        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border);">
+          <span class="tier-label tier-important" style="margin-top:12px; display:inline-flex;">🟡 Important — This Week</span>
+          <div class="action-item">
+            <div class="action-icon icon-yellow">📋</div>
+            <div class="action-content">
+              <div class="action-title">Comorbidity opportunity: PT-2003 — document secondary diagnosis for CA1 upgrade</div>
+              <div class="action-meta">
+                <span class="action-tag tag-revenue">+$600–900 est.</span>
+                <span class="action-tag tag-time">~15 min with clinician</span>
+              </div>
+              <div class="action-cta">Review PDGM billing report → confirm dx documentation with SN</div>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="action-icon icon-yellow">🔍</div>
+            <div class="action-content">
+              <div class="action-title">Referral issue: REF-20260404-002 declined — NPI invalid, physician not Medicare-enrolled</div>
+              <div class="action-meta">
+                <span class="action-tag tag-revenue">~$3,300 lost episode</span>
+                <span class="action-tag tag-time">~30 min</span>
+              </div>
+              <div class="action-cta">Contact referring practice — request alternate enrolled physician →</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-yellow">👤</div>
+            <div class="action-content">
+              <div class="action-title">Clinician performance: Angela Torres (PT) — 45% fill rate, 15% no-show, review overdue</div>
+              <div class="action-meta">
+                <span class="action-tag" style="background:var(--yellow-light);color:var(--yellow);">HR / Ops</span>
+                <span class="action-tag tag-time">~30 min</span>
+              </div>
+              <div class="action-cta">Review scheduling compliance report → schedule performance conversation</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FYI -->
+        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border); padding-bottom:16px;">
+          <span class="tier-label tier-fyi" style="margin-top:12px; display:inline-flex;">🟢 FYI</span>
+          <div class="action-item">
+            <div class="action-icon icon-green">💰</div>
+            <div class="action-content">
+              <div class="action-title">Monthly revenue on track: $21,364 across 3 active episodes — all Non-LUPA</div>
+              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">Revenue healthy</span></div>
+            </div>
+          </div>
+          <div class="action-item">
+            <div class="action-icon icon-green">🔄</div>
+            <div class="action-content">
+              <div class="action-title">3 recertifications due this month — all have case conference notes drafted</div>
+              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">On track</span></div>
+              <div class="action-cta">View recert batch report →</div>
+            </div>
+          </div>
+          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
+            <div class="action-icon icon-green">🔬</div>
+            <div class="action-content">
+              <div class="action-title">OASIS accuracy: 100% this week — 0 critical errors, 1 documentation flag</div>
+              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">Billing protected</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: REVENUE + INTAKE + SCHEDULING -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+      <!-- PDGM REVENUE -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:14px;">
+          <div>
+            <div class="card-title">PDGM Revenue</div>
+            <div class="card-subtitle">Current 30-day episodes</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px; font-weight:800; color:var(--purple);">$21,364</div>
+            <div style="font-size:11px; color:var(--text-soft);">~$4.3M annualized (50 pts)</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding-top:0;">
+          <div class="rev-episode">
+            <div class="rev-dot" style="background:#059669;"></div>
+            <div class="rev-patient">
+              <div class="rev-name">Margaret Chen (PT-2001)</div>
+              <div class="rev-group">Ortho Rehab · CA2 · High Functional</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="rev-amount">$6,491</div>
+              <div class="rev-hipps">009020</div>
+            </div>
+            <span class="rev-flag" style="background:var(--green-light);color:var(--green);">✓ Optimized</span>
+          </div>
+          <div class="rev-episode">
+            <div class="rev-dot" style="background:#059669;"></div>
+            <div class="rev-patient">
+              <div class="rev-name">Robert Williams (PT-2002)</div>
+              <div class="rev-group">MMTA-Cardiac · CA2 · High Functional</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="rev-amount">$10,473</div>
+              <div class="rev-hipps">031020</div>
+            </div>
+            <span class="rev-flag" style="background:var(--green-light);color:var(--green);">✓ Optimized</span>
+          </div>
+          <div class="rev-episode">
+            <div class="rev-dot" style="background:#F59E0B;"></div>
+            <div class="rev-patient">
+              <div class="rev-name">Dorothy Alvarez (PT-2003)</div>
+              <div class="rev-group">Complex Wounds · CA0 · Medium Functional</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="rev-amount">$4,400</div>
+              <div class="rev-hipps">008100</div>
+            </div>
+            <span class="rev-flag" style="background:var(--yellow-light);color:var(--yellow);">⚠ Opportunity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTAKE PIPELINE -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:14px;">
+          <div class="card-title">Intake Pipeline</div>
+        </div>
+        <div class="card-body" style="padding-top:4px;">
+          <div class="mini-metrics" style="margin-bottom:14px;">
+            <div class="mini-metric"><div class="mini-value" style="color:var(--green);">1</div><div class="mini-label">Accepted</div></div>
+            <div class="mini-metric"><div class="mini-value" style="color:var(--yellow);">1</div><div class="mini-label">Conditional</div></div>
+          </div>
+          <div style="background:var(--red-bg); border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:12px; font-weight:600; color:var(--red);">1 declined this week</div>
+              <div style="font-size:11px; color:var(--gray);">Invalid NPI · $3,300 episode lost</div>
+            </div>
+            <div style="font-size:11px; color:var(--red); font-weight:700; cursor:pointer;">Fix issue →</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULING HEALTH -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:14px;">
+          <div class="card-title">Scheduling Compliance</div>
+        </div>
+        <div class="card-body" style="padding-top:4px;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span style="font-size:12px; color:var(--text-soft);">Agency compliance</span>
+                <span style="font-size:13px; font-weight:700; color:var(--yellow);">85.1%</span>
+              </div>
+              <div style="height:7px; background:var(--gray-light); border-radius:4px; overflow:hidden;">
+                <div style="height:7px; width:85.1%; background:var(--yellow); border-radius:4px;"></div>
+              </div>
+              <div style="font-size:10px; color:var(--text-soft); margin-top:3px;">Target: ≥95%</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1; padding:10px; background:var(--red-bg); border-radius:8px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:var(--red);">2</div>
+              <div style="font-size:10px; color:var(--red); font-weight:600; text-transform:uppercase;">LUPA Risk</div>
+            </div>
+            <div style="flex:1; padding:10px; background:var(--red-bg); border-radius:8px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:var(--red);">1</div>
+              <div style="font-size:10px; color:var(--red); font-weight:600; text-transform:uppercase;">Red Flag Clinician</div>
+            </div>
+            <div style="flex:1; padding:10px; background:var(--green-bg); border-radius:8px; text-align:center;">
+              <div style="font-size:22px; font-weight:800; color:var(--green);">3</div>
+              <div style="font-size:10px; color:var(--green); font-weight:600; text-transform:uppercase;">On Target</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  Enzo Health AI — 12 agents · Updated daily at 7:00 AM ·
+  <a href="https://github.com/danielle-eng/enzo-health-outputs" style="color:var(--blue);">github.com/danielle-eng/enzo-health-outputs</a>
+</footer>
+
+<script>
+  // Role switching
+  function switchRole(role) {
+    document.getElementById('page-don').classList.toggle('active', role === 'don');
+    document.getElementById('page-admin').classList.toggle('active', role === 'admin');
+    document.getElementById('tab-don').className = 'role-tab' + (role === 'don' ? ' active-don' : '');
+    document.getElementById('tab-admin').className = 'role-tab' + (role === 'admin' ? ' active-admin' : '');
+  }
+
+  // Period toggle
+  function setPeriod(btn, period) {
+    btn.parentElement.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Gauge chart (half-donut for Survey Readiness Score)
+  const gaugeCtx = document.getElementById('gaugeChart').getContext('2d');
+  new Chart(gaugeCtx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [78, 22],
+        backgroundColor: ['#D97706', '#F3F4F6'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270,
+      }]
+    },
+    options: {
+      responsive: false,
+      cutout: '72%',
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      animation: { animateRotate: true, duration: 1000 }
+    }
+  });
+
+  // 7-day trend sparkline
+  const trendCtx = document.getElementById('trendChart').getContext('2d');
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: ['', '', '', '', '', '', ''],
+      datasets: [{
+        data: [61, 65, 68, 71, 73, 75, 78],
+        borderColor: '#059669',
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.4,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } },
+      animation: { duration: 800 }
+    }
+  });
+</script>
+</body>
+</html>
