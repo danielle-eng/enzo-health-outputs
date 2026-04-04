@@ -1,829 +1,2174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enzo Health — Daily Operations Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --green: #059669; --green-light: #D1FAE5; --green-bg: #F0FDF4;
-      --yellow: #D97706; --yellow-light: #FEF3C7; --yellow-bg: #FFFBEB;
-      --orange: #EA580C; --orange-light: #FFEDD5; --orange-bg: #FFF7ED;
-      --red: #DC2626; --red-light: #FEE2E2; --red-bg: #FEF2F2;
-      --blue: #0EA5E9; --blue-light: #E0F7FF; --blue-bg: #F0F9FF;
-      --purple: #7C3AED; --purple-light: #EDE9FE; --purple-bg: #F5F3FF;
-      --gray: #6B7280; --gray-light: #F3F4F6; --border: #E5E7EB;
-      --text: #111827; --text-soft: #6B7280;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; background: #F9FAFB; color: var(--text); min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enzo Health - Daily Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* TOP BAR */
-    .topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .topbar-left { display: flex; align-items: center; gap: 20px; }
-    .brand { font-size: 18px; font-weight: 700; color: var(--blue); letter-spacing: -0.3px; }
-    .agency-name { font-size: 14px; color: var(--gray); font-weight: 500; padding: 4px 10px; background: var(--gray-light); border-radius: 6px; }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
-    .last-updated { font-size: 12px; color: var(--gray); }
-    .notif-badge { width: 32px; height: 32px; border-radius: 8px; background: var(--red-light); color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; cursor: pointer; }
+        :root {
+            --primary: #0EA5E9;
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --neutral: #64748B;
+            --light-gray: #F8FAFC;
+            --border-gray: #E2E8F0;
+            --text-dark: #1E293B;
+            --text-light: #475569;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
 
-    /* ROLE SWITCHER */
-    .role-switcher { background: white; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 0; }
-    .role-tab { padding: 14px 24px; font-size: 14px; font-weight: 600; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
-    .role-tab:hover { color: var(--text); }
-    .role-tab.active-don { color: var(--blue); border-bottom-color: var(--blue); }
-    .role-tab.active-admin { color: var(--purple); border-bottom-color: var(--purple); }
-    .role-tab .tab-icon { margin-right: 8px; }
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background-color: #F1F5F9;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
 
-    /* LAYOUT */
-    .page { display: none; padding: 24px 28px; max-width: 1400px; margin: 0 auto; }
-    .page.active { display: block; }
-    .two-col { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
-    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .two-thirds-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        /* ============ TOPBAR ============ */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            border-bottom: 1px solid var(--border-gray);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
 
-    /* CARDS */
-    .card { background: white; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
-    .card-header { padding: 18px 20px 0; display: flex; justify-content: space-between; align-items: flex-start; }
-    .card-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.1px; }
-    .card-subtitle { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
-    .card-body { padding: 16px 20px 20px; }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex: 1;
+        }
 
-    /* HERO SCORE */
-    .hero-card { background: white; border-radius: 12px; box-shadow: var(--shadow-md); padding: 24px; text-align: center; }
-    .hero-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-soft); margin-bottom: 8px; }
-    .score-gauge-wrap { position: relative; width: 180px; height: 100px; margin: 0 auto 16px; overflow: hidden; }
-    .score-gauge-wrap canvas { position: absolute; top: 0; left: 0; }
-    .score-number-overlay { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; }
-    .score-big { font-size: 42px; font-weight: 800; line-height: 1; }
-    .score-max { font-size: 16px; font-weight: 400; color: var(--text-soft); }
-    .score-band { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 12px; }
-    .band-green { background: var(--green-light); color: var(--green); }
-    .band-yellow { background: var(--yellow-light); color: var(--yellow); }
-    .band-orange { background: var(--orange-light); color: var(--orange); }
-    .band-red { background: var(--red-light); color: var(--red); }
-    .score-message { font-size: 12px; color: var(--text-soft); margin-top: 8px; line-height: 1.4; }
-    .domain-bars { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-    .domain-row { display: flex; align-items: center; gap: 10px; }
-    .domain-label { font-size: 11px; color: var(--text-soft); width: 130px; flex-shrink: 0; }
-    .domain-track { flex: 1; height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
-    .domain-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-    .domain-pts { font-size: 11px; font-weight: 600; color: var(--text); width: 42px; text-align: right; flex-shrink: 0; }
-    .trend-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-    .trend-label { font-size: 11px; color: var(--text-soft); }
-    .trend-up { color: var(--green); font-weight: 700; font-size: 12px; }
-    .trend-down { color: var(--red); font-weight: 700; font-size: 12px; }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
 
-    /* ACTION LIST */
-    .action-list-card { background: white; border-radius: 12px; box-shadow: var(--shadow); }
-    .action-list-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .action-list-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .action-date { font-size: 12px; color: var(--text-soft); }
-    .action-tier { padding: 10px 20px 6px; }
-    .tier-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 8px; }
-    .tier-critical { background: var(--red-light); color: var(--red); }
-    .tier-important { background: var(--yellow-light); color: var(--yellow); }
-    .tier-fyi { background: var(--green-light); color: var(--green); }
-    .action-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--gray-light); align-items: flex-start; }
-    .action-item:last-child { border-bottom: none; }
-    .action-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-    .icon-red { background: var(--red-light); }
-    .icon-yellow { background: var(--yellow-light); }
-    .icon-green { background: var(--green-light); }
-    .icon-blue { background: var(--blue-light); }
-    .action-content { flex: 1; min-width: 0; }
-    .action-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 3px; }
-    .action-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .action-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
-    .tag-deadline { background: var(--red-light); color: var(--red); }
-    .tag-time { background: var(--gray-light); color: var(--gray); }
-    .tag-patient { background: var(--blue-light); color: #0369A1; }
-    .tag-revenue { background: var(--purple-light); color: var(--purple); }
-    .action-cta { font-size: 11px; color: var(--blue); font-weight: 600; cursor: pointer; white-space: nowrap; margin-top: 2px; }
-    .action-tier-section { padding: 0 20px 12px; }
+        .agency-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
 
-    /* STATS ROW */
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: white; border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); border-left: 3px solid; }
-    .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); margin-bottom: 6px; }
-    .stat-value { font-size: 26px; font-weight: 800; line-height: 1; }
-    .stat-sub { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
-    .stat-change { font-size: 11px; font-weight: 600; margin-top: 4px; }
-    .change-up-bad { color: var(--red); }
-    .change-down-good { color: var(--green); }
-    .change-up-good { color: var(--green); }
+        .agency-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
 
-    /* TIME PERIOD TOGGLE */
-    .period-toggle { display: flex; gap: 2px; background: var(--gray-light); border-radius: 8px; padding: 3px; }
-    .period-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
-    .period-btn.active { background: white; color: var(--text); box-shadow: var(--shadow); }
+        .current-date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
 
-    /* QUALITY INDICATORS */
-    .qi-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--gray-light); gap: 12px; }
-    .qi-row:last-child { border-bottom: none; }
-    .qi-name { font-size: 12px; color: var(--text); flex: 1; min-width: 0; }
-    .qi-bar-wrap { width: 120px; }
-    .qi-track { height: 5px; background: var(--gray-light); border-radius: 3px; }
-    .qi-fill { height: 5px; border-radius: 3px; }
-    .qi-values { display: flex; gap: 12px; width: 140px; justify-content: flex-end; }
-    .qi-agency { font-size: 12px; font-weight: 700; width: 45px; text-align: right; }
-    .qi-bench { font-size: 11px; color: var(--text-soft); width: 55px; text-align: right; }
-    .qi-status { width: 20px; text-align: center; font-size: 13px; }
+        .topbar-center {
+            display: flex;
+            gap: 1rem;
+        }
 
-    /* PIP TRACKER */
-    .pip-card { padding: 14px 16px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
-    .pip-card:last-child { margin-bottom: 0; }
-    .pip-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .pip-name { font-size: 13px; font-weight: 600; color: var(--text); }
-    .pip-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
-    .pip-progress-row { display: flex; align-items: center; gap: 10px; }
-    .pip-track { flex: 1; height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; }
-    .pip-fill-blue { height: 6px; background: var(--blue); border-radius: 3px; }
-    .pip-fill-green { height: 6px; background: var(--green); border-radius: 3px; }
-    .pip-pct { font-size: 11px; font-weight: 700; color: var(--text); width: 32px; text-align: right; }
-    .pip-meta { font-size: 11px; color: var(--text-soft); margin-top: 5px; }
+        .role-tab {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            color: var(--text-light);
+        }
 
-    /* REVENUE CARDS */
-    .rev-episode { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; display: flex; align-items: center; gap: 14px; }
-    .rev-episode:last-child { margin-bottom: 0; }
-    .rev-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .rev-patient { flex: 1; }
-    .rev-name { font-size: 12px; font-weight: 600; color: var(--text); }
-    .rev-group { font-size: 11px; color: var(--text-soft); }
-    .rev-amount { font-size: 16px; font-weight: 800; color: var(--text); text-align: right; }
-    .rev-hipps { font-size: 10px; color: var(--text-soft); text-align: right; }
-    .rev-flag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+        .role-tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
 
-    /* MINI METRIC */
-    .mini-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .mini-metric { background: var(--gray-light); border-radius: 8px; padding: 12px; text-align: center; }
-    .mini-value { font-size: 22px; font-weight: 800; }
-    .mini-label { font-size: 10px; color: var(--text-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .role-tab:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
 
-    /* NOTIFICATION BANNER */
-    .notif-banner { background: var(--red-bg); border: 1px solid var(--red-light); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
-    .notif-icon { font-size: 20px; flex-shrink: 0; }
-    .notif-text { flex: 1; font-size: 13px; color: var(--red); font-weight: 600; }
-    .notif-dismiss { font-size: 12px; color: var(--red); cursor: pointer; font-weight: 600; white-space: nowrap; opacity: 0.7; }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
 
-    /* SECTION HEADERS */
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .section-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .section-link { font-size: 12px; color: var(--blue); font-weight: 600; cursor: pointer; }
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
 
-    /* FOOTER */
-    footer { text-align: center; padding: 32px 28px 40px; font-size: 12px; color: var(--text-soft); }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
 
-    /* RESPONSIVE */
-    @media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
-    @media (max-width: 800px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .three-col { grid-template-columns: 1fr; } }
-    @media (max-width: 500px) { .page { padding: 16px; } .topbar { padding: 0 16px; } .role-switcher { padding: 0 16px; } .role-tab { padding: 12px 16px; font-size: 13px; } }
-  </style>
+        /* ============ MAIN CONTENT ============ */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .row {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .row-two-col {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .row-custom-40-60 {
+            grid-template-columns: 40% 60%;
+        }
+
+        .row-custom-45-55 {
+            grid-template-columns: 45% 55%;
+        }
+
+        .row-custom-50-50 {
+            grid-template-columns: 50% 50%;
+        }
+
+        /* ============ CARDS ============ */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-gray);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        /* ============ SURVEY READINESS ============ */
+        .survey-readiness-content {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gauge-canvas {
+            width: 200px !important;
+            height: 110px !important;
+            display: block;
+        }
+
+        .gauge-score {
+            text-align: center;
+        }
+
+        .gauge-score-large {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .gauge-score-small {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.amber {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .status-badge.green {
+            background-color: #DCFCE7;
+            color: #15803D;
+        }
+
+        .status-badge.red {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .domains-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .domain-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .domain-label {
+            flex: 0 0 180px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .domain-bar-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: var(--border-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.green {
+            background-color: var(--success);
+        }
+
+        .progress-fill.amber {
+            background-color: var(--warning);
+        }
+
+        .progress-fill.red {
+            background-color: var(--danger);
+        }
+
+        .domain-score {
+            flex: 0 0 50px;
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .sparkline-container {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .sparkline-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .sparkline-canvas {
+            max-height: 60px;
+        }
+
+        /* ============ PRE-ARRIVAL RISK ============ */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .risk-metric {
+            padding: 1rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            background-color: var(--light-gray);
+        }
+
+        .risk-metric-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-metric-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .overall-risk {
+            grid-column: 1 / -1;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-radius: 6px;
+            border: 1px solid #FCD34D;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .overall-risk-label {
+            font-size: 0.9rem;
+            color: #92400E;
+            font-weight: 600;
+        }
+
+        .overall-risk-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400E;
+        }
+
+        /* ============ ACTION LIST ============ */
+        .action-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-gray);
+        }
+
+        .action-tab {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .action-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .action-tab:hover {
+            color: var(--text-dark);
+        }
+
+        .action-content {
+            display: none;
+        }
+
+        .action-content.active {
+            display: block;
+        }
+
+        .action-item {
+            padding: 1rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            background-color: var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .action-item-left {
+            flex: 1;
+        }
+
+        .action-item-label {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .action-item-description {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .action-item-cta {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .action-item-cta:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* ============ POC CHECKER ============ */
+        .poc-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+        }
+
+        .poc-table thead {
+            background-color: var(--light-gray);
+        }
+
+        .poc-table th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-gray);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .poc-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .poc-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .poc-table tbody tr:hover {
+            background-color: #F0F9FF;
+        }
+
+        .poc-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .poc-patient-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .poc-compliance {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .poc-components {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .poc-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .poc-badge.high {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .poc-badge.medium {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .poc-badge.low {
+            background-color: #DCFCE7;
+            color: #15803D;
+        }
+
+        .poc-action {
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .poc-action:hover {
+            color: #0284C7;
+        }
+
+        .components-reference {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .reference-toggle {
+            padding: 0.75rem;
+            background-color: var(--light-gray);
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .reference-toggle:hover {
+            background-color: #E2E8F0;
+        }
+
+        .reference-content {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+        }
+
+        .reference-content.open {
+            display: block;
+        }
+
+        .reference-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .reference-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .reference-check {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .reference-note {
+            grid-column: 1 / -1;
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background-color: white;
+            border-left: 3px solid var(--warning);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* ============ DEFICIENCY TRACKER ============ */
+        .deficiency-cards {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .deficiency-card {
+            padding: 1.25rem;
+            border: 2px solid;
+            border-radius: 6px;
+            background-color: white;
+        }
+
+        .deficiency-card.red-border {
+            border-color: #FCA5A5;
+            background-color: #FEF2F2;
+        }
+
+        .deficiency-card.amber-border {
+            border-color: #FBBF24;
+            background-color: #FFFBEB;
+        }
+
+        .deficiency-card.green-border {
+            border-color: #86EFAC;
+            background-color: #F0FDF4;
+        }
+
+        .deficiency-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .deficiency-code {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            min-width: 80px;
+        }
+
+        .deficiency-title {
+            flex: 1;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .deficiency-level {
+            padding: 0.3rem 0.6rem;
+            background-color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .deficiency-description {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .deficiency-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .deficiency-meta-item {
+            padding: 0.5rem;
+            background-color: white;
+            border-radius: 4px;
+        }
+
+        .deficiency-meta-label {
+            color: var(--text-light);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .deficiency-meta-value {
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .deficiency-status {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-right: 0.5rem;
+        }
+
+        .deficiency-status.in-progress {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .deficiency-status.open {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .deficiency-status.corrected {
+            background-color: #DCFCE7;
+            color: #15803D;
+        }
+
+        .deficiency-patients {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .deficiency-patients-label {
+            color: var(--text-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .deficiency-progress {
+            margin-bottom: 1rem;
+        }
+
+        .deficiency-progress-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .deficiency-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .deficiency-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .deficiency-btn.primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .deficiency-btn.primary:hover {
+            opacity: 0.9;
+        }
+
+        .deficiency-btn.secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .deficiency-btn.secondary:hover {
+            background-color: #F0F9FF;
+        }
+
+        .deficiency-btn.success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* ============ LEVEL 1 STANDARDS ============ */
+        .standards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .standard-row {
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            border: 1px solid var(--border-gray);
+            font-size: 0.9rem;
+        }
+
+        .standard-status {
+            font-size: 1.5rem;
+            min-width: 24px;
+        }
+
+        .standard-text {
+            flex: 1;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .standards-note {
+            grid-column: 1 / -1;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #FEF3C7;
+            border-left: 3px solid var(--warning);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #92400E;
+        }
+
+        /* ============ ADMIN VIEW - KPI CARDS ============ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-gray);
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-trend {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .kpi-trend.up {
+            color: var(--success);
+        }
+
+        .kpi-trend.down {
+            color: var(--danger);
+        }
+
+        .kpi-trend.neutral {
+            color: var(--warning);
+        }
+
+        /* ============ REVENUE CHART ============ */
+        .revenue-chart-container {
+            position: relative;
+            height: 250px;
+            margin-top: 1rem;
+        }
+
+        /* ============ FUNNEL ============ */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .funnel-stage {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .funnel-bar {
+            height: 50px;
+            background: linear-gradient(90deg, var(--primary) 0%, #06B6D4 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .funnel-bar:nth-child(1) {
+            width: 100%;
+        }
+
+        .funnel-bar:nth-child(2) {
+            width: 66%;
+        }
+
+        .funnel-bar:nth-child(3) {
+            width: 44%;
+        }
+
+        .funnel-bar:nth-child(4) {
+            width: 33%;
+        }
+
+        .funnel-label {
+            flex: 0 0 100px;
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .funnel-note {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: var(--light-gray);
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* ============ SCHEDULING COMPLIANCE ============ */
+        .compliance-item {
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            border: 1px solid var(--border-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .compliance-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .compliance-item-label {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .compliance-item-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* ============ PIP SECTION ============ */
+        .pip-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .pip-item {
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .pip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .pip-title {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .pip-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .pip-due {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* ============ QUALITY INDICATORS ============ */
+        .qi-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .qi-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-gray);
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            color: var(--text-light);
+        }
+
+        .qi-button.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .qi-button:hover {
+            border-color: var(--primary);
+        }
+
+        .qi-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .qi-metric {
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .qi-metric-title {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .qi-metric-chart {
+            position: relative;
+            height: 80px;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1400px) {
+            .row-custom-40-60,
+            .row-custom-45-55,
+            .row-custom-50-50 {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .risk-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .standards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .topbar-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .topbar-center,
+            .topbar-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .row-two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .qi-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .poc-table {
+                font-size: 0.8rem;
+            }
+
+            .deficiency-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="topbar-left">
-    <div class="brand">enzo health</div>
-    <div class="agency-name">Sunrise Home Health</div>
-  </div>
-  <div class="topbar-right">
-    <div class="last-updated">Updated today at 7:02 AM</div>
-    <div class="notif-badge" title="3 critical alerts">3</div>
-  </div>
-</div>
-
-<!-- ROLE SWITCHER -->
-<div class="role-switcher">
-  <div class="role-tab active-don" id="tab-don" onclick="switchRole('don')"><span class="tab-icon">🩺</span>DON / Clinical</div>
-  <div class="role-tab" id="tab-admin" onclick="switchRole('admin')"><span class="tab-icon">📊</span>Administrator</div>
-</div>
-
-<!-- ========== DON VIEW ========== -->
-<div class="page active" id="page-don">
-
-  <!-- ALERT BANNER -->
-  <div class="notif-banner" style="margin-top:20px;">
-    <div class="notif-icon">🚨</div>
-    <div class="notif-text">3 items need your attention today — 2 patients at LUPA risk, 1 high-risk note flagged for correction</div>
-    <div class="notif-dismiss" onclick="this.parentElement.style.display='none'">Dismiss ×</div>
-  </div>
-
-  <!-- MAIN TWO-COL LAYOUT -->
-  <div class="two-col">
-
-    <!-- LEFT: SURVEY READINESS SCORE -->
-    <div>
-      <div class="hero-card" style="margin-bottom:20px;">
-        <div class="hero-label">Survey Readiness Score</div>
-        <div style="position:relative; width:200px; height:110px; margin:0 auto 8px;">
-          <canvas id="gaugeChart" width="200" height="110"></canvas>
-          <div style="position:absolute; bottom:4px; left:0; right:0; text-align:center;">
-            <span class="score-big" style="color:#D97706;">78</span><span class="score-max">/100</span>
-          </div>
-        </div>
-        <div style="text-align:center;">
-          <span class="score-band band-yellow">⚠ Moderate Risk</span>
-          <div class="score-message">Address flagged items within 2 weeks to maintain compliance standing.</div>
-        </div>
-
-        <div class="domain-bars">
-          <div class="domain-row">
-            <div class="domain-label">Documentation Quality</div>
-            <div class="domain-track"><div class="domain-fill" style="width:80%; background:#0EA5E9;"></div></div>
-            <div class="domain-pts">24/30</div>
-          </div>
-          <div class="domain-row">
-            <div class="domain-label">Visit Compliance</div>
-            <div class="domain-track"><div class="domain-fill" style="width:85%; background:#7C3AED;"></div></div>
-            <div class="domain-pts">17/20</div>
-          </div>
-          <div class="domain-row">
-            <div class="domain-label">OASIS Accuracy</div>
-            <div class="domain-track"><div class="domain-fill" style="width:95%; background:#059669;"></div></div>
-            <div class="domain-pts">19/20</div>
-          </div>
-          <div class="domain-row">
-            <div class="domain-label">Care Planning</div>
-            <div class="domain-track"><div class="domain-fill" style="width:73%; background:#D97706;"></div></div>
-            <div class="domain-pts">11/15</div>
-          </div>
-          <div class="domain-row">
-            <div class="domain-label">Open Deficiencies</div>
-            <div class="domain-track"><div class="domain-fill" style="width:47%; background:#DC2626;"></div></div>
-            <div class="domain-pts">7/15</div>
-          </div>
-        </div>
-
-        <div class="trend-row">
-          <div class="trend-label">7-day trend:</div>
-          <canvas id="trendChart" width="130" height="36"></canvas>
-          <div class="trend-up">↑ +4 pts</div>
-        </div>
-      </div>
-
-      <!-- ACTIVE PIPs -->
-      <div class="card">
-        <div class="card-header" style="padding-bottom:12px;">
-          <div>
-            <div class="card-title">Active PIPs</div>
-            <div class="card-subtitle">3 Performance Improvement Projects in progress</div>
-          </div>
-          <div class="section-link">+ New PIP</div>
-        </div>
-        <div class="card-body" style="padding-top:4px;">
-          <div class="pip-card">
-            <div class="pip-top">
-              <div class="pip-name">Hospitalization Reduction</div>
-              <span class="pip-status" style="background:var(--yellow-light); color:var(--yellow);">ACTIVE</span>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="logo">enzo health</div>
+            <div class="agency-header">
+                <div class="agency-name">Sunrise Home Health</div>
+                <div class="current-date" id="currentDate">Saturday, April 4, 2026</div>
             </div>
-            <div class="pip-progress-row">
-              <div class="pip-track"><div class="pip-fill-blue" style="width:28%;"></div></div>
-              <div class="pip-pct">28%</div>
-            </div>
-            <div class="pip-meta">Current: 24.0% → Target: 16.0% by Q3 2026 · 2/7 interventions active</div>
-          </div>
-          <div class="pip-card">
-            <div class="pip-top">
-              <div class="pip-name">ED Utilization Reduction</div>
-              <span class="pip-status" style="background:var(--blue-light); color:#0369A1;">INITIATION</span>
-            </div>
-            <div class="pip-progress-row">
-              <div class="pip-track"><div class="pip-fill-blue" style="width:8%;"></div></div>
-              <div class="pip-pct">8%</div>
-            </div>
-            <div class="pip-meta">Current: 10.0% → Target: 8.2% by Q3 2026 · Planning phase</div>
-          </div>
-          <div class="pip-card">
-            <div class="pip-top">
-              <div class="pip-name">Timely Assessment Compliance</div>
-              <span class="pip-status" style="background:var(--green-light); color:var(--green);">ON TRACK</span>
-            </div>
-            <div class="pip-progress-row">
-              <div class="pip-track"><div class="pip-fill-green" style="width:55%;"></div></div>
-              <div class="pip-pct">55%</div>
-            </div>
-            <div class="pip-meta">Current: 94.0% → Target: 96.0% by Q2 2026 · Ahead of schedule</div>
-          </div>
         </div>
-      </div>
+        <div class="topbar-center">
+            <button class="role-tab active" onclick="switchRole('don')">DON / Clinical</button>
+            <button class="role-tab" onclick="switchRole('admin')">Administrator</button>
+        </div>
+        <div class="topbar-right">
+            <div class="notification-bell">
+                🔔
+                <span class="notification-badge">3</span>
+            </div>
+        </div>
     </div>
 
-    <!-- RIGHT: TODAY'S ACTIONS + QUALITY -->
-    <div>
+    <!-- MAIN CONTAINER -->
+    <div class="container">
 
-      <!-- TODAY'S ACTION LIST — DON -->
-      <div class="action-list-card" style="margin-bottom:20px;">
-        <div class="action-list-header">
-          <div class="action-list-title">Today's Actions</div>
-          <div class="action-date">Saturday, April 4, 2026</div>
+        <!-- DON/CLINICAL PAGE -->
+        <div id="page-don" class="page active">
+
+            <!-- ROW 1: Survey Readiness + Pre-Arrival Risk -->
+            <div class="row row-custom-40-60">
+                <!-- SURVEY READINESS CARD -->
+                <div class="card">
+                    <div class="card-title">Survey Readiness Score</div>
+                    <div class="survey-readiness-content">
+                        <div class="gauge-container">
+                            <canvas id="surveyGauge" class="gauge-canvas" width="200" height="110"></canvas>
+                            <div class="gauge-score">
+                                <div class="gauge-score-large">78</div>
+                                <div class="gauge-score-small">/ 100</div>
+                                <div class="status-badge amber">Moderate Risk</div>
+                            </div>
+                        </div>
+
+                        <div class="domains-grid">
+                            <div class="domain-row">
+                                <div class="domain-label">Documentation Quality</div>
+                                <div class="domain-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill amber" style="width: 80%;"></div>
+                                    </div>
+                                    <div class="domain-score">24/30</div>
+                                </div>
+                            </div>
+
+                            <div class="domain-row">
+                                <div class="domain-label">Visit Compliance</div>
+                                <div class="domain-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill green" style="width: 90%;"></div>
+                                    </div>
+                                    <div class="domain-score">18/20</div>
+                                </div>
+                            </div>
+
+                            <div class="domain-row">
+                                <div class="domain-label">OASIS Accuracy</div>
+                                <div class="domain-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill amber" style="width: 70%;"></div>
+                                    </div>
+                                    <div class="domain-score">14/20</div>
+                                </div>
+                            </div>
+
+                            <div class="domain-row">
+                                <div class="domain-label">Care Planning</div>
+                                <div class="domain-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill amber" style="width: 67%;"></div>
+                                    </div>
+                                    <div class="domain-score">10/15</div>
+                                </div>
+                            </div>
+
+                            <div class="domain-row">
+                                <div class="domain-label">Open Deficiencies</div>
+                                <div class="domain-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill green" style="width: 80%;"></div>
+                                    </div>
+                                    <div class="domain-score">12/15</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sparkline-container">
+                            <div class="sparkline-label">7-Day Trend</div>
+                            <canvas id="trendSparkline" class="sparkline-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRE-ARRIVAL RISK CARD -->
+                <div class="card">
+                    <div class="card-title">Pre-Arrival Risk Profile</div>
+                    <div class="card-subtitle">What a surveyor sees before walking in</div>
+
+                    <div class="risk-grid">
+                        <div class="risk-metric">
+                            <div class="risk-metric-label">OASIS Late Submissions (error -3330)</div>
+                            <div class="risk-metric-value">3 of 47</div>
+                            <div class="risk-metric-desc">3 assessments submitted >30 days late this year. Surveyors flag agencies with patterns of -3330 errors.</div>
+                        </div>
+
+                        <div class="risk-metric">
+                            <div class="risk-metric-label">Care Compare Star Rating</div>
+                            <div class="risk-metric-value">3.2 / 5</div>
+                            <div class="risk-metric-desc">Below state average of 3.8. Surveyors review Care Compare before arrival.</div>
+                        </div>
+
+                        <div class="risk-metric">
+                            <div class="risk-metric-label">Prior Survey Deficiencies</div>
+                            <div class="risk-metric-value">2 open</div>
+                            <div class="risk-metric-desc">G0574 (Care Planning) IN PROGRESS. G514 (OASIS Assessment) OPEN.</div>
+                        </div>
+
+                        <div class="risk-metric">
+                            <div class="risk-metric-label">Potentially Avoidable Events</div>
+                            <div class="risk-metric-value">4 events</div>
+                            <div class="risk-metric-desc">2 hospitalizations, 1 ED visit, 1 fall with injury in last 12 months.</div>
+                        </div>
+
+                        <div class="overall-risk">
+                            <span class="overall-risk-label">Overall Pre-Arrival Risk Score:</span>
+                            <span class="overall-risk-score">MODERATE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: Action List + POC Checker -->
+            <div class="row row-custom-45-55">
+                <!-- TODAY'S ACTION LIST -->
+                <div class="card">
+                    <div class="card-title">Today's Action List</div>
+
+                    <div class="action-tabs">
+                        <button class="action-tab active" onclick="switchActionTab('critical')">Critical (2)</button>
+                        <button class="action-tab" onclick="switchActionTab('important')">Important (3)</button>
+                        <button class="action-tab" onclick="switchActionTab('fyi')">FYI (2)</button>
+                    </div>
+
+                    <!-- CRITICAL -->
+                    <div id="action-critical" class="action-content active">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🔴 G0574 Plan of Correction DUE TODAY</div>
+                                <div class="action-item-description">POC for G0574 (Care Planning Goals) is due today. 3 patients cited. Draft required.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Draft PoC</button>
+                        </div>
+
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🔴 Maria Santos — POC Missing Components</div>
+                                <div class="action-item-description">Plan of care missing: allergy list, ED risk documentation, measurable diabetes goals. HIGH G0574 risk.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Review Chart</button>
+                        </div>
+                    </div>
+
+                    <!-- IMPORTANT -->
+                    <div id="action-important" class="action-content">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟡 OASIS Late Submission Risk</div>
+                                <div class="action-item-description">PT-007 (Chen, Robert) OASIS due in 2 days. Currently 28 days post-SOC. Submit by Monday to avoid -3330 error.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Flag for Submission</button>
+                        </div>
+
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟡 Dorothy Alvarez — POC Goal Review</div>
+                                <div class="action-item-description">Wound care goals not measurable. 'Wound will heal this episode' — no timeline or parameters.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Update Goals</button>
+                        </div>
+
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟡 James Patel — Supervisory Visit Overdue</div>
+                                <div class="action-item-description">HHA supervisory visit due (14-day rule). Last supervisory: 3/18/2026. Now 17 days.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Schedule Visit</button>
+                        </div>
+                    </div>
+
+                    <!-- FYI -->
+                    <div id="action-fyi" class="action-content">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟢 G682 (Infection Control) — Marked CORRECTED</div>
+                                <div class="action-item-description">Staff education completed 4/2/2026. Audit scheduled 5/1/2026.</div>
+                            </div>
+                        </div>
+
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟢 Monthly QAPI Meeting</div>
+                                <div class="action-item-description">Scheduled for 4/7/2026. Agenda includes: POC goal training, OASIS timeliness review.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- POC 16-COMPONENT CHECKER -->
+                <div class="card">
+                    <div class="card-title">Plan of Care Compliance</div>
+                    <div class="card-subtitle">§484.60 • Most cited HHA deficiency: G0574</div>
+
+                    <table class="poc-table">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Compliance</th>
+                                <th>Missing Components</th>
+                                <th>G0574 Risk</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="poc-patient-name">Maria Santos</td>
+                                <td>
+                                    <div class="poc-compliance">75%</div>
+                                    <div class="progress-bar" style="height: 6px; margin-top: 0.25rem;">
+                                        <div class="progress-fill red" style="width: 75%;"></div>
+                                    </div>
+                                </td>
+                                <td class="poc-components">Allergies, ED Risk, Measurable Goals</td>
+                                <td><span class="poc-badge high">HIGH</span></td>
+                                <td class="poc-action" onclick="showPoCAlert()">Fix Now</td>
+                            </tr>
+                            <tr>
+                                <td class="poc-patient-name">Dorothy Alvarez</td>
+                                <td>
+                                    <div class="poc-compliance">81%</div>
+                                    <div class="progress-bar" style="height: 6px; margin-top: 0.25rem;">
+                                        <div class="progress-fill amber" style="width: 81%;"></div>
+                                    </div>
+                                </td>
+                                <td class="poc-components">ED Risk, Measurable Goals</td>
+                                <td><span class="poc-badge high">HIGH</span></td>
+                                <td class="poc-action" onclick="showPoCAlert()">Fix Now</td>
+                            </tr>
+                            <tr>
+                                <td class="poc-patient-name">Robert Chen</td>
+                                <td>
+                                    <div class="poc-compliance">94%</div>
+                                    <div class="progress-bar" style="height: 6px; margin-top: 0.25rem;">
+                                        <div class="progress-fill green" style="width: 94%;"></div>
+                                    </div>
+                                </td>
+                                <td class="poc-components">Discharge Plan</td>
+                                <td><span class="poc-badge medium">MEDIUM</span></td>
+                                <td class="poc-action" onclick="showPoCAlert()">Review</td>
+                            </tr>
+                            <tr>
+                                <td class="poc-patient-name">James Wilson</td>
+                                <td>
+                                    <div class="poc-compliance">100%</div>
+                                    <div class="progress-bar" style="height: 6px; margin-top: 0.25rem;">
+                                        <div class="progress-fill green" style="width: 100%;"></div>
+                                    </div>
+                                </td>
+                                <td class="poc-components">— All 16 Complete —</td>
+                                <td><span class="poc-badge low">LOW</span></td>
+                                <td class="poc-action">✓ OK</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="components-reference">
+                        <button class="reference-toggle" onclick="toggleReference()">📋 16 Components Reference — Click to Expand</button>
+                        <div id="referenceContent" class="reference-content">
+                            <div class="reference-list">
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>1. All pertinent diagnoses</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>2. Mental/psychosocial/cognitive status</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>3. Types of services & supplies</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>4. Rehabilitation potential</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>5. Functional status</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>6. Expected prognosis</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>7. Goals for each discipline</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>8. Frequency/duration of care</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>9. Medications & side effects</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>10. Safety precautions</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>11. Infection control measures</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>12. Emergency preparedness (ED risk)</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>13. Patient/family education</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>14. Measurable goals & timelines</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>15. Discharge planning</span>
+                                </div>
+                                <div class="reference-item">
+                                    <span class="reference-check">✓</span>
+                                    <span>16. Patient rights & responsibilities</span>
+                                </div>
+                            </div>
+                            <div class="reference-note">
+                                <strong>Note:</strong> G0574 most commonly triggered by: non-measurable goals (#14), missing ED risk documentation (#12), missing medications (#9)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: G-Tag Tracker + Level 1 Standards -->
+            <div class="row row-custom-50-50">
+                <!-- DEFICIENCY TRACKER -->
+                <div class="card">
+                    <div class="card-title">Open Deficiencies</div>
+                    <div class="card-subtitle">CMS Form 2567 • Track to resolution • PoC due within 10 days of survey</div>
+
+                    <div class="deficiency-cards">
+                        <!-- RED CARD -->
+                        <div class="deficiency-card red-border">
+                            <div class="deficiency-header">
+                                <div class="deficiency-code">G0574</div>
+                                <div class="deficiency-title">§484.60 Care Planning</div>
+                                <div class="deficiency-level">Standard Level</div>
+                            </div>
+                            <div class="deficiency-description">Failed to include specific and measurable goals for 3 of 10 records reviewed.</div>
+                            <div class="deficiency-meta">
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Status</div>
+                                    <div class="deficiency-meta-value"><span class="deficiency-status in-progress">IN PROGRESS</span></div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Survey Date</div>
+                                    <div class="deficiency-meta-value">3/15/2026</div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">PoC Due</div>
+                                    <div class="deficiency-meta-value">3/25/2026 — OVERDUE</div>
+                                </div>
+                            </div>
+                            <div class="deficiency-patients">
+                                <div class="deficiency-patients-label">Affected Patients</div>
+                                PT-001 (Santos), PT-003 (Alvarez), PT-004 (Chen)
+                            </div>
+                            <div class="deficiency-progress">
+                                <div class="deficiency-progress-label">Progress: 60% complete</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill amber" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                            <div class="deficiency-actions">
+                                <button class="deficiency-btn primary" onclick="showPoCAlert()">Draft PoC</button>
+                                <button class="deficiency-btn secondary">Mark Resolved</button>
+                            </div>
+                        </div>
+
+                        <!-- AMBER CARD -->
+                        <div class="deficiency-card amber-border">
+                            <div class="deficiency-header">
+                                <div class="deficiency-code">G514</div>
+                                <div class="deficiency-title">§484.55 Comprehensive Assessment</div>
+                                <div class="deficiency-level">Standard Level</div>
+                            </div>
+                            <div class="deficiency-description">Failed to complete OASIS within required timeframes for 2 of 10 records.</div>
+                            <div class="deficiency-meta">
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Status</div>
+                                    <div class="deficiency-meta-value"><span class="deficiency-status open">OPEN</span></div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Survey Date</div>
+                                    <div class="deficiency-meta-value">3/15/2026</div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">PoC Due</div>
+                                    <div class="deficiency-meta-value">3/25/2026 — 10 DAYS OVERDUE</div>
+                                </div>
+                            </div>
+                            <div class="deficiency-patients">
+                                <div class="deficiency-patients-label">Affected Patients</div>
+                                PT-002 (Wilson), PT-005 (Martinez)
+                            </div>
+                            <div class="deficiency-progress">
+                                <div class="deficiency-progress-label">Progress: 0% complete</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill red" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="deficiency-actions">
+                                <button class="deficiency-btn primary" onclick="showPoCAlert()">Draft PoC</button>
+                                <button class="deficiency-btn secondary">Start Work</button>
+                            </div>
+                        </div>
+
+                        <!-- GREEN CARD -->
+                        <div class="deficiency-card green-border">
+                            <div class="deficiency-header">
+                                <div class="deficiency-code">G682</div>
+                                <div class="deficiency-title">§484.70 Infection Prevention</div>
+                                <div class="deficiency-level">Condition-Level</div>
+                            </div>
+                            <div class="deficiency-description">Agency failed to maintain infection prevention and control program.</div>
+                            <div class="deficiency-meta">
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Status</div>
+                                    <div class="deficiency-meta-value"><span class="deficiency-status corrected">CORRECTED</span></div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Survey Date</div>
+                                    <div class="deficiency-meta-value">3/15/2026</div>
+                                </div>
+                                <div class="deficiency-meta-item">
+                                    <div class="deficiency-meta-label">Corrected</div>
+                                    <div class="deficiency-meta-value">4/2/2026</div>
+                                </div>
+                            </div>
+                            <div class="deficiency-progress">
+                                <div class="deficiency-progress-label">Progress: 100% complete</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill green" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                            <div class="deficiency-actions">
+                                <button class="deficiency-btn success">✓ Verified</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEVEL 1 STANDARDS -->
+                <div class="card">
+                    <div class="card-title">Level 1 Standards</div>
+                    <div class="card-subtitle">Survey Escalation Watch • Any deficiency triggers Partial Extended Survey</div>
+
+                    <div class="standards-grid">
+                        <div class="standard-row">
+                            <div class="standard-status">🟢</div>
+                            <div class="standard-text">§484.50 Patient Rights (G412–G490)</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🔴</div>
+                            <div class="standard-text">§484.55 Comprehensive Assessment (G514) — OPEN</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🔴</div>
+                            <div class="standard-text">§484.60 Care Planning (G0574) — IN PROGRESS</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🟢</div>
+                            <div class="standard-text">§484.70 Infection Control (G682, G686) — Corrected</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🟢</div>
+                            <div class="standard-text">§484.75 Skilled Professional Services (G704–G730)</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🟡</div>
+                            <div class="standard-text">§484.80 HHA Aide Services (G768–G818) — Visit Gap</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🟢</div>
+                            <div class="standard-text">§484.102 Emergency Preparedness (E-0004+)</div>
+                        </div>
+                        <div class="standard-row">
+                            <div class="standard-status">🟢</div>
+                            <div class="standard-text">§484.105 Organization & Admin (G982, G984)</div>
+                        </div>
+
+                        <div class="standards-note">
+                            2 active Level 1 deficiencies = Extended Survey risk if condition-level noncompliance is found
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 4: PIPs + Quality Indicators -->
+            <div class="row row-two-col">
+                <!-- ACTIVE PIPs -->
+                <div class="card">
+                    <div class="card-title">Active Performance Improvement Projects</div>
+
+                    <div class="pip-grid">
+                        <div class="pip-item">
+                            <div class="pip-header">
+                                <div class="pip-title">POC Goal Quality Initiative</div>
+                                <div class="pip-meta">
+                                    <span>Owner: Sarah M., DON</span>
+                                    <span class="pip-due">Due: 5/1/2026</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill green" style="width: 65%;"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">65% complete</div>
+                        </div>
+
+                        <div class="pip-item">
+                            <div class="pip-header">
+                                <div class="pip-title">OASIS Timeliness Improvement</div>
+                                <div class="pip-meta">
+                                    <span>Owner: Admin Team</span>
+                                    <span class="pip-due">Due: 5/15/2026</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill amber" style="width: 45%;"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">45% complete</div>
+                        </div>
+
+                        <div class="pip-item">
+                            <div class="pip-header">
+                                <div class="pip-title">HHA Aide Supervisory Visit Compliance</div>
+                                <div class="pip-meta">
+                                    <span>Owner: Field Supervisor</span>
+                                    <span class="pip-due">Due: 4/15/2026</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill green" style="width: 80%;"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">80% complete</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUALITY INDICATORS -->
+                <div class="card">
+                    <div class="card-title">Rolling Quality Indicators</div>
+
+                    <div class="qi-controls">
+                        <button class="qi-button active" onclick="switchQIPeriod('30')">30 Day</button>
+                        <button class="qi-button" onclick="switchQIPeriod('60')">60 Day</button>
+                        <button class="qi-button" onclick="switchQIPeriod('90')">90 Day</button>
+                    </div>
+
+                    <div class="qi-metrics">
+                        <div class="qi-metric">
+                            <div class="qi-metric-title">Hospitalization Rate</div>
+                            <div class="qi-metric-chart">
+                                <canvas id="qiHosp"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="qi-metric">
+                            <div class="qi-metric-title">ED Visit Rate</div>
+                            <div class="qi-metric-chart">
+                                <canvas id="qiED"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="qi-metric">
+                            <div class="qi-metric-title">OASIS Accuracy Rate</div>
+                            <div class="qi-metric-chart">
+                                <canvas id="qiOASIS"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="qi-metric">
+                            <div class="qi-metric-title">Visit Compliance Rate</div>
+                            <div class="qi-metric-chart">
+                                <canvas id="qiVisit"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <!-- CRITICAL -->
-        <div class="action-tier-section" style="padding-top:14px;">
-          <span class="tier-label tier-critical">🔴 Critical — Act Today</span>
-          <div class="action-item">
-            <div class="action-icon icon-red">⚠️</div>
-            <div class="action-content">
-              <div class="action-title">LUPA Risk: PT-2003 Robert Davis needs 1 PT visit by Apr 9</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Due Apr 9</span>
-                <span class="action-tag tag-patient">PT-2003</span>
-                <span class="action-tag tag-time">~15 min to schedule</span>
-              </div>
-              <div class="action-cta">Schedule visit → contact Angela Torres (PT)</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon icon-red">📋</div>
-            <div class="action-content">
-              <div class="action-title">Recert order needed: Margaret Chen — cert expires Apr 12</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Due Apr 12</span>
-                <span class="action-tag tag-patient">PT-2001</span>
-                <span class="action-tag tag-time">~30 min</span>
-              </div>
-              <div class="action-cta">Case conference note ready → send to physician for signature</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-red">📝</div>
-            <div class="action-content">
-              <div class="action-title">High audit risk: PT-007 ambulation note scored 2/5 — correct before month end</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Month end</span>
-                <span class="action-tag tag-patient">PT-007</span>
-                <span class="action-tag tag-time">~20 min</span>
-              </div>
-              <div class="action-cta">Review QA feedback → coach clinician James Okonkwo (PT)</div>
-            </div>
-          </div>
-        </div>
+        <!-- ADMINISTRATOR PAGE -->
+        <div id="page-admin" class="page">
 
-        <!-- IMPORTANT -->
-        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border);">
-          <span class="tier-label tier-important" style="margin-top:12px; display:inline-flex;">🟡 Important — This Week</span>
-          <div class="action-item">
-            <div class="action-icon icon-yellow">📅</div>
-            <div class="action-content">
-              <div class="action-title">Schedule case conference: Robert Williams — cert ends Apr 9</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Due Apr 9</span>
-                <span class="action-tag tag-patient">PT-2002</span>
-                <span class="action-tag tag-time">~1 hr</span>
-              </div>
-              <div class="action-cta">Case conference note drafted → schedule IDT meeting</div>
+            <!-- ROW 1: KPI Cards -->
+            <div class="row">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Monthly Revenue</div>
+                        <div class="kpi-value">$21,364</div>
+                        <div class="kpi-trend up">↑ 12% vs last month</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Revenue at Risk (LUPA)</div>
+                        <div class="kpi-value">$8,200</div>
+                        <div class="kpi-trend down">Requires action</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Intake Accept Rate</div>
+                        <div class="kpi-value">33%</div>
+                        <div class="kpi-trend neutral">8 of 24 referrals</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Schedule Compliance</div>
+                        <div class="kpi-value">85.1%</div>
+                        <div class="kpi-trend up">On target</div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon icon-yellow">🔬</div>
-            <div class="action-content">
-              <div class="action-title">OASIS correction pending: PT-2003 ADL variance — document clinical rationale</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Before billing</span>
-                <span class="action-tag tag-patient">PT-2003</span>
-                <span class="action-tag tag-time">~15 min</span>
-              </div>
-              <div class="action-cta">Add narrative to M1800–M1860 explaining functional inconsistency</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-yellow">👩‍⚕️</div>
-            <div class="action-content">
-              <div class="action-title">Staff coaching: Angela Torres (PT) — 45% schedule fill rate, review needed</div>
-              <div class="action-meta">
-                <span class="action-tag" style="background:var(--yellow-light);color:var(--yellow);">Staffing</span>
-                <span class="action-tag tag-time">~30 min</span>
-              </div>
-              <div class="action-cta">Review scheduling compliance report → schedule 1:1</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- FYI -->
-        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border); padding-bottom:16px;">
-          <span class="tier-label tier-fyi" style="margin-top:12px; display:inline-flex;">🟢 FYI</span>
-          <div class="action-item">
-            <div class="action-icon icon-green">📡</div>
-            <div class="action-content">
-              <div class="action-title">New regulatory digest: CMS QSO memo on OASIS-E documentation expectations</div>
-              <div class="action-meta"><span class="action-tag tag-time">5 min read</span></div>
-              <div class="action-cta">Read digest →</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-green">📈</div>
-            <div class="action-content">
-              <div class="action-title">Hospitalization rate trending down: 22.1% (30-day rolling) vs. 24.0% last period</div>
-              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">↓ Improving</span></div>
-              <div class="action-cta">View outcomes dashboard →</div>
-            </div>
-          </div>
-        </div>
-      </div>
+            <!-- ROW 2: Admin Action List + PDGM Revenue -->
+            <div class="row row-custom-45-55">
+                <!-- ADMIN ACTION LIST -->
+                <div class="card">
+                    <div class="card-title">Today's Admin Action List</div>
 
-      <!-- ROLLING QUALITY INDICATORS -->
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Quality Indicators</div>
-            <div class="card-subtitle">Agency vs. CMS National Benchmark</div>
-          </div>
-          <div class="period-toggle">
-            <button class="period-btn active" onclick="setPeriod(this,'30')">30d</button>
-            <button class="period-btn" onclick="setPeriod(this,'60')">60d</button>
-            <button class="period-btn" onclick="setPeriod(this,'90')">90d</button>
-          </div>
+                    <div class="action-tabs">
+                        <button class="action-tab active" onclick="switchAdminActionTab('critical')">Critical (1)</button>
+                        <button class="action-tab" onclick="switchAdminActionTab('important')">Important (2)</button>
+                        <button class="action-tab" onclick="switchAdminActionTab('fyi')">FYI (1)</button>
+                    </div>
+
+                    <!-- CRITICAL -->
+                    <div id="admin-action-critical" class="action-content active">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🔴 3 LUPA Risk Patients</div>
+                                <div class="action-item-description">Below visit threshold. Revenue at risk: $2,733/episode. Schedule visits before cert period ends.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Schedule Now</button>
+                        </div>
+                    </div>
+
+                    <!-- IMPORTANT -->
+                    <div id="admin-action-important" class="action-content">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟡 2 Pending Referrals</div>
+                                <div class="action-item-description">Referrals from Dr. Martinez awaiting eligibility verification. 48-hour response SLA.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Verify Now</button>
+                        </div>
+
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟡 Billing Audit</div>
+                                <div class="action-item-description">4 claims pending review. Submit by 4/7 to avoid 30-day timely filing risk.</div>
+                            </div>
+                            <button class="action-item-cta" onclick="showPoCAlert()">Review Claims</button>
+                        </div>
+                    </div>
+
+                    <!-- FYI -->
+                    <div id="admin-action-fyi" class="action-content">
+                        <div class="action-item">
+                            <div class="action-item-left">
+                                <div class="action-item-label">🟢 New Admission: Chen, Robert</div>
+                                <div class="action-item-description">Admitted 4/3/2026. HIPPS code 1AFIT1. Expected revenue: $3,327.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDGM REVENUE PANEL -->
+                <div class="card">
+                    <div class="card-title">PDGM Revenue by Clinical Group</div>
+                    <div class="card-subtitle">This Week's Clinical Mix</div>
+
+                    <div class="revenue-chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 3: Intake Funnel + Scheduling Compliance -->
+            <div class="row row-custom-50-50">
+                <!-- INTAKE FUNNEL -->
+                <div class="card">
+                    <div class="card-title">Intake Pipeline Funnel</div>
+                    <div class="card-subtitle">Referral to Admission Conversion</div>
+
+                    <div class="funnel-container">
+                        <div class="funnel-stage">
+                            <div class="funnel-label">Referrals</div>
+                            <div class="funnel-bar">18 Referrals</div>
+                        </div>
+                        <div class="funnel-stage">
+                            <div class="funnel-label">Screened</div>
+                            <div class="funnel-bar">12 Screened</div>
+                        </div>
+                        <div class="funnel-stage">
+                            <div class="funnel-label">Eligible</div>
+                            <div class="funnel-bar">8 Eligible</div>
+                        </div>
+                        <div class="funnel-stage">
+                            <div class="funnel-label">Admitted</div>
+                            <div class="funnel-bar">6 Admitted</div>
+                        </div>
+                    </div>
+
+                    <div class="funnel-note">
+                        <strong>Conversion Rate: 33%</strong> — 6 declined: 3 eligibility, 2 no skilled need, 1 wrong payer
+                    </div>
+                </div>
+
+                <!-- SCHEDULING COMPLIANCE -->
+                <div class="card">
+                    <div class="card-title">Scheduling Compliance Detail</div>
+                    <div class="card-subtitle">Clinician & Episode-Level View</div>
+
+                    <div class="compliance-item">
+                        <div class="compliance-item-header">
+                            <div class="compliance-item-label">Overall Compliance</div>
+                            <div class="compliance-item-value">85.1%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill green" style="width: 85.1%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="compliance-item">
+                        <div class="compliance-item-header">
+                            <div class="compliance-item-label">LUPA Risk Patients</div>
+                            <div class="compliance-item-value" style="color: var(--danger);">2</div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">Episodes below visit threshold</div>
+                    </div>
+
+                    <div class="compliance-item">
+                        <div class="compliance-item-header">
+                            <div class="compliance-item-label">James Patel (RN)</div>
+                            <div class="compliance-item-value" style="color: var(--warning);">62%</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill amber" style="width: 62%;"></div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.25rem;">Critical gap — requires immediate coaching</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="card-body">
-          <div class="qi-row">
-            <div class="qi-name">Acute Care Hospitalization</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#DC2626;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#DC2626;">22.1%</div>
-              <div class="qi-bench">≤14.7%</div>
-            </div>
-            <div class="qi-status">🔴</div>
-          </div>
-          <div class="qi-row">
-            <div class="qi-name">ED Use w/o Hospitalization</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#D97706;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#D97706;">9.8%</div>
-              <div class="qi-bench">≤8.2%</div>
-            </div>
-            <div class="qi-status">🟡</div>
-          </div>
-          <div class="qi-row">
-            <div class="qi-name">Discharge to Community</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:84%; background:#D97706;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#D97706;">52.1%</div>
-              <div class="qi-bench">≥61.8%</div>
-            </div>
-            <div class="qi-status">🟡</div>
-          </div>
-          <div class="qi-row">
-            <div class="qi-name">Timely Initiation of Care</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:98%; background:#059669;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#059669;">94.3%</div>
-              <div class="qi-bench">≥96.3%</div>
-            </div>
-            <div class="qi-status">🟡</div>
-          </div>
-          <div class="qi-row">
-            <div class="qi-name">Improvement in Ambulation</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:88%; background:#D97706;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#D97706;">48.8%</div>
-              <div class="qi-bench">≥53.2%</div>
-            </div>
-            <div class="qi-status">🟡</div>
-          </div>
-          <div class="qi-row">
-            <div class="qi-name">Improvement in Bathing</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:96%; background:#059669;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#059669;">64.4%</div>
-              <div class="qi-bench">≥67.1%</div>
-            </div>
-            <div class="qi-status">🟡</div>
-          </div>
-          <div class="qi-row" style="border-bottom:none;">
-            <div class="qi-name">Improvement in Med. Management</div>
-            <div class="qi-bar-wrap"><div class="qi-track"><div class="qi-fill" style="width:100%; background:#059669;"></div></div></div>
-            <div class="qi-values">
-              <div class="qi-agency" style="color:#059669;">42.1%</div>
-              <div class="qi-bench">≥38.1%</div>
-            </div>
-            <div class="qi-status">🟢</div>
-          </div>
-        </div>
-      </div>
 
     </div>
-  </div>
-</div>
 
-<!-- ========== ADMIN VIEW ========== -->
-<div class="page" id="page-admin">
+    <script>
+        // ============ CHART INITIALIZATION ============
+        let surveyGaugeChart, trendChart, revenueChartObj;
+        let qiCharts = {};
 
-  <!-- STATS ROW -->
-  <div class="stats-row" style="margin-top:20px;">
-    <div class="stat-card" style="border-color:var(--purple);">
-      <div class="stat-label">Monthly Revenue</div>
-      <div class="stat-value" style="color:var(--purple);">$21,364</div>
-      <div class="stat-sub">3 episodes · 30-day est.</div>
-      <div class="stat-change change-up-good">↑ On track</div>
-    </div>
-    <div class="stat-card" style="border-color:var(--red);">
-      <div class="stat-label">Revenue at Risk</div>
-      <div class="stat-value" style="color:var(--red);">$8,200</div>
-      <div class="stat-sub">LUPA exposure + coding gaps</div>
-      <div class="stat-change change-up-bad">↑ Action needed</div>
-    </div>
-    <div class="stat-card" style="border-color:var(--yellow);">
-      <div class="stat-label">Intake Acceptance</div>
-      <div class="stat-value" style="color:var(--yellow);">33%</div>
-      <div class="stat-sub">1/3 referrals this week</div>
-      <div class="stat-change change-up-bad">↓ Below 50% target</div>
-    </div>
-    <div class="stat-card" style="border-color:var(--green);">
-      <div class="stat-label">Schedule Compliance</div>
-      <div class="stat-value" style="color:var(--green);">85.1%</div>
-      <div class="stat-sub">Agency avg. this week</div>
-      <div class="stat-change change-down-good">↑ +2.4% vs. last week</div>
-    </div>
-  </div>
+        function initCharts() {
+            // Survey Readiness Gauge
+            const gaugeCtx = document.getElementById('surveyGauge');
+            if (gaugeCtx && !surveyGaugeChart) {
+                surveyGaugeChart = new Chart(gaugeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Score', 'Remaining'],
+                        datasets: [{
+                            data: [78, 22],
+                            backgroundColor: ['#0EA5E9', '#E2E8F0'],
+                            borderColor: ['#0EA5E9', '#E2E8F0'],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        circumference: 180,
+                        rotation: -90,
+                        cutout: '70%'
+                    }
+                });
+            }
 
-  <div class="two-col">
+            // Trend Sparkline
+            const sparklineCtx = document.getElementById('trendSparkline');
+            if (sparklineCtx && !trendChart) {
+                trendChart = new Chart(sparklineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+                        datasets: [{
+                            label: 'Score',
+                            data: [71, 73, 72, 75, 74, 77, 78],
+                            borderColor: '#0EA5E9',
+                            backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#0EA5E9',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 65,
+                                max: 85,
+                                ticks: { display: false },
+                                grid: { display: true, color: '#E2E8F0' }
+                            },
+                            x: { display: false }
+                        }
+                    }
+                });
+            }
 
-    <!-- LEFT: TODAY'S ADMIN ACTIONS -->
-    <div>
-      <div class="action-list-card">
-        <div class="action-list-header">
-          <div class="action-list-title">Today's Actions</div>
-          <div class="action-date">Saturday, April 4, 2026</div>
-        </div>
+            // Revenue Chart (Admin)
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx && !revenueChartObj) {
+                revenueChartObj = new Chart(revenueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['MS/Ortho', 'Neuro/Stroke', 'Wound', 'Cardiac'],
+                        datasets: [{
+                            label: 'Revenue',
+                            data: [8400, 6200, 4100, 2664],
+                            backgroundColor: ['#0EA5E9', '#06B6D4', '#10B981', '#F59E0B'],
+                            borderRadius: 6,
+                            borderSkipped: false,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 10000,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value / 1000 + 'k';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
 
-        <!-- CRITICAL -->
-        <div class="action-tier-section" style="padding-top:14px;">
-          <span class="tier-label tier-critical">🔴 Critical — Act Today</span>
-          <div class="action-item">
-            <div class="action-icon icon-red">💸</div>
-            <div class="action-content">
-              <div class="action-title">LUPA risk: PT-2003 &amp; PT-010 — $4,200 billing impact if triggered</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">5–6 days left</span>
-                <span class="action-tag tag-revenue">~$4,200 at risk</span>
-                <span class="action-tag tag-time">~15 min</span>
-              </div>
-              <div class="action-cta">Confirm scheduling coordinator has prioritized both patients →</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-red">🏦</div>
-            <div class="action-content">
-              <div class="action-title">MA prior auth pending: REF-20260404-003 — cannot admit or bill until received</div>
-              <div class="action-meta">
-                <span class="action-tag tag-deadline">Urgent</span>
-                <span class="action-tag tag-revenue">~$3,500 episode</span>
-                <span class="action-tag tag-time">~20 min</span>
-              </div>
-              <div class="action-cta">Call MA payer to confirm auth status → escalate if >72 hrs</div>
-            </div>
-          </div>
-        </div>
+            // Quality Indicators
+            initQICharts();
+        }
 
-        <!-- IMPORTANT -->
-        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border);">
-          <span class="tier-label tier-important" style="margin-top:12px; display:inline-flex;">🟡 Important — This Week</span>
-          <div class="action-item">
-            <div class="action-icon icon-yellow">📋</div>
-            <div class="action-content">
-              <div class="action-title">Comorbidity opportunity: PT-2003 — document secondary diagnosis for CA1 upgrade</div>
-              <div class="action-meta">
-                <span class="action-tag tag-revenue">+$600–900 est.</span>
-                <span class="action-tag tag-time">~15 min with clinician</span>
-              </div>
-              <div class="action-cta">Review PDGM billing report → confirm dx documentation with SN</div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon icon-yellow">🔍</div>
-            <div class="action-content">
-              <div class="action-title">Referral issue: REF-20260404-002 declined — NPI invalid, physician not Medicare-enrolled</div>
-              <div class="action-meta">
-                <span class="action-tag tag-revenue">~$3,300 lost episode</span>
-                <span class="action-tag tag-time">~30 min</span>
-              </div>
-              <div class="action-cta">Contact referring practice — request alternate enrolled physician →</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-yellow">👤</div>
-            <div class="action-content">
-              <div class="action-title">Clinician performance: Angela Torres (PT) — 45% fill rate, 15% no-show, review overdue</div>
-              <div class="action-meta">
-                <span class="action-tag" style="background:var(--yellow-light);color:var(--yellow);">HR / Ops</span>
-                <span class="action-tag tag-time">~30 min</span>
-              </div>
-              <div class="action-cta">Review scheduling compliance report → schedule performance conversation</div>
-            </div>
-          </div>
-        </div>
+        function initQICharts() {
+            const data30 = { hosp: [12, 10, 9], ed: [8, 7, 6], oasis: [88, 90, 92], visit: [82, 84, 86] };
+            const data60 = { hosp: [15, 12, 10, 9], ed: [10, 8, 7, 6], oasis: [85, 88, 90, 92], visit: [80, 82, 84, 86] };
+            const data90 = { hosp: [18, 15, 12, 10, 9], ed: [12, 10, 8, 7, 6], oasis: [82, 85, 88, 90, 92], visit: [78, 80, 82, 84, 86] };
 
-        <!-- FYI -->
-        <div class="action-tier-section" style="padding-top:4px; border-top:1px solid var(--border); padding-bottom:16px;">
-          <span class="tier-label tier-fyi" style="margin-top:12px; display:inline-flex;">🟢 FYI</span>
-          <div class="action-item">
-            <div class="action-icon icon-green">💰</div>
-            <div class="action-content">
-              <div class="action-title">Monthly revenue on track: $21,364 across 3 active episodes — all Non-LUPA</div>
-              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">Revenue healthy</span></div>
-            </div>
-          </div>
-          <div class="action-item">
-            <div class="action-icon icon-green">🔄</div>
-            <div class="action-content">
-              <div class="action-title">3 recertifications due this month — all have case conference notes drafted</div>
-              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">On track</span></div>
-              <div class="action-cta">View recert batch report →</div>
-            </div>
-          </div>
-          <div class="action-item" style="border-bottom:none; padding-bottom:0;">
-            <div class="action-icon icon-green">🔬</div>
-            <div class="action-content">
-              <div class="action-title">OASIS accuracy: 100% this week — 0 critical errors, 1 documentation flag</div>
-              <div class="action-meta"><span class="action-tag" style="background:var(--green-light);color:var(--green);">Billing protected</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            const periods = { '30': data30, '60': data60, '90': data90 };
+            const metrics = ['qiHosp', 'qiED', 'qiOASIS', 'qiVisit'];
+            const keys = ['hosp', 'ed', 'oasis', 'visit'];
 
-    <!-- RIGHT: REVENUE + INTAKE + SCHEDULING -->
-    <div style="display:flex; flex-direction:column; gap:20px;">
+            metrics.forEach((metric, idx) => {
+                const ctx = document.getElementById(metric);
+                if (ctx && !qiCharts[metric]) {
+                    const key = keys[idx];
+                    qiCharts[metric] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                            datasets: [{
+                                data: data30[key],
+                                borderColor: '#0EA5E9',
+                                backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.3,
+                                pointRadius: 2,
+                                pointBackgroundColor: '#0EA5E9',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { display: false, beginAtZero: true, max: 100 },
+                                x: { display: false }
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
-      <!-- PDGM REVENUE -->
-      <div class="card">
-        <div class="card-header" style="padding-bottom:14px;">
-          <div>
-            <div class="card-title">PDGM Revenue</div>
-            <div class="card-subtitle">Current 30-day episodes</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:20px; font-weight:800; color:var(--purple);">$21,364</div>
-            <div style="font-size:11px; color:var(--text-soft);">~$4.3M annualized (50 pts)</div>
-          </div>
-        </div>
-        <div class="card-body" style="padding-top:0;">
-          <div class="rev-episode">
-            <div class="rev-dot" style="background:#059669;"></div>
-            <div class="rev-patient">
-              <div class="rev-name">Margaret Chen (PT-2001)</div>
-              <div class="rev-group">Ortho Rehab · CA2 · High Functional</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="rev-amount">$6,491</div>
-              <div class="rev-hipps">009020</div>
-            </div>
-            <span class="rev-flag" style="background:var(--green-light);color:var(--green);">✓ Optimized</span>
-          </div>
-          <div class="rev-episode">
-            <div class="rev-dot" style="background:#059669;"></div>
-            <div class="rev-patient">
-              <div class="rev-name">Robert Williams (PT-2002)</div>
-              <div class="rev-group">MMTA-Cardiac · CA2 · High Functional</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="rev-amount">$10,473</div>
-              <div class="rev-hipps">031020</div>
-            </div>
-            <span class="rev-flag" style="background:var(--green-light);color:var(--green);">✓ Optimized</span>
-          </div>
-          <div class="rev-episode">
-            <div class="rev-dot" style="background:#F59E0B;"></div>
-            <div class="rev-patient">
-              <div class="rev-name">Dorothy Alvarez (PT-2003)</div>
-              <div class="rev-group">Complex Wounds · CA0 · Medium Functional</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="rev-amount">$4,400</div>
-              <div class="rev-hipps">008100</div>
-            </div>
-            <span class="rev-flag" style="background:var(--yellow-light);color:var(--yellow);">⚠ Opportunity</span>
-          </div>
-        </div>
-      </div>
+        function switchQIPeriod(period) {
+            const buttons = document.querySelectorAll('.qi-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
 
-      <!-- INTAKE PIPELINE -->
-      <div class="card">
-        <div class="card-header" style="padding-bottom:14px;">
-          <div class="card-title">Intake Pipeline</div>
-        </div>
-        <div class="card-body" style="padding-top:4px;">
-          <div class="mini-metrics" style="margin-bottom:14px;">
-            <div class="mini-metric"><div class="mini-value" style="color:var(--green);">1</div><div class="mini-label">Accepted</div></div>
-            <div class="mini-metric"><div class="mini-value" style="color:var(--yellow);">1</div><div class="mini-label">Conditional</div></div>
-          </div>
-          <div style="background:var(--red-bg); border-radius:8px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-size:12px; font-weight:600; color:var(--red);">1 declined this week</div>
-              <div style="font-size:11px; color:var(--gray);">Invalid NPI · $3,300 episode lost</div>
-            </div>
-            <div style="font-size:11px; color:var(--red); font-weight:700; cursor:pointer;">Fix issue →</div>
-          </div>
-        </div>
-      </div>
+            const data = {
+                '30': { hosp: [12, 10, 9], ed: [8, 7, 6], oasis: [88, 90, 92], visit: [82, 84, 86] },
+                '60': { hosp: [15, 12, 10, 9], ed: [10, 8, 7, 6], oasis: [85, 88, 90, 92], visit: [80, 82, 84, 86] },
+                '90': { hosp: [18, 15, 12, 10, 9], ed: [12, 10, 8, 7, 6], oasis: [82, 85, 88, 90, 92], visit: [78, 80, 82, 84, 86] }
+            };
 
-      <!-- SCHEDULING HEALTH -->
-      <div class="card">
-        <div class="card-header" style="padding-bottom:14px;">
-          <div class="card-title">Scheduling Compliance</div>
-        </div>
-        <div class="card-body" style="padding-top:4px;">
-          <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-            <div style="flex:1;">
-              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span style="font-size:12px; color:var(--text-soft);">Agency compliance</span>
-                <span style="font-size:13px; font-weight:700; color:var(--yellow);">85.1%</span>
-              </div>
-              <div style="height:7px; background:var(--gray-light); border-radius:4px; overflow:hidden;">
-                <div style="height:7px; width:85.1%; background:var(--yellow); border-radius:4px;"></div>
-              </div>
-              <div style="font-size:10px; color:var(--text-soft); margin-top:3px;">Target: ≥95%</div>
-            </div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <div style="flex:1; padding:10px; background:var(--red-bg); border-radius:8px; text-align:center;">
-              <div style="font-size:22px; font-weight:800; color:var(--red);">2</div>
-              <div style="font-size:10px; color:var(--red); font-weight:600; text-transform:uppercase;">LUPA Risk</div>
-            </div>
-            <div style="flex:1; padding:10px; background:var(--red-bg); border-radius:8px; text-align:center;">
-              <div style="font-size:22px; font-weight:800; color:var(--red);">1</div>
-              <div style="font-size:10px; color:var(--red); font-weight:600; text-transform:uppercase;">Red Flag Clinician</div>
-            </div>
-            <div style="flex:1; padding:10px; background:var(--green-bg); border-radius:8px; text-align:center;">
-              <div style="font-size:22px; font-weight:800; color:var(--green);">3</div>
-              <div style="font-size:10px; color:var(--green); font-weight:600; text-transform:uppercase;">On Target</div>
-            </div>
-          </div>
-        </div>
-      </div>
+            const keys = ['hosp', 'ed', 'oasis', 'visit'];
+            const metrics = ['qiHosp', 'qiED', 'qiOASIS', 'qiVisit'];
 
-    </div>
-  </div>
-</div>
+            metrics.forEach((metric, idx) => {
+                const key = keys[idx];
+                if (qiCharts[metric]) {
+                    qiCharts[metric].data.datasets[0].data = data[period][key];
+                    qiCharts[metric].update();
+                }
+            });
+        }
 
-<footer>
-  Enzo Health AI — 12 agents · Updated daily at 7:00 AM ·
-  <a href="https://github.com/danielle-eng/enzo-health-outputs" style="color:var(--blue);">github.com/danielle-eng/enzo-health-outputs</a>
-</footer>
+        // ============ PAGE SWITCHING ============
+        function switchRole(role) {
+            const donPage = document.getElementById('page-don');
+            const adminPage = document.getElementById('page-admin');
+            const donTab = document.querySelectorAll('.role-tab')[0];
+            const adminTab = document.querySelectorAll('.role-tab')[1];
 
-<script>
-  // Role switching
-  function switchRole(role) {
-    document.getElementById('page-don').classList.toggle('active', role === 'don');
-    document.getElementById('page-admin').classList.toggle('active', role === 'admin');
-    document.getElementById('tab-don').className = 'role-tab' + (role === 'don' ? ' active-don' : '');
-    document.getElementById('tab-admin').className = 'role-tab' + (role === 'admin' ? ' active-admin' : '');
-  }
+            if (role === 'don') {
+                donPage.classList.add('active');
+                adminPage.classList.remove('active');
+                donTab.classList.add('active');
+                adminTab.classList.remove('active');
+            } else {
+                adminPage.classList.add('active');
+                donPage.classList.remove('active');
+                adminTab.classList.add('active');
+                donTab.classList.remove('active');
+                setTimeout(() => initCharts(), 100);
+            }
+        }
 
-  // Period toggle
-  function setPeriod(btn, period) {
-    btn.parentElement.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+        // ============ ACTION TABS ============
+        function switchActionTab(tab) {
+            const tabs = document.querySelectorAll('.action-tab');
+            const contents = document.querySelectorAll('.action-content');
 
-  // Gauge chart (half-donut for Survey Readiness Score)
-  const gaugeCtx = document.getElementById('gaugeChart').getContext('2d');
-  new Chart(gaugeCtx, {
-    type: 'doughnut',
-    data: {
-      datasets: [{
-        data: [78, 22],
-        backgroundColor: ['#D97706', '#F3F4F6'],
-        borderWidth: 0,
-        circumference: 180,
-        rotation: 270,
-      }]
-    },
-    options: {
-      responsive: false,
-      cutout: '72%',
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      animation: { animateRotate: true, duration: 1000 }
-    }
-  });
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
 
-  // 7-day trend sparkline
-  const trendCtx = document.getElementById('trendChart').getContext('2d');
-  new Chart(trendCtx, {
-    type: 'line',
-    data: {
-      labels: ['', '', '', '', '', '', ''],
-      datasets: [{
-        data: [61, 65, 68, 71, 73, 75, 78],
-        borderColor: '#059669',
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.4,
-        fill: false
-      }]
-    },
-    options: {
-      responsive: false,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: { x: { display: false }, y: { display: false } },
-      animation: { duration: 800 }
-    }
-  });
-</script>
+            event.target.classList.add('active');
+            document.getElementById('action-' + tab).classList.add('active');
+        }
+
+        function switchAdminActionTab(tab) {
+            const tabs = document.querySelectorAll('#page-admin .action-tab');
+            const contents = document.querySelectorAll('#page-admin .action-content');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('admin-action-' + tab).classList.add('active');
+        }
+
+        // ============ POC REFERENCE ACCORDION ============
+        function toggleReference() {
+            const content = document.getElementById('referenceContent');
+            content.classList.toggle('open');
+        }
+
+        // ============ ALERTS ============
+        function showPoCAlert() {
+            alert('PoC draft feature — connect to live data to generate');
+        }
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+
+            // Set current date
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+        });
+    </script>
 </body>
 </html>

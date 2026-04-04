@@ -58,8 +58,12 @@ For a visit to be Medicare-billable, the note must document:
 | M1033 (Risk of Hospitalization) | High-risk flags in OASIS should be reflected in care plan and notes |
 | M1242 (Pain) | Reported pain level in OASIS should align with pain assessments in notes |
 | M1306 (Pressure Ulcer) | Any wound noted in OASIS must appear with consistent description in notes |
+| M1400 (Dyspnea) | Dyspnea severity in OASIS must match clinical assessment in notes |
+| M1610 (Urinary Incontinence) | OASIS incontinence status must match note documentation |
+| M1720 (Depression) | Depression screening scores in OASIS should match note documentation |
 | M1910 (Falls Risk) | Falls risk screening referenced in OASIS should appear in clinical notes |
 | M2020 (Medication Management) | OASIS medication management level should match note documentation |
+| M2400 (Intervention Synopsis) | Interventions documented in OASIS should appear in visit notes |
 | GG0130/GG0170 (Functional Abilities) | Functional scoring must be consistent with observed function in notes |
 
 ### OASIS/Note Contradiction Severity Scale
@@ -81,6 +85,102 @@ Score each note on a 1–5 scale:
 | 1 | Note would not survive ADR review; documentation does not support skilled care |
 
 Any note scoring 1 or 2 must be flagged as **High Audit Risk**.
+
+## OASIS Submission Timeliness Monitoring
+
+### Why Timeliness Matters for Survey Readiness
+
+Before a CMS surveyor arrives, they download the **HHA Error Summary by Agency Report** from iQIES. This report specifically flags **error -3330**: "Record Submitted Late: The submission date is more than 30 days after M0090 (Date Assessment Completed)."
+
+A pattern of -3330 errors causes surveyors to arrive specifically targeting **G372 (§484.45(a)) — Encoding and transmitting OASIS data**. This is a pre-arrival red flag that surveyors look for before they ever walk through the door.
+
+### OASIS Submission Deadlines
+
+| Assessment Type | M0090 Event | Required Submission |
+|---|---|---|
+| Start of Care (SOC) | SOC date | Within 30 days of M0090 |
+| Resumption of Care (ROC) | ROC date | Within 30 days of M0090 |
+| Follow-up (Recertification) | End of cert period | Within 30 days of M0090 |
+| Transfer (non-discharge) | Transfer date | Within 30 days of M0090 |
+| Discharge | Discharge date | Within 30 days of M0090 |
+| Death at Home | Date of death | Within 30 days of M0090 |
+
+Critical threshold: Submission more than 30 days after M0090 = error -3330 = iQIES flag = surveyor attention
+
+### Daily Timeliness Watchlist
+
+Every morning, run a timeliness check on all open assessments:
+- **Green (0–20 days)**: On track
+- **Yellow (21–27 days)**: Warning — submit within the week
+- **Orange (28–30 days)**: Urgent — submit immediately
+- **Red (30+ days)**: -3330 error triggered — document reason, notify administrator, report to QAPI
+
+### Late Submission Protocol
+
+When an assessment is submitted late:
+1. Document the clinical reason for the delay in the chart
+2. Submit anyway (late is better than never — CMS still wants the data)
+3. Log the -3330 occurrence in the agency's OASIS error register
+4. Include in monthly QAPI report
+5. If pattern emerges (3+ in a rolling 12 months): initiate a PIP for OASIS timeliness
+
+### Weekly Timeliness Report
+
+Weekly timeliness report should include:
+- Total OASIS assessments due in next 7 days (by type)
+- Any assessments currently at 21+ days (warning zone)
+- -3330 occurrences in the last 30 days
+- Rolling 12-month -3330 count vs. prior year
+- Clinician-level timeliness breakdown
+
+## iQIES Pre-Survey Monitoring
+
+### Understanding CMS Surveyor Pre-Arrival Intelligence
+
+CMS surveyors download four critical reports from iQIES before arriving at your agency. Proactive monitoring of these reports is essential to survey readiness.
+
+### Four Key iQIES Reports Surveyors Review
+
+**1. Potentially Avoidable Event Report (12 months)**
+- Flags hospitalizations, ED visits, falls, and pressure ulcers across your patient population
+- Surveyors use this to identify trends in patient outcomes
+- High event counts may trigger deeper audit of care planning and clinical decision-making
+
+**2. Potentially Avoidable Event Patient Listing**
+- Names the specific patients with events
+- Surveyors may pull individual medical records for these patients during survey
+- Expect detailed chart audits on these specific cases
+
+**3. Agency Patient-Related Characteristics (Case Mix) Report**
+- Demographic and diagnostic profile of your agency's patients
+- Compared to national benchmarks
+- Surveyors note if your case mix diverges significantly (e.g., much sicker than average)
+- Unusual case mix may trigger questions about admission criteria or OASIS accuracy
+
+**4. HHA Error Summary by Agency**
+- Primary focus on error -3330 (submission timeliness)
+- Also flags other OASIS encoding errors
+- Patterns of error -3330 lead surveyors to target G372 (§484.45(a) — Encoding and transmitting OASIS data)
+
+### Proactive Monitoring Strategy
+
+**Track Potentially Avoidable Events Weekly**
+- Monitor hospitalization and ED utilization rates
+- Flag patients with falls or pressure ulcers for care plan review
+- When an event occurs, document in the medical record the clinical factors that made it unavoidable
+- If patterns emerge, escalate to QAPI for care plan redesign
+
+**Monitor Case Mix Shifts**
+- Run your Agency Patient-Related Characteristics Report monthly
+- Compare diagnostic codes, functional levels, and payor mix to national benchmarks
+- If your case mix shifts significantly, understand why (admission criteria change? documentation change?)
+- Alert leadership if upward acuity shift is not supported by appropriate care plan intensity
+
+**Maintain Running -3330 Count**
+- Track every error -3330 occurrence by month and clinician
+- Keep rolling 12-month count visible to leadership
+- Flag any month with 3+ occurrences for immediate investigation
+- Trend toward zero -3330 errors demonstrates pre-survey readiness
 
 ## Review Workflow
 
