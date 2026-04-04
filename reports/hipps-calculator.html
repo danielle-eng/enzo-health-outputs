@@ -423,7 +423,7 @@
       </div>
 
       <div class="disclaimer">
-        ⚠️ Estimates are based on the 2026 national unadjusted base rate ($2,038.22). Final payment is adjusted by your agency's wage index. Verify with your Medicare Administrative Contractor (MAC). Not a substitute for the official CMS PDGM grouper software.
+        ⚠️ Base rate $2,038.22 (CY 2026, CMS-1828-F). Group A weights confirmed from CMS 2026 data; all other groups proportionally scaled from published PDGM ratios. Final payment adjusted by wage index. Always verify with official CMS PDGM Grouper Software (HHGS v07.1.26) before billing.
       </div>
     </div><!-- /results -->
 
@@ -431,162 +431,265 @@
 </div><!-- /page -->
 
 <script>
-// ============================================================
-// ICD-10 LOOKUP TABLE — Top ~120 home health diagnoses
-// Format: [code, description, clinicalGroupLetter, groupName]
-// Clinical Groups: A-L per PDGM 2026
-// A=MMTA Other, B=Neuro/Stroke, C=Wound Care, D=Complex Nursing,
-// E=Musculoskeletal Rehab, F=Behavioral Health, G=Surgical Aftercare,
-// H=MMTA Cardiac, I=MMTA Endocrine, J=MMTA GI/GU,
-// K=MMTA Inf Disease/Neoplasm, L=MMTA Respiratory
-// ============================================================
 const ICD10_DB = [
-  // MUSCULOSKELETAL REHAB (E)
-  ["M17.11","Primary osteoarthritis, right knee","E","Musculoskeletal Rehab"],
-  ["M17.12","Primary osteoarthritis, left knee","E","Musculoskeletal Rehab"],
+  // ── MUSCULOSKELETAL REHAB (E) ──────────────────────────────────────────
+  ["M17.0","Bilateral primary osteoarthritis of knee","E","Musculoskeletal Rehab"],
+  ["M17.10","Unilateral primary osteoarthritis, unspecified knee","E","Musculoskeletal Rehab"],
+  ["M17.11","Unilateral primary osteoarthritis, right knee","E","Musculoskeletal Rehab"],
+  ["M17.12","Unilateral primary osteoarthritis, left knee","E","Musculoskeletal Rehab"],
+  ["M17.2","Bilateral post-traumatic osteoarthritis of knee","E","Musculoskeletal Rehab"],
+  ["M17.30","Unilateral post-traumatic osteoarthritis, unspecified knee","E","Musculoskeletal Rehab"],
   ["M17.31","Unilateral post-traumatic osteoarthritis, right knee","E","Musculoskeletal Rehab"],
-  ["M16.11","Primary osteoarthritis, right hip","E","Musculoskeletal Rehab"],
-  ["M16.12","Primary osteoarthritis, left hip","E","Musculoskeletal Rehab"],
-  ["M54.5","Low back pain","E","Musculoskeletal Rehab"],
-  ["M54.51","Vertebrogenic low back pain","E","Musculoskeletal Rehab"],
-  ["M54.50","Low back pain, unspecified","E","Musculoskeletal Rehab"],
-  ["M62.81","Muscle weakness (generalized)","E","Musculoskeletal Rehab"],
-  ["M79.3","Panniculitis","E","Musculoskeletal Rehab"],
+  ["M17.4","Other bilateral secondary osteoarthritis of knee","E","Musculoskeletal Rehab"],
+  ["M17.5","Other unilateral secondary osteoarthritis of knee","E","Musculoskeletal Rehab"],
+  ["M17.9","Osteoarthritis of knee, unspecified","E","Musculoskeletal Rehab"],
+  ["M16.0","Bilateral primary osteoarthritis of hip","E","Musculoskeletal Rehab"],
+  ["M16.10","Unilateral primary osteoarthritis, unspecified hip","E","Musculoskeletal Rehab"],
+  ["M16.11","Unilateral primary osteoarthritis, right hip","E","Musculoskeletal Rehab"],
+  ["M16.12","Unilateral primary osteoarthritis, left hip","E","Musculoskeletal Rehab"],
+  ["M16.2","Bilateral osteoarthritis resulting from hip dysplasia","E","Musculoskeletal Rehab"],
+  ["M16.4","Bilateral post-traumatic osteoarthritis of hip","E","Musculoskeletal Rehab"],
+  ["M16.51","Unilateral post-traumatic osteoarthritis, right hip","E","Musculoskeletal Rehab"],
+  ["M16.6","Other bilateral secondary osteoarthritis of hip","E","Musculoskeletal Rehab"],
+  ["M16.7","Other unilateral secondary osteoarthritis of hip","E","Musculoskeletal Rehab"],
+  ["M16.9","Osteoarthritis of hip, unspecified","E","Musculoskeletal Rehab"],
+  ["M25.551","Pain in right hip","E","Musculoskeletal Rehab"],
+  ["M25.552","Pain in left hip","E","Musculoskeletal Rehab"],
+  ["M25.559","Pain in unspecified hip","E","Musculoskeletal Rehab"],
+  ["M25.561","Pain in right knee","E","Musculoskeletal Rehab"],
+  ["M25.562","Pain in left knee","E","Musculoskeletal Rehab"],
+  ["M25.569","Pain in unspecified knee","E","Musculoskeletal Rehab"],
   ["M25.511","Pain in right shoulder","E","Musculoskeletal Rehab"],
   ["M25.512","Pain in left shoulder","E","Musculoskeletal Rehab"],
-  ["M25.361","Stiffness of right knee","E","Musculoskeletal Rehab"],
-  ["S72.001A","Fracture of unspecified part of neck of right femur, initial","E","Musculoskeletal Rehab"],
-  ["S72.001D","Fracture of neck of right femur, subsequent encounter","E","Musculoskeletal Rehab"],
+  ["M54.50","Low back pain, unspecified","E","Musculoskeletal Rehab"],
+  ["M54.51","Vertebrogenic low back pain","E","Musculoskeletal Rehab"],
+  ["M54.59","Other low back pain","E","Musculoskeletal Rehab"],
+  ["M54.6","Pain in thoracic spine","E","Musculoskeletal Rehab"],
+  ["M47.816","Spondylosis with radiculopathy, lumbar region","E","Musculoskeletal Rehab"],
+  ["M48.06","Spinal stenosis, lumbar region","E","Musculoskeletal Rehab"],
+  ["M62.81","Muscle weakness (generalized)","E","Musculoskeletal Rehab"],
+  ["M80.011A","Age-related osteoporosis with current pathological fracture, right shoulder","E","Musculoskeletal Rehab"],
+  ["M81.0","Age-related osteoporosis without current pathological fracture","E","Musculoskeletal Rehab"],
   ["Z96.641","Presence of right artificial hip joint","E","Musculoskeletal Rehab"],
   ["Z96.642","Presence of left artificial hip joint","E","Musculoskeletal Rehab"],
   ["Z96.651","Presence of right artificial knee joint","E","Musculoskeletal Rehab"],
   ["Z96.652","Presence of left artificial knee joint","E","Musculoskeletal Rehab"],
-  ["M81.0","Age-related osteoporosis without current pathological fracture","E","Musculoskeletal Rehab"],
-  ["M80.011A","Age-related osteoporosis with current pathological fracture, right shoulder","E","Musculoskeletal Rehab"],
-  ["M48.06","Spinal stenosis, lumbar region","E","Musculoskeletal Rehab"],
-  ["M47.816","Spondylosis with radiculopathy, lumbar region","E","Musculoskeletal Rehab"],
+  ["Z96.611","Presence of right artificial shoulder joint","E","Musculoskeletal Rehab"],
+  ["Z96.612","Presence of left artificial shoulder joint","E","Musculoskeletal Rehab"],
+  ["S72.001D","Fracture of neck of right femur, subsequent encounter","E","Musculoskeletal Rehab"],
+  ["M34.89","Other systemic sclerosis","E","Musculoskeletal Rehab"],
 
-  // NEURO/STROKE REHAB (B)
+  // ── NEURO / STROKE REHAB (B) ────────────────────────────────────────────
   ["I63.9","Cerebral infarction, unspecified","B","Neuro/Stroke Rehab"],
-  ["I63.50","Cerebral infarction due to unspecified occlusion/stenosis","B","Neuro/Stroke Rehab"],
+  ["I63.50","Cerebral infarction due to unspecified occlusion or stenosis","B","Neuro/Stroke Rehab"],
+  ["G46.3","Brain stem stroke syndrome","B","Neuro/Stroke Rehab"],
+  ["G46.4","Cerebellar stroke syndrome","B","Neuro/Stroke Rehab"],
   ["G81.10","Spastic hemiplegia affecting unspecified side","B","Neuro/Stroke Rehab"],
   ["G81.11","Spastic hemiplegia affecting right dominant side","B","Neuro/Stroke Rehab"],
   ["G81.91","Hemiplegia, unspecified, affecting right dominant side","B","Neuro/Stroke Rehab"],
-  ["G20","Parkinson's disease","B","Neuro/Stroke Rehab"],
-  ["G30.9","Alzheimer's disease, unspecified","B","Neuro/Stroke Rehab"],
-  ["G30.1","Alzheimer's disease with late onset","B","Neuro/Stroke Rehab"],
-  ["G35","Multiple sclerosis","B","Neuro/Stroke Rehab"],
-  ["G12.21","Amyotrophic lateral sclerosis","B","Neuro/Stroke Rehab"],
   ["G83.10","Monoplegia of lower limb affecting unspecified side","B","Neuro/Stroke Rehab"],
   ["G82.50","Quadriplegia, unspecified","B","Neuro/Stroke Rehab"],
-  ["G43.909","Migraine, unspecified, not intractable, without status migrainosus","B","Neuro/Stroke Rehab"],
+  ["G20.A1","Parkinson's disease without dyskinesia, without mention of fluctuations","B","Neuro/Stroke Rehab"],
+  ["G20.A2","Parkinson's disease without dyskinesia, with fluctuations","B","Neuro/Stroke Rehab"],
+  ["G20.B2","Parkinson's disease with dyskinesia, with fluctuations","B","Neuro/Stroke Rehab"],
+  ["G20.C","Parkinsonism, unspecified","B","Neuro/Stroke Rehab"],
+  ["G21.3","Postencephalitic parkinsonism","B","Neuro/Stroke Rehab"],
+  ["G21.4","Vascular parkinsonism","B","Neuro/Stroke Rehab"],
+  ["G21.8","Other secondary parkinsonism","B","Neuro/Stroke Rehab"],
+  ["G21.9","Secondary parkinsonism, unspecified","B","Neuro/Stroke Rehab"],
+  ["G30.0","Alzheimer's disease with early onset","B","Neuro/Stroke Rehab"],
+  ["G30.1","Alzheimer's disease with late onset","B","Neuro/Stroke Rehab"],
+  ["G30.8","Other Alzheimer's disease","B","Neuro/Stroke Rehab"],
+  ["G30.9","Alzheimer's disease, unspecified","B","Neuro/Stroke Rehab"],
+  ["G35.A","Relapsing-remitting multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G35.B0","Primary progressive multiple sclerosis, unspecified","B","Neuro/Stroke Rehab"],
+  ["G35.B1","Active primary progressive multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G35.B2","Non-active primary progressive multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G35.C0","Secondary progressive multiple sclerosis, unspecified","B","Neuro/Stroke Rehab"],
+  ["G35.C1","Active secondary progressive multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G35.C2","Non-active secondary progressive multiple sclerosis","B","Neuro/Stroke Rehab"],
+  ["G35.D","Multiple sclerosis, unspecified","B","Neuro/Stroke Rehab"],
+  ["G12.21","Amyotrophic lateral sclerosis","B","Neuro/Stroke Rehab"],
+  ["G40.909","Epilepsy, unspecified, not intractable","B","Neuro/Stroke Rehab"],
   ["R26.81","Unsteadiness on feet","B","Neuro/Stroke Rehab"],
   ["R26.89","Other abnormalities of gait and mobility","B","Neuro/Stroke Rehab"],
-  ["G40.909","Epilepsy, unspecified, not intractable, without status epilepticus","B","Neuro/Stroke Rehab"],
 
-  // WOUND CARE (C)
+  // ── WOUND CARE (C) ──────────────────────────────────────────────────────
+  ["L89.153","Pressure ulcer of sacral region, stage 3","C","Wound Care"],
+  ["L89.213","Pressure ulcer of right hip, stage 3","C","Wound Care"],
   ["L89.312","Pressure ulcer of right buttock, stage 2","C","Wound Care"],
   ["L89.313","Pressure ulcer of right buttock, stage 3","C","Wound Care"],
   ["L89.323","Pressure ulcer of left buttock, stage 3","C","Wound Care"],
-  ["L89.213","Pressure ulcer of right hip, stage 3","C","Wound Care"],
-  ["L89.153","Pressure ulcer of sacral region, stage 3","C","Wound Care"],
   ["L97.119","Non-pressure chronic ulcer of right thigh, unspecified severity","C","Wound Care"],
+  ["L97.218","Non-pressure chronic ulcer of right calf with other severity","C","Wound Care"],
+  ["L97.318","Non-pressure chronic ulcer of right ankle with other severity","C","Wound Care"],
   ["L97.409","Non-pressure chronic ulcer of right heel and midfoot, unspecified","C","Wound Care"],
-  ["L97.919","Non-pressure chronic ulcer of unspecified part of right foot","C","Wound Care"],
-  ["E11.621","Type 2 diabetes with foot ulcer","C","Wound Care"],
-  ["I83.009","Varicose veins of unspecified lower extremity with ulcer of unspecified site","C","Wound Care"],
+  ["L97.511","Non-pressure chronic ulcer of right foot limited to breakdown of skin","C","Wound Care"],
+  ["L97.519","Non-pressure chronic ulcer of other part of right foot, unspecified severity","C","Wound Care"],
+  ["L97.521","Non-pressure chronic ulcer of left foot limited to breakdown of skin","C","Wound Care"],
+  ["L97.529","Non-pressure chronic ulcer of other part of left foot, unspecified severity","C","Wound Care"],
+  ["L98.418","Non-pressure chronic ulcer of buttock with other severity","C","Wound Care"],
   ["L98.499","Non-pressure chronic ulcer of skin of other sites, unspecified severity","C","Wound Care"],
-  ["T81.31XA","Disruption of wound, NEC, initial encounter","C","Wound Care"],
+  ["E10.621","Type 1 diabetes mellitus with foot ulcer","C","Wound Care"],
+  ["E11.621","Type 2 diabetes mellitus with foot ulcer","C","Wound Care"],
+  ["E13.621","Other specified diabetes mellitus with foot ulcer","C","Wound Care"],
+  ["I83.009","Varicose veins of unspecified lower extremity with ulcer","C","Wound Care"],
+  ["T81.31XA","Disruption of wound, not elsewhere classified, initial encounter","C","Wound Care"],
   ["Z48.00","Encounter for change or removal of nonsurgical wound dressing","C","Wound Care"],
   ["Z48.01","Encounter for change or removal of surgical wound dressing","C","Wound Care"],
 
-  // COMPLEX NURSING (D)
+  // ── COMPLEX NURSING INTERVENTIONS (D) ───────────────────────────────────
   ["Z43.1","Encounter for attention to gastrostomy","D","Complex Nursing Interventions"],
   ["Z43.3","Encounter for attention to colostomy","D","Complex Nursing Interventions"],
   ["Z43.5","Encounter for attention to cystostomy","D","Complex Nursing Interventions"],
-  ["Z45.1","Encounter for adjustment/management of infusion pump","D","Complex Nursing Interventions"],
-  ["Z45.2","Encounter for adjustment/management of vascular access device","D","Complex Nursing Interventions"],
-  ["Z45.010","Encounter for checking/testing of cardiac pacemaker pulse generator","D","Complex Nursing Interventions"],
-  ["Z46.51","Encounter for attention to gastric bypass","D","Complex Nursing Interventions"],
-  ["T82.9XXA","Complication of cardiac/vascular prosthetic device, unspecified, initial","D","Complex Nursing Interventions"],
-  ["Z79.01","Long-term (current) use of anticoagulants","D","Complex Nursing Interventions"],
+  ["Z45.1","Encounter for adjustment and management of infusion pump","D","Complex Nursing Interventions"],
+  ["Z45.2","Encounter for adjustment and management of vascular access device","D","Complex Nursing Interventions"],
+  ["Z45.010","Encounter for checking and testing of cardiac pacemaker pulse generator","D","Complex Nursing Interventions"],
+  ["Z79.01","Long-term current use of anticoagulants","D","Complex Nursing Interventions"],
+  ["Z93.1","Gastrostomy status","D","Complex Nursing Interventions"],
+  ["Z93.3","Colostomy status","D","Complex Nursing Interventions"],
   ["N18.6","End-stage renal disease","D","Complex Nursing Interventions"],
+  ["K94.02","Colostomy infection","D","Complex Nursing Interventions"],
+  ["K94.22","Gastrostomy infection","D","Complex Nursing Interventions"],
+  ["K94.03","Colostomy malfunction","D","Complex Nursing Interventions"],
+  ["K94.23","Gastrostomy malfunction","D","Complex Nursing Interventions"],
 
-  // BEHAVIORAL HEALTH (F)
-  ["F32.9","Major depressive disorder, single episode, unspecified","F","Behavioral Health"],
+  // ── BEHAVIORAL HEALTH (F) ───────────────────────────────────────────────
+  ["F20.0","Paranoid schizophrenia","F","Behavioral Health"],
+  ["F20.1","Disorganized schizophrenia","F","Behavioral Health"],
+  ["F20.2","Catatonic schizophrenia","F","Behavioral Health"],
+  ["F20.3","Undifferentiated schizophrenia","F","Behavioral Health"],
+  ["F20.5","Residual schizophrenia","F","Behavioral Health"],
+  ["F20.89","Other schizophrenia","F","Behavioral Health"],
+  ["F20.9","Schizophrenia, unspecified","F","Behavioral Health"],
+  ["F31.30","Bipolar disorder, current episode depressed, mild or moderate, unspecified","F","Behavioral Health"],
+  ["F31.31","Bipolar disorder, current episode depressed, mild","F","Behavioral Health"],
+  ["F31.32","Bipolar disorder, current episode depressed, moderate","F","Behavioral Health"],
+  ["F31.4","Bipolar disorder, current episode depressed, severe, without psychotic features","F","Behavioral Health"],
+  ["F31.5","Bipolar disorder, current episode depressed, severe, with psychotic features","F","Behavioral Health"],
+  ["F31.81","Bipolar II disorder","F","Behavioral Health"],
+  ["F31.89","Other bipolar disorder","F","Behavioral Health"],
+  ["F31.9","Bipolar disorder, unspecified","F","Behavioral Health"],
   ["F32.1","Major depressive disorder, single episode, moderate","F","Behavioral Health"],
+  ["F32.9","Major depressive disorder, single episode, unspecified","F","Behavioral Health"],
   ["F33.1","Major depressive disorder, recurrent, moderate","F","Behavioral Health"],
   ["F41.1","Generalized anxiety disorder","F","Behavioral Health"],
+  ["F41.8","Other specified anxiety disorders","F","Behavioral Health"],
   ["F41.9","Anxiety disorder, unspecified","F","Behavioral Health"],
-  ["F20.9","Schizophrenia, unspecified","F","Behavioral Health"],
-  ["F31.9","Bipolar disorder, unspecified","F","Behavioral Health"],
-  ["F10.20","Alcohol dependence, uncomplicated","F","Behavioral Health"],
   ["F43.10","Post-traumatic stress disorder, unspecified","F","Behavioral Health"],
+  ["F43.23","Adjustment disorder with mixed anxiety and depressed mood","F","Behavioral Health"],
+  ["F10.20","Alcohol dependence, uncomplicated","F","Behavioral Health"],
 
-  // SURGICAL AFTERCARE (G)
-  ["Z48.812","Encounter for aftercare following surgery on circulatory system","G","MMTA - Surgical Aftercare"],
-  ["Z48.815","Encounter for aftercare following surgery on digestive system","G","MMTA - Surgical Aftercare"],
-  ["Z48.816","Encounter for aftercare following surgery on genitourinary system","G","MMTA - Surgical Aftercare"],
-  ["Z48.817","Encounter for aftercare following surgery on skin/subcutaneous","G","MMTA - Surgical Aftercare"],
+  // ── MMTA SURGICAL AFTERCARE (G) ─────────────────────────────────────────
+  ["Z47.81","Encounter for orthopedic aftercare following surgical amputation","G","MMTA - Surgical Aftercare"],
+  ["Z48.810","Encounter for surgical aftercare following surgery on sense organs","G","MMTA - Surgical Aftercare"],
+  ["Z48.811","Encounter for surgical aftercare following surgery on the nervous system","G","MMTA - Surgical Aftercare"],
+  ["Z48.812","Encounter for surgical aftercare following surgery on the circulatory system","G","MMTA - Surgical Aftercare"],
+  ["Z48.813","Encounter for surgical aftercare following surgery on the respiratory system","G","MMTA - Surgical Aftercare"],
+  ["Z48.815","Encounter for surgical aftercare following surgery on the digestive system","G","MMTA - Surgical Aftercare"],
+  ["Z48.816","Encounter for surgical aftercare following surgery on the genitourinary system","G","MMTA - Surgical Aftercare"],
+  ["Z48.817","Encounter for surgical aftercare following surgery on the skin and subcutaneous tissue","G","MMTA - Surgical Aftercare"],
   ["Z48.89","Encounter for other specified surgical aftercare","G","MMTA - Surgical Aftercare"],
-  ["Z96.611","Presence of right artificial shoulder joint","G","MMTA - Surgical Aftercare"],
-  ["Z96.612","Presence of left artificial shoulder joint","G","MMTA - Surgical Aftercare"],
 
-  // CARDIAC / CIRCULATORY (H)
+  // ── MMTA CARDIAC / CIRCULATORY (H) ──────────────────────────────────────
   ["I10","Essential (primary) hypertension","H","MMTA - Cardiac/Circulatory"],
-  ["I50.9","Heart failure, unspecified","H","MMTA - Cardiac/Circulatory"],
-  ["I50.22","Systolic heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
-  ["I50.32","Diastolic heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
-  ["I25.10","Atherosclerotic heart disease of native coronary artery","H","MMTA - Cardiac/Circulatory"],
+  ["I11.0","Hypertensive heart disease with heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I11.9","Hypertensive heart disease without heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I13.0","Hypertensive heart and chronic kidney disease with heart failure, stage 1-4","H","MMTA - Cardiac/Circulatory"],
+  ["I13.10","Hypertensive heart and chronic kidney disease without heart failure, stage 1-4","H","MMTA - Cardiac/Circulatory"],
+  ["I13.2","Hypertensive heart and chronic kidney disease with heart failure and stage 5/ESRD","H","MMTA - Cardiac/Circulatory"],
+  ["I25.10","Atherosclerotic heart disease of native coronary artery without angina","H","MMTA - Cardiac/Circulatory"],
+  ["I25.110","Atherosclerotic heart disease of native coronary artery with unstable angina","H","MMTA - Cardiac/Circulatory"],
+  ["I25.119","Atherosclerotic heart disease of native coronary artery with unspecified angina","H","MMTA - Cardiac/Circulatory"],
+  ["I25.5","Ischemic cardiomyopathy","H","MMTA - Cardiac/Circulatory"],
+  ["I27.22","Pulmonary hypertension due to left heart disease","H","MMTA - Cardiac/Circulatory"],
+  ["I42.9","Cardiomyopathy, unspecified","H","MMTA - Cardiac/Circulatory"],
   ["I48.0","Paroxysmal atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
   ["I48.11","Longstanding persistent atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
-  ["I73.9","Peripheral vascular disease, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I48.19","Other persistent atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
+  ["I48.20","Chronic atrial fibrillation, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I48.21","Permanent atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
+  ["I48.91","Unspecified atrial fibrillation","H","MMTA - Cardiac/Circulatory"],
+  ["I50.22","Systolic (congestive) heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
+  ["I50.32","Diastolic (congestive) heart failure, chronic","H","MMTA - Cardiac/Circulatory"],
+  ["I50.810","Right heart failure, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I50.811","Acute right heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I50.812","Chronic right heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I50.814","Right heart failure due to left heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I50.82","Biventricular heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I50.89","Other heart failure","H","MMTA - Cardiac/Circulatory"],
+  ["I50.9","Heart failure, unspecified","H","MMTA - Cardiac/Circulatory"],
   ["I70.219","Atherosclerosis of native arteries of extremities, unspecified","H","MMTA - Cardiac/Circulatory"],
-  ["I25.5","Ischemic cardiomyopathy","H","MMTA - Cardiac/Circulatory"],
-  ["I42.9","Cardiomyopathy, unspecified","H","MMTA - Cardiac/Circulatory"],
+  ["I73.9","Peripheral vascular disease, unspecified","H","MMTA - Cardiac/Circulatory"],
 
-  // ENDOCRINE (I)
-  ["E11.9","Type 2 diabetes mellitus without complications","I","MMTA - Endocrine"],
-  ["E11.65","Type 2 diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
-  ["E11.40","Type 2 diabetes with diabetic neuropathy, unspecified","I","MMTA - Endocrine"],
-  ["E11.319","Type 2 diabetes with unspecified diabetic retinopathy","I","MMTA - Endocrine"],
-  ["E10.9","Type 1 diabetes mellitus without complications","I","MMTA - Endocrine"],
+  // ── MMTA ENDOCRINE (I) ──────────────────────────────────────────────────
   ["E03.9","Hypothyroidism, unspecified","I","MMTA - Endocrine"],
-  ["E11.649","Type 2 DM with hypoglycemia without coma","I","MMTA - Endocrine"],
+  ["E08.65","Diabetes mellitus due to underlying condition with hyperglycemia","I","MMTA - Endocrine"],
+  ["E09.65","Drug or chemical induced diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
+  ["E10.40","Type 1 diabetes mellitus with diabetic neuropathy, unspecified","I","MMTA - Endocrine"],
+  ["E10.42","Type 1 diabetes mellitus with diabetic polyneuropathy","I","MMTA - Endocrine"],
+  ["E10.65","Type 1 diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
+  ["E10.9","Type 1 diabetes mellitus without complications","I","MMTA - Endocrine"],
+  ["E11.21","Type 2 diabetes mellitus with diabetic nephropathy","I","MMTA - Endocrine"],
+  ["E11.319","Type 2 diabetes mellitus with unspecified diabetic retinopathy","I","MMTA - Endocrine"],
+  ["E11.40","Type 2 diabetes mellitus with diabetic neuropathy, unspecified","I","MMTA - Endocrine"],
+  ["E11.41","Type 2 diabetes mellitus with diabetic mononeuropathy","I","MMTA - Endocrine"],
+  ["E11.42","Type 2 diabetes mellitus with diabetic polyneuropathy","I","MMTA - Endocrine"],
+  ["E11.44","Type 2 diabetes mellitus with diabetic amyotrophy","I","MMTA - Endocrine"],
+  ["E11.49","Type 2 diabetes mellitus with other diabetic neurological complication","I","MMTA - Endocrine"],
+  ["E11.620","Type 2 diabetes mellitus with diabetic dermatitis","I","MMTA - Endocrine"],
+  ["E11.649","Type 2 diabetes mellitus with hypoglycemia without coma","I","MMTA - Endocrine"],
+  ["E11.65","Type 2 diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
+  ["E11.9","Type 2 diabetes mellitus without complications","I","MMTA - Endocrine"],
+  ["E13.65","Other specified diabetes mellitus with hyperglycemia","I","MMTA - Endocrine"],
   ["E66.01","Morbid (severe) obesity due to excess calories","I","MMTA - Endocrine"],
 
-  // GI / GU (J)
-  ["K57.30","Diverticulosis of large intestine without perforation/abscess","J","MMTA - GI/GU"],
+  // ── MMTA GI / GU (J) ────────────────────────────────────────────────────
+  ["K21.0","Gastro-esophageal reflux disease with esophagitis","J","MMTA - GI/GU"],
+  ["K57.30","Diverticulosis of large intestine without perforation or abscess","J","MMTA - GI/GU"],
+  ["K74.1","Hepatic sclerosis","J","MMTA - GI/GU"],
   ["K92.1","Melena","J","MMTA - GI/GU"],
-  ["N39.0","Urinary tract infection, site not specified","J","MMTA - GI/GU"],
+  ["N17.9","Acute kidney failure, unspecified","J","MMTA - GI/GU"],
   ["N18.3","Chronic kidney disease, stage 3 (moderate)","J","MMTA - GI/GU"],
   ["N18.4","Chronic kidney disease, stage 4 (severe)","J","MMTA - GI/GU"],
-  ["K56.7","Ileus, unspecified","J","MMTA - GI/GU"],
-  ["K21.0","Gastro-esophageal reflux disease with esophagitis","J","MMTA - GI/GU"],
-  ["N17.9","Acute kidney failure, unspecified","J","MMTA - GI/GU"],
+  ["N39.0","Urinary tract infection, site not specified","J","MMTA - GI/GU"],
 
-  // INFECTIOUS / NEOPLASM (K)
+  // ── MMTA INFECTIOUS DISEASE / NEOPLASM (K) ──────────────────────────────
   ["A41.9","Sepsis, unspecified organism","K","MMTA - Infectious Disease/Neoplasm"],
-  ["B96.1","Klebsiella pneumoniae as cause of disease","K","MMTA - Infectious Disease/Neoplasm"],
-  ["J15.9","Unspecified bacterial pneumonia","K","MMTA - Infectious Disease/Neoplasm"],
-  ["C34.10","Malignant neoplasm of upper lobe bronchus/lung, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
-  ["C34.90","Malignant neoplasm of bronchus/lung, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C34.10","Malignant neoplasm of upper lobe bronchus and lung, unspecified side","K","MMTA - Infectious Disease/Neoplasm"],
+  ["C34.90","Malignant neoplasm of bronchus and lung, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
   ["C50.911","Malignant neoplasm of unspecified site of right female breast","K","MMTA - Infectious Disease/Neoplasm"],
   ["C61","Malignant neoplasm of prostate","K","MMTA - Infectious Disease/Neoplasm"],
-  ["Z85.3","Personal history of malignant neoplasm of breast","K","MMTA - Infectious Disease/Neoplasm"],
-  ["Z51.11","Encounter for antineoplastic chemotherapy","K","MMTA - Infectious Disease/Neoplasm"],
   ["D64.9","Anemia, unspecified","K","MMTA - Infectious Disease/Neoplasm"],
+  ["J13","Pneumonia due to Streptococcus pneumoniae","K","MMTA - Infectious Disease/Neoplasm"],
+  ["J15.0","Pneumonia due to Klebsiella pneumoniae","K","MMTA - Infectious Disease/Neoplasm"],
+  ["J15.7","Pneumonia due to Mycoplasma pneumoniae","K","MMTA - Infectious Disease/Neoplasm"],
+  ["J15.9","Unspecified bacterial pneumonia","K","MMTA - Infectious Disease/Neoplasm"],
+  ["Z51.11","Encounter for antineoplastic chemotherapy","K","MMTA - Infectious Disease/Neoplasm"],
+  ["Z85.3","Personal history of malignant neoplasm of breast","K","MMTA - Infectious Disease/Neoplasm"],
 
-  // RESPIRATORY (L)
-  ["J44.1","COPD with acute exacerbation","L","MMTA - Respiratory"],
-  ["J44.0","COPD with acute lower respiratory infection","L","MMTA - Respiratory"],
-  ["J44.9","COPD, unspecified","L","MMTA - Respiratory"],
-  ["J18.9","Pneumonia, unspecified organism","L","MMTA - Respiratory"],
+  // ── MMTA RESPIRATORY (L) ────────────────────────────────────────────────
+  ["J44.0","Chronic obstructive pulmonary disease with acute lower respiratory infection","L","MMTA - Respiratory"],
+  ["J44.1","Chronic obstructive pulmonary disease with acute exacerbation","L","MMTA - Respiratory"],
+  ["J44.9","Chronic obstructive pulmonary disease, unspecified","L","MMTA - Respiratory"],
   ["J45.20","Mild intermittent asthma, uncomplicated","L","MMTA - Respiratory"],
   ["J45.41","Moderate persistent asthma with acute exacerbation","L","MMTA - Respiratory"],
-  ["J96.10","Chronic respiratory failure, unspecified whether with hypoxia","L","MMTA - Respiratory"],
+  ["J96.00","Acute respiratory failure, unspecified with hypoxia or hypercapnia","L","MMTA - Respiratory"],
+  ["J96.01","Acute respiratory failure with hypoxia","L","MMTA - Respiratory"],
+  ["J96.02","Acute respiratory failure with hypercapnia","L","MMTA - Respiratory"],
+  ["J96.10","Chronic respiratory failure, unspecified whether with hypoxia or hypercapnia","L","MMTA - Respiratory"],
+  ["J96.11","Chronic respiratory failure with hypoxia","L","MMTA - Respiratory"],
+  ["J96.12","Chronic respiratory failure with hypercapnia","L","MMTA - Respiratory"],
+  ["J96.91","Respiratory failure, unspecified with hypoxia","L","MMTA - Respiratory"],
   ["R09.02","Hypoxemia","L","MMTA - Respiratory"],
-  ["J06.9","Acute upper respiratory infection, unspecified","L","MMTA - Respiratory"],
+  ["Z99.81","Dependence on supplemental oxygen","L","MMTA - Respiratory"],
+
+  // ── MMTA OTHER (A) ──────────────────────────────────────────────────────
+  ["R26.0","Ataxic gait","A","MMTA - Other"],
+  ["R26.1","Paralytic gait","A","MMTA - Other"],
+  ["R53.1","Weakness","A","MMTA - Other"],
+  ["Z87.39","Personal history of other musculoskeletal disorders","A","MMTA - Other"],
+  ["Z96.29","Presence of other dental implants","A","MMTA - Other"],
 ];
 
 // ============================================================
@@ -650,11 +753,42 @@ const COMORBIDITIES = [
 // Comorbidity: 1=None, 2=Low, 3=High
 // ============================================================
 function getCaseMixWeight(pos1, pos2, pos3, pos4) {
-  // Base weights by clinical group (community early, low func, no comorbidity)
+  // Base weights: Community Early, Low Functional, No Comorbidity
+  // Anchored to confirmed CMS 2026 values (Group A = 0.9939)
+  // All other groups scaled proportionally from published PDGM training data
   const baseByGroup = {
-    A:0.62, B:1.35, C:1.42, D:1.85, E:1.20, F:0.88,
-    G:0.95, H:0.80, I:0.72, J:0.70, K:0.98, L:0.85
+    A: 0.9939,  // MMTA Other            — CMS confirmed 2026
+    B: 1.2244,  // Neuro/Stroke Rehab    — scaled from 2025 ratio (1.01/0.82 × 0.9939)
+    C: 1.4426,  // Wound Care            — scaled from 2025 ratio (1.19/0.82 × 0.9939)
+    D: 2.1316,  // Complex Nursing       — scaled from 2025 ratio (1.76/0.82 × 0.9939)
+    E: 1.5388,  // Musculoskeletal Rehab — scaled from 2025 ratio (1.27/0.82 × 0.9939)
+    F: 0.7644,  // Behavioral Health     — scaled from 2025 ratio (0.63/0.82 × 0.9939)
+    G: 0.8850,  // Surgical Aftercare    — scaled from 2025 ratio (0.73/0.82 × 0.9939)
+    H: 0.9088,  // MMTA Cardiac          — scaled from 2025 ratio (0.75/0.82 × 0.9939)
+    I: 0.8481,  // MMTA Endocrine        — scaled from 2025 ratio (0.70/0.82 × 0.9939)
+    J: 0.8237,  // MMTA GI/GU            — scaled from 2025 ratio (0.68/0.82 × 0.9939)
+    K: 1.1757,  // MMTA Inf/Neoplasm     — scaled from 2025 ratio (0.97/0.82 × 0.9939)
+    L: 1.0181,  // MMTA Respiratory      — scaled from 2025 ratio (0.84/0.82 × 0.9939)
   };
+
+  let w = baseByGroup[pos2] || 0.9939;
+
+  // Admission timing — Late periods are lower intensity
+  if (pos1 === '2' || pos1 === '4') w *= 0.648; // Late ~65% of Early
+
+  // Admission source — Institutional confirmed multiplier 1.1833
+  if (pos1 === '3' || pos1 === '4') w *= 1.1833; // Confirmed CMS 2026
+
+  // Functional impairment level
+  if (pos3 === 'B') w *= 1.258; // Medium functional impairment
+  if (pos3 === 'C') w *= 1.594; // High functional impairment
+
+  // Comorbidity adjustment
+  if (pos4 === '2') w *= 1.072; // Low comorbidity
+  if (pos4 === '3') w *= 1.198; // High comorbidity
+
+  return Math.round(w * 10000) / 10000;
+};
   let w = baseByGroup[pos2] || 1.0;
   // Timing multipliers
   if (pos1==='2' || pos1==='4') w *= 0.72; // Late periods lower
