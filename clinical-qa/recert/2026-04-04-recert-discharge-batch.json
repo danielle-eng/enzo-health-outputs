@@ -1,0 +1,179 @@
+{
+  "agency_id": "SUNRISE",
+  "date": "2026-04-04",
+  "window_days": 14,
+  "patients_evaluated": 3,
+  "recertify_count": 3,
+  "discharge_count": 0,
+  "results": [
+    {
+      "patient_id": "PT-2001",
+      "patient_name": "Margaret Chen",
+      "cert_end_date": "2026-04-12",
+      "recommendation": "RECERTIFY",
+      "confidence": 100,
+      "domains": {
+        "homebound_status": {
+          "supported": true,
+          "strength": "Strong",
+          "indicators_found": [
+            "homebound",
+            "taxing effort",
+            "considerable effort",
+            "requires assistance to leave",
+            "walker"
+          ],
+          "note": "Homebound status is documented in recent visit notes."
+        },
+        "skilled_nursing": {
+          "ongoing": true,
+          "level": "High",
+          "skilled_needs_identified": [
+            "wound assessment",
+            "insulin",
+            "complex medication management",
+            "medication teaching",
+            "skilled observation",
+            "port"
+          ],
+          "discharge_signals": []
+        },
+        "therapy": {
+          "ongoing": true,
+          "level": "Active therapy with measurable goals",
+          "therapy_needs_identified": [
+            "physical therapy",
+            "therapeutic exercise",
+            "gait training",
+            "balance training",
+            "strengthening"
+          ],
+          "active_disciplines": [
+            "PT"
+          ],
+          "goals_documented": true,
+          "goals_met_signal": false
+        },
+        "safety_caregiver": {
+          "warrants_continued_care": true,
+          "level": "Moderate \u2014 safety concerns noted",
+          "concerns_identified": [
+            "fall risk",
+            "fall precautions",
+            "confusion",
+            "caregiver"
+          ],
+          "high_concern_flags": []
+        }
+      },
+      "rationale": "patient continues to meet Medicare homebound criteria (homebound, taxing effort); ongoing skilled nursing needs include wound assessment, insulin, complex medication management; PT services are ongoing with active functional goals that have not yet been achieved; safety and caregiver concerns (fall risk, fall precautions) warrant continued skilled oversight"
+    },
+    {
+      "patient_id": "PT-2002",
+      "patient_name": "Robert Williams",
+      "cert_end_date": "2026-04-09",
+      "recommendation": "RECERTIFY",
+      "confidence": 100,
+      "domains": {
+        "homebound_status": {
+          "supported": true,
+          "strength": "Present but limited",
+          "indicators_found": [
+            "homebound",
+            "shortness of breath"
+          ],
+          "note": "Homebound status is documented in recent visit notes."
+        },
+        "skilled_nursing": {
+          "ongoing": true,
+          "level": "Moderate",
+          "skilled_needs_identified": [
+            "port",
+            "cardiac monitoring"
+          ],
+          "discharge_signals": []
+        },
+        "therapy": {
+          "ongoing": true,
+          "level": "Active therapy with measurable goals",
+          "therapy_needs_identified": [
+            "activities of daily living",
+            "adaptive equipment",
+            "energy conservation"
+          ],
+          "active_disciplines": [
+            "OT"
+          ],
+          "goals_documented": true,
+          "goals_met_signal": false
+        },
+        "safety_caregiver": {
+          "warrants_continued_care": true,
+          "level": "Moderate \u2014 safety concerns noted",
+          "concerns_identified": [
+            "caregiver",
+            "caregiver burden",
+            "caregiver fatigue"
+          ],
+          "high_concern_flags": [
+            "caregiver burden"
+          ]
+        }
+      },
+      "rationale": "patient continues to meet Medicare homebound criteria (homebound, shortness of breath); ongoing skilled nursing needs include port, cardiac monitoring; OT services are ongoing with active functional goals that have not yet been achieved; safety and caregiver concerns (caregiver, caregiver burden) warrant continued skilled oversight"
+    },
+    {
+      "patient_id": "PT-2003",
+      "patient_name": "Dorothy Alvarez",
+      "cert_end_date": "2026-04-06",
+      "recommendation": "RECERTIFY",
+      "confidence": 64,
+      "domains": {
+        "homebound_status": {
+          "supported": true,
+          "strength": "Present but limited",
+          "indicators_found": [
+            "homebound"
+          ],
+          "note": "Homebound status is documented in recent visit notes."
+        },
+        "skilled_nursing": {
+          "ongoing": true,
+          "level": "High",
+          "skilled_needs_identified": [
+            "wound care",
+            "insulin",
+            "ostomy",
+            "port",
+            "surgical wound",
+            "colostomy"
+          ],
+          "discharge_signals": [
+            "goals met",
+            "independent",
+            "self-managing"
+          ]
+        },
+        "therapy": {
+          "ongoing": false,
+          "level": "No therapy need documented",
+          "therapy_needs_identified": [],
+          "active_disciplines": [],
+          "goals_documented": true,
+          "goals_met_signal": true
+        },
+        "safety_caregiver": {
+          "warrants_continued_care": false,
+          "level": "Low \u2014 minor concerns documented",
+          "concerns_identified": [
+            "lives alone"
+          ],
+          "high_concern_flags": [
+            "lives alone"
+          ]
+        }
+      },
+      "rationale": "patient continues to meet Medicare homebound criteria (homebound); ongoing skilled nursing needs include wound care, insulin, ostomy"
+    }
+  ]
+}
