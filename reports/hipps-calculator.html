@@ -873,7 +873,7 @@ function updateCalc() {
 }
 
 // Close ICD dropdown on outside click
-document.addEventListener('click', e => {
+document.addEventListener('mousedown', e => {
   if (!e.target.closest('.icd-search-wrap')) {
     document.getElementById('icdResults').style.display = 'none';
   }
