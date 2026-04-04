@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunrise Home Health Executive Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Roboto", sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #f9f9f9 100%);
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .header-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .header-title {
+            text-align: left;
+        }
+
+        .header-title h1 {
+            font-size: 32px;
+            color: #0EA5E9;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .header-meta {
+            text-align: center;
+            border-left: 1px solid #e5e5e5;
+            border-right: 1px solid #e5e5e5;
+            padding: 0 20px;
+        }
+
+        .header-meta h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .header-meta p {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .header-powered {
+            text-align: right;
+        }
+
+        .header-powered p {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .header-powered .powered-by {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0EA5E9;
+            display: inline-block;
+            background: #E0F7FF;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        /* KPI CARDS */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .kpi-card.red {
+            border-left-color: #ef4444;
+        }
+
+        .kpi-card.yellow {
+            border-left-color: #f59e0b;
+        }
+
+        .kpi-card.green {
+            border-left-color: #10b981;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .kpi-value.red {
+            color: #ef4444;
+        }
+
+        .kpi-value.yellow {
+            color: #f59e0b;
+        }
+
+        .kpi-value.green {
+            color: #10b981;
+        }
+
+        .kpi-detail {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-trend {
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: #0EA5E9;
+            width: 40px;
+            margin-right: auto;
+        }
+
+        /* QUALITY MEASURES CHART */
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 450px;
+            margin-top: 20px;
+        }
+
+        /* SENSITIVITY ANALYSIS */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .scenario-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .scenario-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e5e5e5;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #10b981 100%);
+            transition: width 0.3s ease;
+        }
+
+        .scenario-description {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        /* GAUGE */
+        .gauge-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .gauge-svg {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+
+        .gauge-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 8px;
+        }
+
+        .gauge-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        .deficiency-list {
+            text-align: left;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .deficiency-item {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .deficiency-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+        }
+
+        /* ALERTS */
+        .alerts-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .alert-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            border-left: 4px solid;
+        }
+
+        .alert-item.urgent {
+            background: #FEE2E2;
+            border-left-color: #ef4444;
+        }
+
+        .alert-item.watch {
+            background: #FEF3C7;
+            border-left-color: #f59e0b;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-content h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .alert-content p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* QA SUMMARY */
+        .qa-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .qa-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .qa-stat {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 3px solid #0EA5E9;
+        }
+
+        .qa-stat-title {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .qa-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .qa-stat-detail {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .qa-breakdown {
+            margin-top: 20px;
+        }
+
+        .qa-breakdown-title {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .discipline-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #666;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .discipline-row:last-child {
+            border-bottom: none;
+        }
+
+        /* RISK PATIENTS */
+        .risk-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .risk-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .risk-count {
+            padding: 20px;
+            background: #FEE2E2;
+            border-radius: 6px;
+            border-left: 3px solid #ef4444;
+        }
+
+        .risk-count-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ef4444;
+        }
+
+        .risk-count-label {
+            font-size: 13px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .risk-criteria {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 3px solid #0EA5E9;
+        }
+
+        .risk-criteria-title {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .risk-criteria-item {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .risk-criteria-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #0EA5E9;
+        }
+
+        /* PIPS */
+        .pips-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .pip-item {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .pip-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .pip-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .pip-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .pip-detail {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .pip-detail-label {
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .pip-progress {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-bar-lg {
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill-blue {
+            height: 100%;
+            background: #0EA5E9;
+            transition: width 0.3s ease;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-top: 40px;
+        }
+
+        .footer a {
+            color: #0EA5E9;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header-meta {
+                border-left: none;
+                border-right: none;
+                border-bottom: 1px solid #e5e5e5;
+                padding: 20px 0;
+            }
+
+            .header-powered {
+                text-align: left;
+            }
+
+            .kpi-section {
+                grid-template-columns: 1fr;
+            }
+
+            .qa-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .risk-header {
+                grid-template-columns: 1fr;
+            }
+
+            .pip-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .header, .kpi-card, .chart-container, .scenario-card, .gauge-container,
+            .alerts-container, .qa-summary, .risk-panel, .pips-container, .footer {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+
+            .kpi-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Enzo Health</h1>
+                    <p>Executive Dashboard</p>
+                </div>
+                <div class="header-meta">
+                    <h2>Sunrise Home Health</h2>
+                    <p>Q1 2026 | Generated April 4, 2026</p>
+                </div>
+                <div class="header-powered">
+                    <p>Powered by</p>
+                    <span class="powered-by">Enzo AI Agent Suite</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Key Performance Indicators
+        </div>
+
+        <div class="kpi-section">
+            <div class="kpi-card red">
+                <div class="kpi-label">Hospitalization Rate</div>
+                <div class="kpi-value red">24.0%</div>
+                <div class="kpi-detail">
+                    <span class="kpi-trend">▲</span>
+                    vs 14.7% benchmark (+9.3%)
+                </div>
+            </div>
+
+            <div class="kpi-card red">
+                <div class="kpi-label">HHVBP Payment Adjustment</div>
+                <div class="kpi-value red">-4.8%</div>
+                <div class="kpi-detail">
+                    <span class="kpi-trend">📉</span>
+                    -$24,000 annually
+                </div>
+            </div>
+
+            <div class="kpi-card yellow">
+                <div class="kpi-label">Survey Readiness Score</div>
+                <div class="kpi-value yellow">64/100</div>
+                <div class="kpi-detail">
+                    <span class="kpi-trend">⚠</span>
+                    Gap to survey-ready: -26 points
+                </div>
+            </div>
+
+            <div class="kpi-card red">
+                <div class="kpi-label">Notes Passing QA</div>
+                <div class="kpi-value red">30%</div>
+                <div class="kpi-detail">
+                    <span class="kpi-trend">📋</span>
+                    3 of 10 records compliant
+                </div>
+            </div>
+        </div>
+
+        <!-- QUALITY MEASURES CHART -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Quality Measures: Agency vs. National Benchmark
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="qualityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- HHVBP SENSITIVITY ANALYSIS -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            HHVBP Sensitivity Analysis: Impact Scenarios
+        </div>
+
+        <div class="scenario-grid">
+            <div class="scenario-card">
+                <div class="scenario-title">Current State</div>
+                <div class="scenario-value" style="color: #ef4444;">-4.8%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 15%;"></div>
+                </div>
+                <div class="scenario-description">TPS: 63/100 — Significant penalty from below-benchmark performance</div>
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-title">Hosp. PIP Success</div>
+                <div class="scenario-value" style="color: #f59e0b;">-3.8%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 35%;"></div>
+                </div>
+                <div class="scenario-description">Reduce hosp. rate 24% → 16%: +$1,808/yr recovery</div>
+            </div>
+
+            <div class="scenario-card">
+                <div class="scenario-title">All Measures at Benchmark</div>
+                <div class="scenario-value" style="color: #10b981;">-1.8%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
+                </div>
+                <div class="scenario-description">Best case: All improvements realized = +$9,773/yr recovery</div>
+            </div>
+        </div>
+
+        <!-- SURVEY READINESS GAUGE -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Survey Readiness Assessment
+        </div>
+
+        <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 200 200">
+                <!-- Background arc -->
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#e5e5e5" stroke-width="20" stroke-dasharray="251.33 377" stroke-dashoffset="-62.83"/>
+                <!-- Active arc (64%) -->
+                <circle cx="100" cy="100" r="80" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="241.15 377" stroke-dashoffset="-62.83" stroke-linecap="round"/>
+                <!-- Center circle -->
+                <circle cx="100" cy="100" r="55" fill="white"/>
+            </svg>
+            <div class="gauge-score">64</div>
+            <div class="gauge-label">Overall Survey Readiness / 100</div>
+            <p style="font-size: 13px; color: #ef4444; margin-bottom: 20px; font-weight: 600;">NOT SURVEY-READY — 26-point gap identified</p>
+            <div class="deficiency-list">
+                <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Top 3 Deficiency Categories</div>
+                <div class="deficiency-item">Skilled Services Documentation (30% of records lack adequate justification) — E-level</div>
+                <div class="deficiency-item">Objective Measurement Gaps (40% missing weight/ROM/assessments) — D/E-level</div>
+                <div class="deficiency-item">PT Department Supervision (Pattern of documentation deficiencies in 2 clinicians) — CRITICAL</div>
+            </div>
+        </div>
+
+        <!-- REGULATORY ALERTS -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Regulatory Alerts & Compliance Watch List
+        </div>
+
+        <div class="alerts-container">
+            <div class="alert-item urgent">
+                <div class="alert-icon">🔴</div>
+                <div class="alert-content">
+                    <h3>URGENT: OASIS-E2 Implementation (Effective April 1, 2026)</h3>
+                    <p>All assessments dated 04/01/2026 or later must use OASIS-E2. Key changes: Gender→Sex, remove COVID vaccination items, add sensory assessment items. Enzo Scribe and Intake require immediate updates for compliance.</p>
+                </div>
+            </div>
+
+            <div class="alert-item urgent">
+                <div class="alert-icon">🔴</div>
+                <div class="alert-content">
+                    <h3>URGENT: CY 2026 HH PPS Final Rule (-1.3% Payment Reduction)</h3>
+                    <p>Effective 01/01/2026: Aggregate payment reduction of 1.3% (-$220M Medicare-wide). Sunrise Home Health baseline: $500K annual Medicare revenue. Estimated annual impact: -$6,500. Implement efficiency gains to offset.</p>
+                </div>
+            </div>
+
+            <div class="alert-item watch">
+                <div class="alert-icon">🟡</div>
+                <div class="alert-content">
+                    <h3>WATCH: HHVBP Model Updates (CY 2026 Changes)</h3>
+                    <p>Removal of 3 HHCAHPS measures; addition of new bathing/dressing functional measures. Total Performance Score calculation revised. CY 2026 performance determines CY 2028 payment adjustments (2-year lag). Ensure proper documentation of new functional measures.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLINICAL DOCUMENTATION QA SUMMARY -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Clinical Documentation QA Summary
+        </div>
+
+        <div class="qa-summary">
+            <div class="qa-grid">
+                <div class="qa-stat">
+                    <div class="qa-stat-title">Pass / Fail Distribution</div>
+                    <div class="qa-stat-value">3/10</div>
+                    <div class="qa-stat-detail">Passing QA (30% compliance rate)</div>
+                </div>
+                <div class="qa-stat">
+                    <div class="qa-stat-title">Deficiency Severity</div>
+                    <div class="qa-stat-value" style="color: #ef4444;">8</div>
+                    <div class="qa-stat-detail">D/E-level findings (high audit risk)</div>
+                </div>
+            </div>
+
+            <div class="qa-breakdown">
+                <div class="qa-breakdown-title">Average Scores by Discipline</div>
+                <div class="discipline-row">
+                    <span>Registered Nurses (RN)</span>
+                    <strong>67%</strong>
+                </div>
+                <div class="discipline-row">
+                    <span>Physical Therapy (PT)</span>
+                    <strong>40%</strong>
+                </div>
+                <div class="discipline-row">
+                    <span>Occupational Therapy (OT)</span>
+                    <strong>50%</strong>
+                </div>
+                <div class="discipline-row">
+                    <span>Speech-Language Pathology (SLP)</span>
+                    <strong>50%</strong>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: #FEE2E2; border-radius: 6px; border-left: 3px solid #ef4444;">
+                <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">Critical Documentation Gaps Identified</div>
+                <ul style="margin-left: 20px;">
+                    <li style="font-size: 13px; color: #666; margin-bottom: 6px;">Missing physician orders (30% of PT records)</li>
+                    <li style="font-size: 13px; color: #666; margin-bottom: 6px;">Insufficient objective measurements (40% of records lack ROM/weight)</li>
+                    <li style="font-size: 13px; color: #666;">Boilerplate/generic clinical language in 20% of notes</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- HIGH-RISK PATIENTS PANEL -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            High-Risk Patient Monitoring
+        </div>
+
+        <div class="risk-panel">
+            <div class="risk-header">
+                <div class="risk-count">
+                    <div class="risk-count-value">5</div>
+                    <div class="risk-count-label">Patients Flagged as High-Risk</div>
+                </div>
+                <div class="risk-criteria">
+                    <div class="risk-criteria-title">Risk Criteria Applied</div>
+                    <div class="risk-criteria-item">Hospitalization in past 30 days</div>
+                    <div class="risk-criteria-item">Chronic conditions (COPD, CHF, HTN)</div>
+                    <div class="risk-criteria-item">Medication non-compliance patterns</div>
+                    <div class="risk-criteria-item">Functional decline trajectory</div>
+                    <div class="risk-criteria-item">Caregiver support limitations</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 16px; background: #E0F7FF; border-radius: 6px; border-left: 3px solid #0EA5E9;">
+                <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 600;">Active Interventions</div>
+                <div style="font-size: 13px; color: #333; font-weight: 600; margin-bottom: 8px;">2 of 5 interventions active:</div>
+                <div style="margin-left: 20px;">
+                    <div style="font-size: 13px; color: #666; margin-bottom: 6px;">✓ Daily vital sign monitoring (2 patients)</div>
+                    <div style="font-size: 13px; color: #666;">✓ Enhanced care coordination with PCP (3 patients pending)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE PIPS -->
+        <div class="section-title">
+            <div class="section-divider"></div>
+            Performance Improvement Projects (PIPs)
+        </div>
+
+        <div class="pips-container">
+            <div class="pip-item">
+                <div class="pip-title">Hospitalization Reduction Initiative</div>
+                <div class="pip-details">
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Current Rate</div>
+                        <div class="pip-progress">24.0%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Target (by Q3 2026)</div>
+                        <div class="pip-progress">≤16.0%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Improvement Needed</div>
+                        <div class="pip-progress">8 percentage points</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">Progress: 2 of 7 interventions active (14%)</div>
+                    <div class="progress-bar-lg">
+                        <div class="progress-fill-blue" style="width: 14%;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: #666;">Key Interventions: Daily vital monitoring, 24/7 clinical hotline, staff education on early warning signs, medication compliance protocols</div>
+            </div>
+
+            <div class="pip-item">
+                <div class="pip-title">ED Utilization Reduction</div>
+                <div class="pip-details">
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Current Rate</div>
+                        <div class="pip-progress">10.0%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Target (by Q3 2026)</div>
+                        <div class="pip-progress">≤8.2%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Improvement Needed</div>
+                        <div class="pip-progress">1.8 percentage points</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">Progress: Initiation phase</div>
+                    <div class="progress-bar-lg">
+                        <div class="progress-fill-blue" style="width: 8%;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: #666;">Key Interventions: Patient education on symptom recognition, after-hours triage protocols, ED handoff procedures</div>
+            </div>
+
+            <div class="pip-item">
+                <div class="pip-title">Timely Assessment Implementation</div>
+                <div class="pip-details">
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Current Compliance</div>
+                        <div class="pip-progress">92.0%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Target (by Q2 2026)</div>
+                        <div class="pip-progress">≥96.0%</div>
+                    </div>
+                    <div class="pip-detail">
+                        <div class="pip-detail-label">Improvement Needed</div>
+                        <div class="pip-progress">4 percentage points</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600;">Progress: Planning phase</div>
+                    <div class="progress-bar-lg">
+                        <div class="progress-fill-blue" style="width: 5%;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 12px; color: #666;">Key Interventions: Automated SOC scheduling, administrative flagging, capacity allocation during peak admissions</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Enzo Health AI Agent Suite | Reports updated automatically | <a href="https://github.com/danielle-eng/enzo-health-outputs">github.com/danielle-eng/enzo-health-outputs</a></p>
+            <p style="margin-top: 8px;">Dashboard generated by CEO Agent (Wave 1 & Wave 2 Agent Synthesis)</p>
+        </div>
+    </div>
+
+    <script>
+        // Quality Measures Chart
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+
+        const qualityData = {
+            labels: [
+                'Acute Care Hospitalization',
+                'Emergency Department Use',
+                'Discharge to Community',
+                'Timely Initiation of Care',
+                'Improvement in Ambulation',
+                'Improvement in Bathing',
+                'Improvement in Dyspnea',
+                'Improvement in Pain',
+                'Improvement in Medication Mgmt'
+            ],
+            datasets: [
+                {
+                    label: 'Agency Rate',
+                    data: [24.0, 10.0, 52.0, 92.0, 48.0, 62.0, 54.0, 38.0, 41.0],
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                    borderColor: 'rgba(239, 68, 68, 1)',
+                    borderWidth: 1,
+                    barPercentage: 0.8
+                },
+                {
+                    label: 'National Benchmark',
+                    data: [14.7, 8.2, 61.8, 96.3, 53.2, 67.1, 57.9, 42.5, 38.1],
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1,
+                    barPercentage: 0.8
+                }
+            ]
+        };
+
+        const qualityChart = new Chart(qualityCtx, {
+            type: 'bar',
+            data: qualityData,
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 12, family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter'" },
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.x.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            font: { size: 11 },
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: { size: 11 }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Smooth scroll for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

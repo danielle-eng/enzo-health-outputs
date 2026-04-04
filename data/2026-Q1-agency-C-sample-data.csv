@@ -1,0 +1,61 @@
+PatientID,AdmissionDate,DischargeDate,Payer,PrimaryDiagnosisICD10,PrimaryDiagnosisDescription,Hospitalization,HospitalizationDate,EDVisit,DischargeDisposition,OASISSOCDate,OASISDCDate,TimelyInitiation,Notes
+C001,01/03/2026,03/20/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,02/05/2026,0,Transferred to acute care hospital,01/15/2026,03/18/2026,1,Post-discharge complications
+C002,01/05/2026,03/10/2026,Medicare,I10,Essential (primary) hypertension,1,01/25/2026,1,Discharged to facility (SNF/other),01/18/2026,03/08/2026,1,Multiple acute events
+C003,01/04/2026,02/28/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,02/08/2026,1,Discharged to home/self-care,01/16/2026,02/27/2026,0,Delayed SOC; COPD exacerbation
+C004,01/08/2026,03/15/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,1,01/28/2026,0,Transferred to acute care hospital,01/20/2026,03/13/2026,1,Early post-op complication
+C005,01/12/2026,03/05/2026,Medicare,I63.9,"Cerebral infarction, unspecified",1,02/02/2026,1,Discharged to facility (SNF/other),01/28/2026,03/03/2026,1,Recurrent neurological events
+C006,01/14/2026,03/22/2026,Medicare,I50.9,"Heart failure, unspecified",1,02/12/2026,0,Discharged to facility (SNF/other),01/27/2026,03/20/2026,1,Decompensated CHF
+C007,01/17/2026,03/12/2026,Medicare,J18.9,"Pneumonia, unspecified",1,02/02/2026,1,Discharged to home/self-care,02/03/2026,03/10/2026,1,Respiratory deterioration
+C008,01/19/2026,03/11/2026,Medicaid,E11.9,Type 2 diabetes mellitus without complications,0,,1,Discharged to facility (SNF/other),02/02/2026,03/09/2026,0,Delayed assessment; ED visit
+C009,01/21/2026,02/25/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,02/15/2026,0,Patient expired,02/08/2026,02/24/2026,1,Hip complications; patient expired
+C010,01/22/2026,03/18/2026,Medicare,I10,Essential (primary) hypertension,1,02/15/2026,0,Discharged to facility (SNF/other),02/05/2026,03/16/2026,1,Uncontrolled HTN episode
+C011,01/25/2026,02/20/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,02/08/2026,1,Transferred to acute care hospital,02/10/2026,02/19/2026,0,COPD deterioration; delayed assessment
+C012,01/28/2026,03/08/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,1,02/18/2026,0,Discharged to facility (SNF/other),02/12/2026,03/07/2026,1,Infection complication
+C013,02/02/2026,02/28/2026,Medicare,I50.9,"Heart failure, unspecified",1,02/15/2026,1,Discharged to home/self-care,02/18/2026,02/27/2026,1,Acute decompensation
+C014,02/05/2026,03/12/2026,Medicare,J18.9,"Pneumonia, unspecified",1,02/20/2026,0,Discharged to home/self-care,02/25/2026,03/11/2026,1,Secondary bacterial infection
+C015,02/07/2026,03/05/2026,Private,I63.9,"Cerebral infarction, unspecified",1,02/18/2026,1,Transferred to acute care hospital,02/20/2026,03/04/2026,1,Stroke progression
+C016,02/08/2026,03/16/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,1,Discharged to facility (SNF/other),02/22/2026,03/15/2026,1,ED visit for monitoring
+C017,02/11/2026,03/10/2026,Medicare,I10,Essential (primary) hypertension,1,02/25/2026,0,Discharged to facility (SNF/other),02/28/2026,03/08/2026,1,BP crisis event
+C018,02/13/2026,02/22/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,02/16/2026,1,Transferred to acute care hospital,02/15/2026,02/21/2026,1,COPD exacerbation with ED visits
+C019,02/15/2026,03/20/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,1,02/28/2026,0,Discharged to facility (SNF/other),03/02/2026,03/19/2026,0,Infection; delayed SOC
+C020,02/18/2026,03/08/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/01/2026,1,Discharged to home/self-care,03/03/2026,03/07/2026,1,Acute decompensation with ED visit
+C021,02/20/2026,03/15/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to facility (SNF/other),03/08/2026,03/14/2026,1,Managed care transition
+C022,02/22/2026,03/12/2026,Medicaid,J18.9,"Pneumonia, unspecified",1,03/02/2026,0,Discharged to home/self-care,03/04/2026,03/11/2026,1,Respiratory compromise
+C023,02/24/2026,03/18/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,1,Discharged to facility (SNF/other),03/10/2026,03/17/2026,1,Neurological monitoring required
+C024,02/25/2026,03/05/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,02/28/2026,0,Patient expired,03/02/2026,03/05/2026,1,Post-op complications
+C025,02/28/2026,03/20/2026,Medicare,I10,Essential (primary) hypertension,1,03/08/2026,1,Discharged to facility (SNF/other),03/10/2026,03/19/2026,1,Hypertensive crisis
+C026,03/01/2026,03/10/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,03/05/2026,1,Transferred to acute care hospital,03/06/2026,03/09/2026,0,COPD deterioration; delayed SOC
+C027,03/03/2026,03/18/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,1,03/10/2026,0,Discharged to facility (SNF/other),03/12/2026,03/17/2026,1,Post-op infection
+C028,03/05/2026,03/15/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/08/2026,1,Discharged to home/self-care,03/09/2026,03/14/2026,1,Acute exacerbation
+C029,03/07/2026,03/12/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Patient expired,03/10/2026,03/12/2026,1,End-of-life episode
+C030,03/09/2026,03/22/2026,Private,I63.9,"Cerebral infarction, unspecified",1,03/15/2026,0,Discharged to facility (SNF/other),03/17/2026,03/21/2026,1,Stroke recurrence
+C031,03/11/2026,03/25/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,03/18/2026,1,Discharged to facility (SNF/other),03/20/2026,03/24/2026,1,Post-discharge complications
+C032,03/12/2026,03/20/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,1,03/16/2026,0,Discharged to facility (SNF/other),03/17/2026,03/19/2026,1,Metabolic crisis
+C033,03/14/2026,03/22/2026,Medicare,I10,Essential (primary) hypertension,1,03/18/2026,1,Transferred to acute care hospital,03/19/2026,03/21/2026,1,Hypertensive emergency
+C034,03/16/2026,03/25/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,03/20/2026,1,Discharged to home/self-care,03/21/2026,03/24/2026,0,COPD crisis; delayed SOC
+C035,03/17/2026,03/28/2026,Medicaid,Z96.651,Presence of right artificial knee joint,1,03/22/2026,0,Discharged to facility (SNF/other),03/23/2026,03/27/2026,1,Infection management
+C036,03/19/2026,03/27/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/23/2026,1,Discharged to home/self-care,03/24/2026,03/26/2026,1,Acute decompensation with ED
+C037,03/20/2026,03/26/2026,Medicare,J18.9,"Pneumonia, unspecified",1,03/24/2026,0,Patient expired,03/25/2026,03/26/2026,1,Respiratory failure
+C038,03/21/2026,03/29/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,1,Discharged to home/self-care,03/27/2026,03/28/2026,1,ED monitoring visit
+C039,03/22/2026,03/30/2026,Medicare Advantage,Z96.641,Presence of right artificial hip joint,1,03/27/2026,0,Discharged to facility (SNF/other),03/28/2026,03/29/2026,1,Late post-op complication
+C040,03/24/2026,03/31/2026,Medicare,I10,Essential (primary) hypertension,0,,1,Discharged to facility (SNF/other),03/29/2026,03/30/2026,1,ED monitoring
+C041,03/25/2026,03/28/2026,Medicare,Z96.651,Presence of right artificial knee joint,1,03/26/2026,0,Patient expired,03/27/2026,03/28/2026,1,Post-op complication
+C042,03/26/2026,03/29/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,1,03/28/2026,0,Discharged to facility (SNF/other),03/28/2026,03/29/2026,1,Metabolic decompensation
+C043,03/27/2026,03/30/2026,Private,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,03/29/2026,1,Discharged to home/self-care,03/29/2026,03/29/2026,0,COPD crisis; no SOC
+C044,03/28/2026,03/31/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/30/2026,0,Discharged to facility (SNF/other),03/30/2026,03/31/2026,1,Acute exacerbation
+C045,03/29/2026,03/30/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Patient expired,03/30/2026,03/30/2026,1,End-of-life
+C046,03/15/2026,03/25/2026,Medicare,I10,Essential (primary) hypertension,1,03/20/2026,1,Discharged to home/self-care,03/21/2026,03/24/2026,1,Crisis management
+C047,03/10/2026,03/28/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,03/18/2026,0,Discharged to facility (SNF/other),03/19/2026,03/27/2026,1,Post-op complications
+C048,03/08/2026,03/26/2026,Medicaid,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,03/15/2026,1,Transferred to acute care hospital,03/16/2026,03/25/2026,1,COPD deterioration
+C049,03/06/2026,03/27/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/14/2026,1,Discharged to facility (SNF/other),03/15/2026,03/26/2026,1,Acute decompensation
+C050,03/02/2026,03/30/2026,Medicare,J18.9,"Pneumonia, unspecified",1,03/12/2026,0,Discharged to home/self-care,03/13/2026,03/29/2026,1,Secondary infection
+C051,02/28/2026,03/20/2026,Medicare,I63.9,"Cerebral infarction, unspecified",1,03/05/2026,1,Patient expired,03/06/2026,03/19/2026,1,Stroke complications
+C052,02/25/2026,03/22/2026,Private,Z96.651,Presence of right artificial knee joint,1,03/08/2026,0,Discharged to facility (SNF/other),03/09/2026,03/21/2026,1,Infection complications
+C053,02/20/2026,03/18/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,1,02/28/2026,1,Discharged to home/self-care,03/02/2026,03/17/2026,1,Metabolic crisis
+C054,02/15/2026,03/16/2026,Medicare,I10,Essential (primary) hypertension,1,02/24/2026,1,Transferred to acute care hospital,02/26/2026,03/15/2026,1,Uncontrolled HTN
+C055,02/10/2026,03/12/2026,Medicare Advantage,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,1,02/18/2026,0,Discharged to facility (SNF/other),02/19/2026,03/11/2026,1,COPD management
+C056,02/05/2026,03/10/2026,Medicare,I50.9,"Heart failure, unspecified",1,02/12/2026,1,Discharged to home/self-care,02/13/2026,03/09/2026,1,Cardiac crisis
+C057,02/02/2026,03/08/2026,Medicare,Z96.641,Presence of right artificial hip joint,1,02/10/2026,0,Discharged to facility (SNF/other),02/11/2026,03/07/2026,1,Post-op complications
+C058,01/30/2026,03/05/2026,Medicaid,J18.9,"Pneumonia, unspecified",1,02/08/2026,1,Discharged to home/self-care,02/09/2026,03/04/2026,1,Respiratory deterioration
+C059,01/28/2026,03/02/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,1,Patient expired,02/25/2026,03/01/2026,1,Stroke; ED monitoring
+C060,01/25/2026,03/15/2026,Medicare,Z96.651,Presence of right artificial knee joint,1,02/08/2026,0,Transferred to acute care hospital,02/09/2026,03/14/2026,1,Post-op infection

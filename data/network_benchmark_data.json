@@ -1,0 +1,307 @@
+{
+  "metadata": {
+    "generated_at": "2026-04-04T12:57:35.160068",
+    "number_of_agencies": 3,
+    "benchmark_year": 2024
+  },
+  "cms_benchmarks": {
+    "hospitalization_rate": 14.7,
+    "ed_utilization_rate": 8.2,
+    "discharge_to_community": 61.8,
+    "timely_initiation": 96.3,
+    "ambulation_improvement": 53.2,
+    "bathing_improvement": 67.1,
+    "dyspnea_improvement": 57.9,
+    "pain_improvement": 42.5,
+    "medication_mgmt_improvement": 38.1
+  },
+  "network_statistics": {
+    "hospitalization_rate": {
+      "network_mean": 38.6,
+      "network_stdev": 41.1,
+      "network_min": 6.7,
+      "network_max": 85.0
+    },
+    "ed_utilization_rate": {
+      "network_mean": 22.0,
+      "network_stdev": 25.8,
+      "network_min": 4.4,
+      "network_max": 51.7
+    },
+    "discharge_to_community": {
+      "network_mean": 55.1,
+      "network_stdev": 30.1,
+      "network_min": 26.7,
+      "network_max": 86.7
+    },
+    "timely_initiation": {
+      "network_mean": 93.4,
+      "network_stdev": 6.0,
+      "network_min": 88.3,
+      "network_max": 100.0
+    },
+    "ambulation_improvement": {
+      "network_mean": 48.7,
+      "network_stdev": 30.0,
+      "network_min": 20,
+      "network_max": 79.8
+    },
+    "bathing_improvement": {
+      "network_mean": 55.3,
+      "network_stdev": 36.2,
+      "network_min": 20,
+      "network_max": 92.4
+    },
+    "dyspnea_improvement": {
+      "network_mean": 50.9,
+      "network_stdev": 32.1,
+      "network_min": 20,
+      "network_max": 84.0
+    },
+    "pain_improvement": {
+      "network_mean": 44.2,
+      "network_stdev": 25.8,
+      "network_min": 20,
+      "network_max": 71.4
+    },
+    "medication_mgmt_improvement": {
+      "network_mean": 46.5,
+      "network_stdev": 27.9,
+      "network_min": 20,
+      "network_max": 75.6
+    }
+  },
+  "agencies": {
+    "Sunrise Home Health": {
+      "patient_count": 50,
+      "measures": {
+        "hospitalization_rate": {
+          "agency_value": 24.0,
+          "cms_benchmark": 14.7,
+          "difference_from_benchmark": 9.3,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 38.6
+        },
+        "ed_utilization_rate": {
+          "agency_value": 10.0,
+          "cms_benchmark": 8.2,
+          "difference_from_benchmark": 1.8,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 22.0
+        },
+        "discharge_to_community": {
+          "agency_value": 52.0,
+          "cms_benchmark": 61.8,
+          "difference_from_benchmark": -9.8,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.1
+        },
+        "timely_initiation": {
+          "agency_value": 92.0,
+          "cms_benchmark": 96.3,
+          "difference_from_benchmark": -4.3,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 93.4
+        },
+        "ambulation_improvement": {
+          "agency_value": 46.2,
+          "cms_benchmark": 53.2,
+          "difference_from_benchmark": -7.0,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 48.7
+        },
+        "bathing_improvement": {
+          "agency_value": 53.5,
+          "cms_benchmark": 67.1,
+          "difference_from_benchmark": -13.6,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.3
+        },
+        "dyspnea_improvement": {
+          "agency_value": 48.6,
+          "cms_benchmark": 57.9,
+          "difference_from_benchmark": -9.3,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 50.9
+        },
+        "pain_improvement": {
+          "agency_value": 41.3,
+          "cms_benchmark": 42.5,
+          "difference_from_benchmark": -1.2,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 44.2
+        },
+        "medication_mgmt_improvement": {
+          "agency_value": 43.8,
+          "cms_benchmark": 38.1,
+          "difference_from_benchmark": 5.7,
+          "percentile_rank": 50.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 46.5
+        }
+      }
+    },
+    "Comparison Agency B": {
+      "patient_count": 45,
+      "measures": {
+        "hospitalization_rate": {
+          "agency_value": 6.7,
+          "cms_benchmark": 14.7,
+          "difference_from_benchmark": -8.0,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 38.6
+        },
+        "ed_utilization_rate": {
+          "agency_value": 4.4,
+          "cms_benchmark": 8.2,
+          "difference_from_benchmark": -3.8,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 22.0
+        },
+        "discharge_to_community": {
+          "agency_value": 86.7,
+          "cms_benchmark": 61.8,
+          "difference_from_benchmark": 24.9,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.1
+        },
+        "timely_initiation": {
+          "agency_value": 100.0,
+          "cms_benchmark": 96.3,
+          "difference_from_benchmark": 3.7,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 93.4
+        },
+        "ambulation_improvement": {
+          "agency_value": 79.8,
+          "cms_benchmark": 53.2,
+          "difference_from_benchmark": 26.6,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 48.7
+        },
+        "bathing_improvement": {
+          "agency_value": 92.4,
+          "cms_benchmark": 67.1,
+          "difference_from_benchmark": 25.3,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.3
+        },
+        "dyspnea_improvement": {
+          "agency_value": 84.0,
+          "cms_benchmark": 57.9,
+          "difference_from_benchmark": 26.1,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 50.9
+        },
+        "pain_improvement": {
+          "agency_value": 71.4,
+          "cms_benchmark": 42.5,
+          "difference_from_benchmark": 28.9,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 44.2
+        },
+        "medication_mgmt_improvement": {
+          "agency_value": 75.6,
+          "cms_benchmark": 38.1,
+          "difference_from_benchmark": 37.5,
+          "percentile_rank": 0.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 46.5
+        }
+      }
+    },
+    "Comparison Agency C": {
+      "patient_count": 60,
+      "measures": {
+        "hospitalization_rate": {
+          "agency_value": 85.0,
+          "cms_benchmark": 14.7,
+          "difference_from_benchmark": 70.3,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 38.6
+        },
+        "ed_utilization_rate": {
+          "agency_value": 51.7,
+          "cms_benchmark": 8.2,
+          "difference_from_benchmark": 43.5,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 22.0
+        },
+        "discharge_to_community": {
+          "agency_value": 26.7,
+          "cms_benchmark": 61.8,
+          "difference_from_benchmark": -35.1,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.1
+        },
+        "timely_initiation": {
+          "agency_value": 88.3,
+          "cms_benchmark": 96.3,
+          "difference_from_benchmark": -8.0,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 93.4
+        },
+        "ambulation_improvement": {
+          "agency_value": 20,
+          "cms_benchmark": 53.2,
+          "difference_from_benchmark": -33.2,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 48.7
+        },
+        "bathing_improvement": {
+          "agency_value": 20,
+          "cms_benchmark": 67.1,
+          "difference_from_benchmark": -47.1,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 55.3
+        },
+        "dyspnea_improvement": {
+          "agency_value": 20,
+          "cms_benchmark": 57.9,
+          "difference_from_benchmark": -37.9,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 50.9
+        },
+        "pain_improvement": {
+          "agency_value": 20,
+          "cms_benchmark": 42.5,
+          "difference_from_benchmark": -22.5,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 44.2
+        },
+        "medication_mgmt_improvement": {
+          "agency_value": 20,
+          "cms_benchmark": 38.1,
+          "difference_from_benchmark": -18.1,
+          "percentile_rank": 100.0,
+          "outlier_status": "NORMAL",
+          "network_mean": 46.5
+        }
+      }
+    }
+  }
+}

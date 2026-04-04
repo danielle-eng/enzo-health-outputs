@@ -1,0 +1,46 @@
+PatientID,AdmissionDate,DischargeDate,Payer,PrimaryDiagnosisICD10,PrimaryDiagnosisDescription,Hospitalization,HospitalizationDate,EDVisit,DischargeDisposition,OASISSOCDate,OASISDCDate,TimelyInitiation,Notes
+B001,01/03/2026,03/31/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,01/10/2026,03/29/2026,1,Good functional recovery
+B002,01/05/2026,03/28/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,01/12/2026,03/26/2026,1,Well-managed chronic disease
+B003,01/04/2026,03/30/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,01/11/2026,03/29/2026,1,Stable after initial exacerbation
+B004,01/08/2026,03/29/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,01/15/2026,03/27/2026,1,Excellent mobility improvement
+B005,01/12/2026,03/26/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,01/19/2026,03/24/2026,1,Good recovery progress
+B006,01/14/2026,03/25/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,01/21/2026,03/23/2026,1,Stable on medication regimen
+B007,01/17/2026,03/31/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,01/24/2026,03/30/2026,1,Resolved respiratory infection
+B008,01/19/2026,03/28/2026,Medicaid,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to home/self-care,01/26/2026,03/27/2026,1,Improved glucose management
+B009,01/21/2026,03/26/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to facility (SNF/other),01/28/2026,03/25/2026,1,Transitioned to SNF for continued therapy
+B010,01/22/2026,03/29/2026,Medicare,I10,Essential (primary) hypertension,1,02/10/2026,0,Discharged to home/self-care,01/29/2026,03/27/2026,1,Brief hospitalization managed well
+B011,01/25/2026,03/30/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,1,Discharged to home/self-care,02/01/2026,03/29/2026,1,ED visit for monitoring only
+B012,01/28/2026,03/25/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,02/04/2026,03/24/2026,1,Excellent PT compliance
+B013,02/02/2026,03/28/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,02/09/2026,03/27/2026,1,Stable ejection fraction
+B014,02/05/2026,03/27/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,02/12/2026,03/26/2026,1,No complications
+B015,02/07/2026,03/31/2026,Private,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,02/14/2026,03/30/2026,1,Good neurological improvement
+B016,02/08/2026,03/29/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,02/15/2026,03/28/2026,1,Strong functional gains
+B017,02/11/2026,03/26/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,02/18/2026,03/25/2026,1,Blood pressure well controlled
+B018,02/13/2026,03/30/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to facility (SNF/other),02/20/2026,03/29/2026,1,SNF placement for intensive therapy
+B019,02/15/2026,03/27/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,02/22/2026,03/26/2026,1,Excellent ambulatory status
+B020,02/18/2026,03/25/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,02/25/2026,03/24/2026,1,Improved cardiac function
+B021,02/20/2026,03/28/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to home/self-care,02/27/2026,03/27/2026,1,Excellent glucose control
+B022,02/22/2026,03/31/2026,Medicaid,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/01/2026,03/30/2026,1,Resolved infection
+B023,02/24/2026,03/29/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/03/2026,03/28/2026,1,Stable neurologically
+B024,02/25/2026,03/26/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,03/04/2026,03/25/2026,1,Excellent recovery trajectory
+B025,02/28/2026,03/30/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,03/07/2026,03/29/2026,1,Well-managed comorbidity
+B026,03/01/2026,03/27/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,03/08/2026,03/26/2026,1,Stable respiratory function
+B027,03/03/2026,03/31/2026,Medicare Advantage,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,03/10/2026,03/30/2026,1,Strong mobility progress
+B028,03/05/2026,03/28/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to facility (SNF/other),03/12/2026,03/27/2026,1,Transitioned for continued management
+B029,03/07/2026,03/29/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/14/2026,03/28/2026,1,Clear lungs
+B030,03/09/2026,03/26/2026,Private,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/16/2026,03/25/2026,1,Good functional status
+B031,03/11/2026,03/30/2026,Medicare,Z96.641,Presence of right artificial hip joint,0,,0,Discharged to home/self-care,03/18/2026,03/29/2026,1,Excellent hip mobility
+B032,03/12/2026,03/27/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Discharged to home/self-care,03/19/2026,03/26/2026,1,Good metabolic control
+B033,03/14/2026,03/31/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,03/21/2026,03/30/2026,1,Optimal BP control
+B034,03/16/2026,03/28/2026,Medicare,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,1,Discharged to home/self-care,03/23/2026,03/27/2026,1,One ED monitoring visit
+B035,03/17/2026,03/29/2026,Medicaid,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,03/24/2026,03/28/2026,1,Excellent functional recovery
+B036,03/19/2026,03/26/2026,Medicare,I50.9,"Heart failure, unspecified",0,,0,Discharged to home/self-care,03/26/2026,03/25/2026,1,Stable compensated
+B037,03/20/2026,03/30/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/27/2026,03/29/2026,1,Resolved completely
+B038,03/21/2026,03/27/2026,Medicare,I63.9,"Cerebral infarction, unspecified",0,,0,Discharged to home/self-care,03/28/2026,03/26/2026,1,Good neurological status
+B039,03/22/2026,03/31/2026,Medicare Advantage,Z96.641,Presence of right artificial hip joint,1,03/26/2026,0,Discharged to facility (SNF/other),03/29/2026,03/30/2026,1,Brief post-discharge issue
+B040,03/24/2026,03/29/2026,Medicare,I10,Essential (primary) hypertension,0,,0,Discharged to home/self-care,03/31/2026,03/28/2026,1,Well controlled
+B041,03/25/2026,03/30/2026,Medicare,Z96.651,Presence of right artificial knee joint,0,,0,Discharged to home/self-care,04/01/2026,03/29/2026,1,Excellent ambulation
+B042,03/26/2026,03/27/2026,Medicare,E11.9,Type 2 diabetes mellitus without complications,0,,0,Patient expired,03/27/2026,03/27/2026,1,Short episode end-of-life care
+B043,03/27/2026,03/31/2026,Private,J44.1,Chronic obstructive pulmonary disease with acute exacerbation,0,,0,Discharged to home/self-care,04/03/2026,03/30/2026,1,Stable COPD management
+B044,03/28/2026,03/28/2026,Medicare,I50.9,"Heart failure, unspecified",1,03/29/2026,0,Discharged to facility (SNF/other),03/28/2026,03/28/2026,1,Acute exacerbation managed
+B045,03/29/2026,03/30/2026,Medicare,J18.9,"Pneumonia, unspecified",0,,0,Discharged to home/self-care,03/30/2026,03/30/2026,1,Resolved
