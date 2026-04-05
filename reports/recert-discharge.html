@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recertification & Discharge Agent — Enzo Health</title>
+<style>
+  :root{
+    --primary:#2563EB;--primary-dark:#1D4ED8;--success:#10B981;--warning:#F59E0B;
+    --danger:#EF4444;--muted:#6B7280;--border:#E5E7EB;--bg:#F8FAFC;--text:#111827;
+    --shadow:0 1px 4px rgba(0,0,0,0.07);--shadow-md:0 4px 20px rgba(0,0,0,0.12);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* ── TOPBAR ── */
+  .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+  .logo{font-weight:800;font-size:1.1rem;letter-spacing:-0.03em;color:var(--primary);}
+  .breadcrumb{font-size:0.82rem;color:var(--muted);}
+  .breadcrumb a{color:var(--muted);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--primary);}
+  .topbar-right{display:flex;align-items:center;gap:0.75rem;}
+  .demo-pill{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;font-size:0.75rem;font-weight:600;padding:0.2rem 0.65rem;border-radius:20px;}
+
+  /* ── PAGE ── */
+  .page{max-width:1160px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+  /* ── PAGE HEADER ── */
+  .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;}
+  .page-title{font-size:1.55rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.25rem;}
+  .page-sub{color:var(--muted);font-size:0.92rem;}
+  .header-meta{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;font-size:0.8rem;color:var(--muted);}
+  .header-meta strong{color:var(--text);}
+
+  /* ── KPI TILES ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:2rem;}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+  .kpi-tile{background:#fff;border-radius:var(--radius);padding:1.1rem 1rem;border:1.5px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:all 0.15s;}
+  .kpi-tile:hover{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  .kpi-tile.status-red{border-color:#FECACA;background:linear-gradient(135deg,#FFF5F5,#fff);}
+  .kpi-tile.status-yellow{border-color:#FDE68A;background:linear-gradient(135deg,#FFFBEB,#fff);}
+  .kpi-tile.status-green{border-color:#A7F3D0;background:linear-gradient(135deg,#F0FDF4,#fff);}
+  .kpi-tile.status-blue{border-color:#BFDBFE;background:linear-gradient(135deg,#EFF6FF,#fff);}
+  .kpi-icon{font-size:1.3rem;margin-bottom:0.5rem;display:block;}
+  .kpi-num{font-size:2rem;font-weight:800;letter-spacing:-0.03em;line-height:1;}
+  .kpi-num.red{color:var(--danger);}
+  .kpi-num.yellow{color:#D97706;}
+  .kpi-num.green{color:var(--success);}
+  .kpi-num.blue{color:var(--primary);}
+  .kpi-label{font-size:0.75rem;font-weight:600;color:var(--muted);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;}
+  .kpi-sub{font-size:0.73rem;color:var(--muted);margin-top:0.25rem;}
+
+  /* ── TABS + SEARCH ── */
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;}
+  .filter-tabs{display:flex;gap:0.4rem;background:#fff;padding:0.3rem;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow);}
+  .filter-tab{padding:0.4rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;display:flex;align-items:center;gap:0.4rem;}
+  .filter-tab:hover{background:var(--bg);}
+  .filter-tab.active{background:var(--primary);color:#fff;}
+  .filter-tab .tab-count{background:rgba(255,255,255,0.25);border-radius:10px;padding:0.05rem 0.4rem;font-size:0.72rem;font-weight:700;}
+  .filter-tab:not(.active) .tab-count{background:#F3F4F6;color:var(--muted);}
+  .search-wrap{position:relative;flex:1;max-width:280px;}
+  .search-wrap input{width:100%;padding:0.5rem 0.85rem 0.5rem 2rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.88rem;font-family:inherit;background:#fff;}
+  .search-wrap input:focus{outline:none;border-color:var(--primary);}
+  .search-icon{position:absolute;left:0.65rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;pointer-events:none;}
+
+  /* ── PATIENT TABLE ── */
+  .patient-list{display:flex;flex-direction:column;gap:0.55rem;}
+
+  .patient-row{background:#fff;border-radius:10px;border:1.5px solid var(--border);padding:0.9rem 1.1rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:0.85rem;align-items:center;cursor:pointer;box-shadow:var(--shadow);transition:all 0.15s;position:relative;}
+  .patient-row:hover{box-shadow:var(--shadow-md);border-color:#93C5FD;}
+  .patient-row.critical{border-left:4px solid var(--danger);}
+  .patient-row.high{border-left:4px solid var(--warning);}
+  .patient-row.tracking{border-left:4px solid var(--primary);}
+  .patient-row.done{border-left:4px solid var(--success);opacity:0.82;}
+
+  .urgency-badge{padding:0.22rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;text-align:center;min-width:72px;}
+  .urgency-badge.critical{background:#FEE2E2;color:#B91C1C;}
+  .urgency-badge.high{background:#FEF3C7;color:#92400E;}
+  .urgency-badge.tracking{background:#DBEAFE;color:#1D4ED8;}
+  .urgency-badge.done{background:#D1FAE5;color:#065F46;}
+
+  .patient-info .patient-name{font-size:0.95rem;font-weight:700;margin-bottom:0.2rem;}
+  .patient-info .patient-meta{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+  .meta-chip{background:#F3F4F6;border-radius:5px;padding:0.12rem 0.45rem;font-size:0.73rem;font-weight:600;color:#374151;}
+  .meta-chip.blue{background:#EFF6FF;color:var(--primary);}
+  .meta-chip.red{background:#FEE2E2;color:#B91C1C;}
+  .meta-chip.green{background:#D1FAE5;color:#065F46;}
+  .meta-chip.yellow{background:#FEF3C7;color:#92400E;}
+
+  .days-col{text-align:center;min-width:70px;}
+  .days-num{font-size:1.5rem;font-weight:800;line-height:1;}
+  .days-num.red{color:var(--danger);}
+  .days-num.yellow{color:#D97706;}
+  .days-num.green{color:var(--success);}
+  .days-num.muted{color:var(--muted);}
+  .days-label{font-size:0.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+
+  .status-col{display:flex;flex-direction:column;gap:0.3rem;min-width:130px;}
+  .status-item{display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;}
+  .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .dot-done{background:var(--success);}
+  .dot-pending{background:#D1D5DB;}
+  .dot-warn{background:var(--warning);}
+  .dot-danger{background:var(--danger);}
+
+  .rec-col{min-width:110px;}
+  .rec-badge{padding:0.3rem 0.7rem;border-radius:7px;font-size:0.78rem;font-weight:700;text-align:center;display:inline-block;}
+  .rec-badge.recert{background:#DBEAFE;color:#1D4ED8;}
+  .rec-badge.discharge{background:#D1FAE5;color:#065F46;}
+  .rec-badge.pending{background:#F3F4F6;color:var(--muted);}
+  .rec-badge.complete{background:#D1FAE5;color:#065F46;}
+
+  /* ── DETAIL PANEL (side drawer) ── */
+  .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:300;display:none;}
+  .drawer-overlay.open{display:block;}
+  .drawer{position:fixed;top:0;right:-480px;width:460px;height:100vh;background:#fff;box-shadow:-4px 0 30px rgba(0,0,0,0.15);z-index:400;display:flex;flex-direction:column;transition:right 0.25s cubic-bezier(0.4,0,0.2,1);}
+  .drawer.open{right:0;}
+
+  .drawer-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+  .drawer-title{font-size:1.1rem;font-weight:800;margin-bottom:0.2rem;}
+  .drawer-sub{font-size:0.82rem;color:var(--muted);}
+  .drawer-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);padding:0.2rem;line-height:1;flex-shrink:0;}
+  .drawer-close:hover{color:var(--text);}
+
+  .drawer-body{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
+
+  .drawer-section{margin-bottom:1.5rem;}
+  .drawer-section-title{font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);}
+
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;}
+  .detail-item{background:#F8FAFC;border-radius:8px;padding:0.65rem 0.8rem;}
+  .detail-item label{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:0.2rem;}
+  .detail-item .val{font-size:0.92rem;font-weight:700;}
+  .detail-item .val.red{color:var(--danger);}
+  .detail-item .val.yellow{color:#D97706;}
+  .detail-item .val.green{color:var(--success);}
+
+  /* Recommendation selector */
+  .rec-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+  .rec-option{padding:0.6rem 0.5rem;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.15s;font-size:0.82rem;font-weight:600;color:var(--muted);}
+  .rec-option:hover{border-color:var(--primary);}
+  .rec-option.selected.recert{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;}
+  .rec-option.selected.discharge{border-color:#10B981;background:#D1FAE5;color:#065F46;}
+  .rec-option.selected.pending{border-color:#9CA3AF;background:#F3F4F6;color:#374151;}
+
+  /* Checklist */
+  .checklist{display:flex;flex-direction:column;gap:0.55rem;}
+  .check-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.9rem;background:#F8FAFC;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+  .check-item:hover{background:#EFF6FF;border-color:#BFDBFE;}
+  .check-item.checked{background:#F0FDF4;border-color:#A7F3D0;}
+  .check-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--success);cursor:pointer;flex-shrink:0;}
+  .check-item .check-label{font-size:0.87rem;font-weight:600;flex:1;}
+  .check-item .check-sub{font-size:0.74rem;color:var(--muted);}
+  .check-item.checked .check-label{color:var(--success);}
+
+  /* Notes */
+  .notes-area{width:100%;padding:0.65rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.87rem;resize:vertical;min-height:80px;}
+  .notes-area:focus{outline:none;border-color:var(--primary);}
+
+  /* EHR button */
+  .ehr-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.65rem;border-radius:8px;font-size:0.85rem;font-weight:600;border:1.5px solid var(--border);background:#fff;color:var(--muted);cursor:not-allowed;position:relative;margin-top:0.5rem;}
+  .ehr-btn .tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1F2937;color:#fff;font-size:0.72rem;padding:0.35rem 0.6rem;border-radius:6px;white-space:nowrap;font-weight:400;z-index:10;}
+  .ehr-btn:hover .tooltip{display:block;}
+
+  /* OASIS window alert */
+  .oasis-window-alert{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#9A3412;margin-bottom:0.75rem;display:flex;align-items:flex-start;gap:0.5rem;}
+
+  /* empty state */
+  .empty{text-align:center;padding:3rem;color:var(--muted);background:#fff;border-radius:var(--radius);border:2px dashed var(--border);}
+  .empty .em{font-size:2rem;display:block;margin-bottom:0.5rem;}
+
+  /* section label */
+  .section-label{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;margin-top:0.25rem;}
+
+  /* toast */
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1F2937;color:#fff;padding:0.7rem 1.1rem;border-radius:8px;font-size:0.85rem;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.2);opacity:0;transform:translateY(8px);transition:all 0.25s;z-index:999;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <span class="logo">enzo health</span>
+    <span class="breadcrumb"><a href="../index.html">Home</a> › Recertification &amp; Discharge Agent</span>
+  </div>
+  <div class="topbar-right">
+    <span class="demo-pill">⚠️ Demo mode</span>
+  </div>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-title" id="drawerName">—</div>
+      <div class="drawer-sub" id="drawerSub">—</div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Recertification &amp; Discharge Agent</div>
+      <div class="page-sub">Clinical Manager view · 14-day advance tracking · 2026 PDGM certification periods</div>
+      <div class="header-meta">
+        <span>Census: <strong id="totalCount">—</strong> active patients</span>
+        <span>·</span>
+        <span>Flagged today: <strong id="flaggedCount" style="color:var(--danger)">—</strong></span>
+        <span>·</span>
+        <span id="todayStr" style="color:var(--muted);">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI TILES -->
+  <div class="kpi-grid">
+    <div class="kpi-tile status-red" onclick="setFilter('action')">
+      <span class="kpi-icon">🚨</span>
+      <div class="kpi-num red" id="kpi-critical">—</div>
+      <div class="kpi-label">Critical ≤ 7 Days</div>
+      <div class="kpi-sub">Immediate action needed</div>
+    </div>
+    <div class="kpi-tile status-yellow" onclick="setFilter('action')">
+      <span class="kpi-icon">⏳</span>
+      <div class="kpi-num yellow" id="kpi-window">—</div>
+      <div class="kpi-label">In 14-Day Window</div>
+      <div class="kpi-sub">Recert/discharge decision due</div>
+    </div>
+    <div class="kpi-tile status-yellow" onclick="setFilter('action')">
+      <span class="kpi-icon">📋</span>
+      <div class="kpi-num yellow" id="kpi-oasis">—</div>
+      <div class="kpi-label">OASIS Not Started</div>
+      <div class="kpi-sub">In window, not yet ordered</div>
+    </div>
+    <div class="kpi-tile status-yellow" onclick="setFilter('tracking')">
+      <span class="kpi-icon">✍️</span>
+      <div class="kpi-num yellow" id="kpi-phys">—</div>
+      <div class="kpi-label">Physician Orders Pending</div>
+      <div class="kpi-sub">Sent but not yet signed</div>
+    </div>
+    <div class="kpi-tile status-green" onclick="setFilter('completed')">
+      <span class="kpi-icon">✅</span>
+      <div class="kpi-num green" id="kpi-done">—</div>
+      <div class="kpi-label">Completed This Month</div>
+      <div class="kpi-sub">Recertified or discharged</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="filter-tabs">
+      <button class="filter-tab active" id="tab-action" onclick="setFilter('action')">Action Required <span class="tab-count" id="tc-action">0</span></button>
+      <button class="filter-tab" id="tab-tracking" onclick="setFilter('tracking')">In Progress <span class="tab-count" id="tc-tracking">0</span></button>
+      <button class="filter-tab" id="tab-all" onclick="setFilter('all')">All Active <span class="tab-count" id="tc-all">0</span></button>
+      <button class="filter-tab" id="tab-completed" onclick="setFilter('completed')">Completed <span class="tab-count" id="tc-completed">0</span></button>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search patient name or MRN…" oninput="filterSearch(this.value)" id="searchInput">
+    </div>
+  </div>
+
+  <!-- PATIENT LIST -->
+  <div class="section-label" id="listLabel">Action Required</div>
+  <div class="patient-list" id="patientList"></div>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────
+// Today = April 4, 2026
+const TODAY = new Date(2026, 3, 4); // month is 0-indexed
+
+function daysFromToday(dateStr) {
+  const d = new Date(dateStr);
+  const diff = Math.round((d - TODAY) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function oasisWindowStart(certEnd) {
+  const d = new Date(certEnd);
+  d.setDate(d.getDate() - 4); // day 56 = 4 days before end
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function fmtDate(str) {
+  return new Date(str).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+// Patients array — each patient has full tracking state
+const PATIENTS = [
+  {
+    id:1, name:"Eleanor Marsh", mrn:"MRN 00288", clinician:"J. Rivera, RN",
+    certStart:"2026-02-05", certEnd:"2026-04-06", dx:"Hip fracture s/p ORIF",
+    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
+    recommendation:"pending", clinRec:"pending",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"Patient has been progressing but PT goals not fully met.",
+    status:"active"
+  },
+  {
+    id:2, name:"Samuel Park", mrn:"MRN 00317", clinician:"T. Williams, PT",
+    certStart:"2026-02-08", certEnd:"2026-04-09", dx:"CVA with left hemiplegia",
+    clinGroup:"Neuro/Stroke (B)", insuranceName:"Medicare",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:false,
+    physOrderSent:true, physOrderSigned:false,
+    notes:"OASIS completed 4/2. Awaiting physician signature on recert POC.",
+    status:"active"
+  },
+  {
+    id:3, name:"Irene Lawson", mrn:"MRN 00341", clinician:"M. Chen, RN",
+    certStart:"2026-02-11", certEnd:"2026-04-12", dx:"CHF exacerbation",
+    clinGroup:"Cardiac (H)", insuranceName:"Medicare Advantage",
+    recommendation:"pending", clinRec:"pending",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"",
+    status:"active"
+  },
+  {
+    id:4, name:"Walter Price", mrn:"MRN 00356", clinician:"K. Osei, PT",
+    certStart:"2026-02-13", certEnd:"2026-04-14", dx:"Total knee replacement",
+    clinGroup:"Musculoskeletal Rehab (E)", insuranceName:"Medicare",
+    recommendation:"discharge", clinRec:"discharge",
+    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"Goals met. Independent with HEP. Recommend discharge at end of period.",
+    status:"active"
+  },
+  {
+    id:5, name:"Gloria Martinez", mrn:"MRN 00372", clinician:"S. Patel, RN",
+    certStart:"2026-02-14", certEnd:"2026-04-15", dx:"Type 2 diabetes with foot ulcer",
+    clinGroup:"Endocrine (I)", insuranceName:"Medicaid",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"Wound improving slowly, still requires skilled nursing.",
+    status:"active"
+  },
+  {
+    id:6, name:"Dennis Flynn", mrn:"MRN 00388", clinician:"J. Rivera, RN",
+    certStart:"2026-02-15", certEnd:"2026-04-16", dx:"COPD exacerbation",
+    clinGroup:"Respiratory (L)", insuranceName:"Medicare",
+    recommendation:"pending", clinRec:"recert",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"Clinician recommends recert — awaiting CM review.",
+    status:"active"
+  },
+  {
+    id:7, name:"Shirley Watson", mrn:"MRN 00401", clinician:"M. Chen, RN",
+    certStart:"2026-02-16", certEnd:"2026-04-17", dx:"Wound care post-colostomy",
+    clinGroup:"Wound Care (C)", insuranceName:"Medicare",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:true, physOrderSigned:false,
+    notes:"Stoma site healing, patient still requires skilled wound care.",
+    status:"active"
+  },
+  {
+    id:8, name:"Carl Henderson", mrn:"MRN 00415", clinician:"T. Williams, PT",
+    certStart:"2026-02-17", certEnd:"2026-04-18", dx:"Parkinson's disease, fall risk",
+    clinGroup:"Neuro/Stroke (B)", insuranceName:"Medicare",
+    recommendation:"pending", clinRec:"pending",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"",
+    status:"active"
+  },
+  // In-progress (15–28 days)
+  {
+    id:9, name:"Patricia Holmes", mrn:"MRN 00362", clinician:"K. Osei, PT",
+    certStart:"2026-02-19", certEnd:"2026-04-22", dx:"Hip replacement s/p revision",
+    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"OASIS ordered, scheduled for 4/10.",
+    status:"active"
+  },
+  {
+    id:10, name:"George Alvarez", mrn:"MRN 00512", clinician:"S. Patel, RN",
+    certStart:"2026-02-23", certEnd:"2026-04-26", dx:"Peripheral artery disease",
+    clinGroup:"Cardiac (H)", insuranceName:"Medicare Advantage",
+    recommendation:"pending", clinRec:"pending",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"",
+    status:"active"
+  },
+  {
+    id:11, name:"Dorothy Kim", mrn:"MRN 00501", clinician:"J. Rivera, RN",
+    certStart:"2026-02-25", certEnd:"2026-04-28", dx:"Hypertensive heart disease",
+    clinGroup:"Cardiac (H)", insuranceName:"Medicare",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+    physOrderSent:false, physOrderSigned:false,
+    notes:"",
+    status:"active"
+  },
+  // Completed
+  {
+    id:12, name:"Margaret Flores", mrn:"MRN 00412", clinician:"M. Chen, RN",
+    certStart:"2026-02-01", certEnd:"2026-04-02", dx:"Diabetes w/ neuropathy",
+    clinGroup:"Endocrine (I)", insuranceName:"Medicare",
+    recommendation:"recert", clinRec:"recert",
+    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
+    physOrderSent:true, physOrderSigned:true,
+    notes:"Recertified 4/1. New cert period begins 4/3.",
+    status:"completed-recert"
+  },
+  {
+    id:13, name:"Robert Nguyen", mrn:"MRN 00388", clinician:"T. Williams, PT",
+    certStart:"2026-01-30", certEnd:"2026-03-31", dx:"Total hip replacement",
+    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
+    recommendation:"discharge", clinRec:"discharge",
+    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
+    physOrderSent:true, physOrderSigned:true,
+    notes:"All goals met. Discharged 3/30.",
+    status:"completed-discharge"
+  },
+  {
+    id:14, name:"Alice Brennan", mrn:"MRN 00344", clinician:"K. Osei, PT",
+    certStart:"2026-02-02", certEnd:"2026-04-03", dx:"Knee OA post-injection",
+    clinGroup:"Musculoskeletal Rehab (E)", insuranceName:"Medicaid",
+    recommendation:"discharge", clinRec:"discharge",
+    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
+    physOrderSent:true, physOrderSigned:true,
+    notes:"Discharged 4/3. Patient independent with ADLs.",
+    status:"completed-discharge"
+  }
+];
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let activeFilter = 'action';
+let searchQuery = '';
+
+// ─────────────────────────────────────────
+// COMPUTED
+// ─────────────────────────────────────────
+function getDaysLeft(p) {
+  return daysFromToday(p.certEnd);
+}
+
+function getUrgency(p) {
+  if (p.status !== 'active') return 'done';
+  const d = getDaysLeft(p);
+  if (d <= 7) return 'critical';
+  if (d <= 14) return 'high';
+  return 'tracking';
+}
+
+function needsAction(p) {
+  if (p.status !== 'active') return false;
+  const d = getDaysLeft(p);
+  return d <= 14;
+}
+
+function isInProgress(p) {
+  if (p.status !== 'active') return false;
+  const d = getDaysLeft(p);
+  return d > 14 && d <= 30;
+}
+
+function isCompleted(p) {
+  return p.status === 'completed-recert' || p.status === 'completed-discharge';
+}
+
+// ─────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────
+function urgencyLabel(u) {
+  if (u === 'critical') return 'Critical';
+  if (u === 'high') return 'High';
+  if (u === 'tracking') return 'Tracking';
+  return 'Complete';
+}
+
+function daysColor(d) {
+  if (d < 0) return 'red';
+  if (d <= 7) return 'red';
+  if (d <= 14) return 'yellow';
+  return 'green';
+}
+
+function recBadge(p) {
+  if (p.status === 'completed-recert') return '<span class="rec-badge recert">Recertified ✓</span>';
+  if (p.status === 'completed-discharge') return '<span class="rec-badge discharge">Discharged ✓</span>';
+  // Conflict: clinician and CM disagree
+  if (p.clinRec !== 'pending' && p.recommendation !== 'pending' && p.clinRec !== p.recommendation) {
+    return `<span class="rec-badge" style="background:#FEE2E2;color:#B91C1C;font-size:0.72rem;">⚠️ Conflict</span>`;
+  }
+  // CM has signed off
+  if (p.recommendation === 'recert') return '<span class="rec-badge recert">CM: Recertify</span>';
+  if (p.recommendation === 'discharge') return '<span class="rec-badge discharge">CM: Discharge</span>';
+  // Clinician rec only
+  if (p.clinRec === 'recert') return '<span class="rec-badge" style="background:#EFF6FF;color:#3B82F6;">Clin: Recertify</span>';
+  if (p.clinRec === 'discharge') return '<span class="rec-badge" style="background:#ECFDF5;color:#059669;">Clin: Discharge</span>';
+  return '<span class="rec-badge pending">Pending</span>';
+}
+
+function statusDot(done) {
+  return done ? 'dot-done' : 'dot-pending';
+}
+
+function renderRow(p) {
+  const days = getDaysLeft(p);
+  const urgency = getUrgency(p);
+  const dc = isCompleted(p) ? 'muted' : daysColor(days);
+  const daysDisplay = isCompleted(p)
+    ? `<div class="days-num muted">✓</div><div class="days-label">Complete</div>`
+    : `<div class="days-num ${dc}">${days < 0 ? 'OVR' : days}</div><div class="days-label">${days < 0 ? 'Overdue' : 'Days left'}</div>`;
+
+  return `
+  <div class="patient-row ${urgency}" onclick="openDrawer(${p.id})">
+    <span class="urgency-badge ${urgency}">${urgencyLabel(urgency)}</span>
+    <div class="patient-info">
+      <div class="patient-name">${p.name}</div>
+      <div class="patient-meta">
+        <span class="meta-chip blue">${p.mrn}</span>
+        <span class="meta-chip">${p.dx}</span>
+        <span class="meta-chip">${p.clinician}</span>
+        <span class="meta-chip">${p.insuranceName}</span>
+      </div>
+    </div>
+    <div class="status-col">
+      <div class="status-item"><div class="status-dot ${statusDot(p.oasisOrdered)}"></div><span>OASIS ordered</span></div>
+      <div class="status-item"><div class="status-dot ${statusDot(p.oasisTransmitted)}"></div><span>OASIS transmitted</span></div>
+      <div class="status-item"><div class="status-dot ${statusDot(p.physOrderSigned)}"></div><span>MD order signed</span></div>
+    </div>
+    <div class="days-col">${daysDisplay}</div>
+    <div class="rec-col">${recBadge(p)}</div>
+  </div>`;
+}
+
+function filteredPatients() {
+  let list = PATIENTS;
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(p => p.name.toLowerCase().includes(q) || p.mrn.toLowerCase().includes(q));
+  }
+  if (activeFilter === 'action') return list.filter(needsAction).sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
+  if (activeFilter === 'tracking') return list.filter(isInProgress).sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
+  if (activeFilter === 'all') return list.filter(p => p.status === 'active').sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
+  if (activeFilter === 'completed') return list.filter(isCompleted);
+  return list;
+}
+
+function renderList() {
+  const items = filteredPatients();
+  const el = document.getElementById('patientList');
+  if (!items.length) {
+    el.innerHTML = `<div class="empty"><span class="em">🎉</span>No patients in this category right now.</div>`;
+    return;
+  }
+  el.innerHTML = items.map(renderRow).join('');
+
+  const labels = {action:'Action Required (≤14 Days)', tracking:'In Progress (15–30 Days)', all:'All Active Patients', completed:'Completed This Month'};
+  document.getElementById('listLabel').textContent = labels[activeFilter] || '';
+}
+
+function updateKPIs() {
+  const active = PATIENTS.filter(p => p.status === 'active');
+  document.getElementById('kpi-critical').textContent = active.filter(p => getDaysLeft(p) <= 7).length;
+  document.getElementById('kpi-window').textContent = active.filter(p => getDaysLeft(p) <= 14).length;
+  document.getElementById('kpi-oasis').textContent = active.filter(p => getDaysLeft(p) <= 14 && !p.oasisOrdered).length;
+  document.getElementById('kpi-phys').textContent = active.filter(p => p.physOrderSent && !p.physOrderSigned).length;
+  document.getElementById('kpi-done').textContent = PATIENTS.filter(isCompleted).length;
+
+  document.getElementById('tc-action').textContent = PATIENTS.filter(needsAction).length;
+  document.getElementById('tc-tracking').textContent = PATIENTS.filter(isInProgress).length;
+  document.getElementById('tc-all').textContent = PATIENTS.filter(p => p.status === 'active').length;
+  document.getElementById('tc-completed').textContent = PATIENTS.filter(isCompleted).length;
+
+  document.getElementById('totalCount').textContent = PATIENTS.filter(p => p.status === 'active').length;
+  document.getElementById('flaggedCount').textContent = PATIENTS.filter(p => p.status === 'active' && getDaysLeft(p) <= 14).length;
+}
+
+function updateTabs() {
+  ['action','tracking','all','completed'].forEach(f => {
+    document.getElementById(`tab-${f}`).classList.toggle('active', f === activeFilter);
+  });
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  updateTabs();
+  renderList();
+}
+
+function filterSearch(val) {
+  searchQuery = val;
+  renderList();
+}
+
+// ─────────────────────────────────────────
+// DRAWER
+// ─────────────────────────────────────────
+function openDrawer(id) {
+  const p = PATIENTS.find(x => x.id === id);
+  if (!p) return;
+  const days = getDaysLeft(p);
+  const oasisWinStart = oasisWindowStart(p.certEnd);
+
+  document.getElementById('drawerName').textContent = p.name;
+  document.getElementById('drawerSub').textContent = `${p.mrn} · ${p.clinician} · ${p.clinGroup}`;
+
+  const inWindow = p.status === 'active' && days <= 14;
+  const oasisWindowAlert = inWindow && !p.oasisOrdered
+    ? `<div class="oasis-window-alert">⚠️ <div><strong>OASIS window opens ${oasisWinStart}</strong> — order must be placed and completed before cert period end on ${fmtDate(p.certEnd)}.</div></div>`
+    : '';
+
+  document.getElementById('drawerBody').innerHTML = `
+    <!-- DETAILS GRID -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Certification Period</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Period Start</label><div class="val">${fmtDate(p.certStart)}</div></div>
+        <div class="detail-item"><label>Period End</label><div class="val ${daysColor(days)}">${fmtDate(p.certEnd)}</div></div>
+        <div class="detail-item"><label>Days Remaining</label><div class="val ${p.status !== 'active' ? '' : daysColor(days)}">${p.status !== 'active' ? 'Completed' : (days < 0 ? 'Overdue' : days + ' days')}</div></div>
+        <div class="detail-item"><label>OASIS Window Opens</label><div class="val">${oasisWinStart}</div></div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Primary Diagnosis</label><div class="val" style="font-size:0.82rem">${p.dx}</div></div>
+        <div class="detail-item"><label>Clinical Group</label><div class="val" style="font-size:0.82rem">${p.clinGroup}</div></div>
+      </div>
+    </div>
+
+    <!-- RECOMMENDATION — TWO-STEP COLLABORATIVE DECISION -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Step 1 — Clinician Recommendation</div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.6rem;">Treating clinician submits their clinical recommendation first</div>
+      <div class="rec-selector">
+        <div class="rec-option ${p.clinRec==='recert'?'selected recert':''}" onclick="setClinicianRec(${p.id},'recert')">🔄 Recertify</div>
+        <div class="rec-option ${p.clinRec==='discharge'?'selected discharge':''}" onclick="setClinicianRec(${p.id},'discharge')">🏁 Discharge</div>
+        <div class="rec-option ${p.clinRec==='pending'?'selected pending':''}" onclick="setClinicianRec(${p.id},'pending')">⏳ Pending</div>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Step 2 — Clinical Manager Sign-Off</div>
+      ${oasisWindowAlert}
+      ${p.clinRec === 'pending'
+        ? `<div style="font-size:0.82rem;color:var(--muted);background:#F8FAFC;border-radius:8px;padding:0.65rem 0.9rem;margin-bottom:0.75rem;">⏳ Awaiting clinician recommendation before CM sign-off</div>`
+        : `<div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.6rem;">Clinician recommends: <strong style="color:${p.clinRec==='recert'?'#1D4ED8':p.clinRec==='discharge'?'#065F46':'var(--muted)'};">${p.clinRec.charAt(0).toUpperCase()+p.clinRec.slice(1)}</strong> — review and confirm or override below</div>`
+      }
+      <div class="rec-selector">
+        <div class="rec-option ${p.recommendation==='recert'?'selected recert':''}" onclick="setRec(${p.id},'recert')">✅ Approve Recertify</div>
+        <div class="rec-option ${p.recommendation==='discharge'?'selected discharge':''}" onclick="setRec(${p.id},'discharge')">✅ Approve Discharge</div>
+        <div class="rec-option ${p.recommendation==='pending'?'selected pending':''}" onclick="setRec(${p.id},'pending')">⏳ Hold / Review</div>
+      </div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Compliance Checklist</div>
+      <div class="checklist">
+        <div class="check-item ${p.oasisOrdered?'checked':''}" onclick="toggle(${p.id},'oasisOrdered')">
+          <input type="checkbox" ${p.oasisOrdered?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisOrdered')">
+          <div><div class="check-label">OASIS ordered</div><div class="check-sub">Recertification assessment ordered from field clinician</div></div>
+        </div>
+        <div class="check-item ${p.oasisCompleted?'checked':''}" onclick="toggle(${p.id},'oasisCompleted')">
+          <input type="checkbox" ${p.oasisCompleted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisCompleted')">
+          <div><div class="check-label">OASIS completed</div><div class="check-sub">Assessment completed and locked in the EHR</div></div>
+        </div>
+        <div class="check-item ${p.oasisTransmitted?'checked':''}" onclick="toggle(${p.id},'oasisTransmitted')">
+          <input type="checkbox" ${p.oasisTransmitted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisTransmitted')">
+          <div><div class="check-label">OASIS transmitted to CMS</div><div class="check-sub">Sent via HAVEN/iQIES within required window</div></div>
+        </div>
+        <div class="check-item ${p.physOrderSent?'checked':''}" onclick="toggle(${p.id},'physOrderSent')">
+          <input type="checkbox" ${p.physOrderSent?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSent')">
+          <div><div class="check-label">Physician order / POC sent</div><div class="check-sub">Plan of care sent to physician for signature</div></div>
+        </div>
+        <div class="check-item ${p.physOrderSigned?'checked':''}" onclick="toggle(${p.id},'physOrderSigned')">
+          <input type="checkbox" ${p.physOrderSigned?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSigned')">
+          <div><div class="check-label">Physician order signed</div><div class="check-sub">Signed POC received and filed in EHR</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="drawer-section">
+      <div class="drawer-section-title">Clinical Manager Notes</div>
+      <textarea class="notes-area" placeholder="Add notes…" onchange="saveNotes(${p.id},this.value)">${p.notes}</textarea>
+    </div>
+
+    <!-- EHR -->
+    <div class="drawer-section">
+      <button class="ehr-btn">Open Patient in EHR <svg style="width:13px;height:13px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+    </div>
+  `;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function setClinicianRec(id, rec) {
+  const p = PATIENTS.find(x => x.id === id);
+  if (p) {
+    p.clinRec = rec;
+    // If no CM decision yet, pre-populate it to match clinician (CM can override)
+    if (p.recommendation === 'pending') p.recommendation = rec;
+    openDrawer(id);
+    updateKPIs();
+    renderList();
+    showToast(`Clinician recommendation: "${rec}" — awaiting CM sign-off for ${p.name}`);
+  }
+}
+
+function setRec(id, rec) {
+  const p = PATIENTS.find(x => x.id === id);
+  if (p) {
+    p.recommendation = rec;
+    openDrawer(id);
+    updateKPIs();
+    renderList();
+    showToast(`CM approved: "${rec}" for ${p.name}`);
+  }
+}
+
+function toggle(id, field) {
+  const p = PATIENTS.find(x => x.id === id);
+  if (p) {
+    p[field] = !p[field];
+    openDrawer(id); // re-render drawer
+    updateKPIs();
+    renderList();
+    showToast(`Updated: ${field.replace(/([A-Z])/g,' $1').toLowerCase()} for ${p.name}`);
+  }
+}
+
+function saveNotes(id, val) {
+  const p = PATIENTS.find(x => x.id === id);
+  if (p) {
+    p.notes = val;
+    showToast('Notes saved');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+document.getElementById('todayStr').textContent =
+  TODAY.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+updateKPIs();
+renderList();
+</script>
+</body>
+</html>
