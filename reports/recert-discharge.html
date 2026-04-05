@@ -14,26 +14,20 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-  /* ── TOPBAR ── */
   .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
   .logo{font-weight:800;font-size:1.1rem;letter-spacing:-0.03em;color:var(--primary);}
   .breadcrumb{font-size:0.82rem;color:var(--muted);}
   .breadcrumb a{color:var(--muted);text-decoration:none;}
   .breadcrumb a:hover{color:var(--primary);}
-  .topbar-right{display:flex;align-items:center;gap:0.75rem;}
   .demo-pill{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A;font-size:0.75rem;font-weight:600;padding:0.2rem 0.65rem;border-radius:20px;}
 
-  /* ── PAGE ── */
   .page{max-width:1160px;margin:0 auto;padding:2rem 1.5rem 5rem;}
-
-  /* ── PAGE HEADER ── */
-  .page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;}
   .page-title{font-size:1.55rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.25rem;}
   .page-sub{color:var(--muted);font-size:0.92rem;}
   .header-meta{display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;font-size:0.8rem;color:var(--muted);}
   .header-meta strong{color:var(--text);}
 
-  /* ── KPI TILES ── */
+  /* KPI */
   .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:2rem;}
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
   .kpi-tile{background:#fff;border-radius:var(--radius);padding:1.1rem 1rem;border:1.5px solid var(--border);box-shadow:var(--shadow);cursor:pointer;transition:all 0.15s;}
@@ -51,7 +45,7 @@
   .kpi-label{font-size:0.75rem;font-weight:600;color:var(--muted);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;}
   .kpi-sub{font-size:0.73rem;color:var(--muted);margin-top:0.25rem;}
 
-  /* ── TABS + SEARCH ── */
+  /* CONTROLS */
   .controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;}
   .filter-tabs{display:flex;gap:0.4rem;background:#fff;padding:0.3rem;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow);}
   .filter-tab{padding:0.4rem 1rem;border-radius:7px;font-size:0.84rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;display:flex;align-items:center;gap:0.4rem;}
@@ -64,10 +58,10 @@
   .search-wrap input:focus{outline:none;border-color:var(--primary);}
   .search-icon{position:absolute;left:0.65rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;pointer-events:none;}
 
-  /* ── PATIENT TABLE ── */
+  /* PATIENT ROWS */
+  .section-label{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;}
   .patient-list{display:flex;flex-direction:column;gap:0.55rem;}
-
-  .patient-row{background:#fff;border-radius:10px;border:1.5px solid var(--border);padding:0.9rem 1.1rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:0.85rem;align-items:center;cursor:pointer;box-shadow:var(--shadow);transition:all 0.15s;position:relative;}
+  .patient-row{background:#fff;border-radius:10px;border:1.5px solid var(--border);padding:0.9rem 1.1rem;display:grid;grid-template-columns:auto 1fr auto auto;gap:0.85rem;align-items:center;cursor:pointer;box-shadow:var(--shadow);transition:all 0.15s;}
   .patient-row:hover{box-shadow:var(--shadow-md);border-color:#93C5FD;}
   .patient-row.critical{border-left:4px solid var(--danger);}
   .patient-row.high{border-left:4px solid var(--warning);}
@@ -87,142 +81,196 @@
   .meta-chip.red{background:#FEE2E2;color:#B91C1C;}
   .meta-chip.green{background:#D1FAE5;color:#065F46;}
   .meta-chip.yellow{background:#FEF3C7;color:#92400E;}
+  .meta-chip.purple{background:#EDE9FE;color:#6D28D9;}
 
-  .days-col{text-align:center;min-width:70px;}
-  .days-num{font-size:1.5rem;font-weight:800;line-height:1;}
+  /* Inline goal progress on row */
+  .row-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.35rem;min-width:130px;}
+  .days-display{text-align:right;}
+  .days-num{font-size:1.4rem;font-weight:800;line-height:1;}
   .days-num.red{color:var(--danger);}
   .days-num.yellow{color:#D97706;}
   .days-num.green{color:var(--success);}
   .days-num.muted{color:var(--muted);}
   .days-label{font-size:0.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
-
-  .status-col{display:flex;flex-direction:column;gap:0.3rem;min-width:130px;}
-  .status-item{display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;}
-  .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .dot-done{background:var(--success);}
-  .dot-pending{background:#D1D5DB;}
-  .dot-warn{background:var(--warning);}
-  .dot-danger{background:var(--danger);}
-
-  .rec-col{min-width:110px;}
-  .rec-badge{padding:0.3rem 0.7rem;border-radius:7px;font-size:0.78rem;font-weight:700;text-align:center;display:inline-block;}
+  .rec-badge{padding:0.25rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:700;text-align:center;display:inline-block;white-space:nowrap;}
   .rec-badge.recert{background:#DBEAFE;color:#1D4ED8;}
   .rec-badge.discharge{background:#D1FAE5;color:#065F46;}
   .rec-badge.pending{background:#F3F4F6;color:var(--muted);}
-  .rec-badge.complete{background:#D1FAE5;color:#065F46;}
 
-  /* ── DETAIL PANEL (side drawer) ── */
-  .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.25);z-index:300;display:none;}
+  /* ── DRAWER ── */
+  .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:300;display:none;}
   .drawer-overlay.open{display:block;}
-  .drawer{position:fixed;top:0;right:-480px;width:460px;height:100vh;background:#fff;box-shadow:-4px 0 30px rgba(0,0,0,0.15);z-index:400;display:flex;flex-direction:column;transition:right 0.25s cubic-bezier(0.4,0,0.2,1);}
+  .drawer{position:fixed;top:0;right:-580px;width:560px;height:100vh;background:#fff;box-shadow:-4px 0 32px rgba(0,0,0,0.15);z-index:400;display:flex;flex-direction:column;transition:right 0.25s cubic-bezier(0.4,0,0.2,1);}
   .drawer.open{right:0;}
-
-  .drawer-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
-  .drawer-title{font-size:1.1rem;font-weight:800;margin-bottom:0.2rem;}
-  .drawer-sub{font-size:0.82rem;color:var(--muted);}
+  .drawer-header{padding:1.1rem 1.4rem 0.9rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;background:#fff;}
+  .drawer-title{font-size:1.1rem;font-weight:800;margin-bottom:0.15rem;}
+  .drawer-sub{font-size:0.8rem;color:var(--muted);}
   .drawer-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);padding:0.2rem;line-height:1;flex-shrink:0;}
-  .drawer-close:hover{color:var(--text);}
+  .drawer-body{flex:1;overflow-y:auto;padding:0;}
 
-  .drawer-body{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;}
+  /* ── CLINICAL INTELLIGENCE BANNER ── */
+  .ci-banner{padding:1rem 1.4rem;border-bottom:1px solid var(--border);}
+  .ci-banner.rec-discharge{background:linear-gradient(135deg,#ECFDF5,#F0FDF4);}
+  .ci-banner.rec-recert{background:linear-gradient(135deg,#EFF6FF,#F0F9FF);}
+  .ci-banner.rec-watch{background:linear-gradient(135deg,#FFFBEB,#FEF9EE);}
+  .ci-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;}
+  .ci-label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);display:flex;align-items:center;gap:0.4rem;}
+  .ci-rec-pill{padding:0.3rem 0.85rem;border-radius:20px;font-size:0.82rem;font-weight:700;}
+  .ci-rec-pill.discharge{background:#10B981;color:#fff;}
+  .ci-rec-pill.recert{background:#2563EB;color:#fff;}
+  .ci-rec-pill.watch{background:#F59E0B;color:#fff;}
+  .ci-text{font-size:0.87rem;line-height:1.6;color:#1F2937;}
+  .ci-sources{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.65rem;}
+  .ci-source{background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08);border-radius:5px;padding:0.15rem 0.5rem;font-size:0.7rem;font-weight:600;color:var(--muted);}
 
-  .drawer-section{margin-bottom:1.5rem;}
-  .drawer-section-title{font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);}
+  /* ── DRAWER TABS ── */
+  .drawer-tabs{display:flex;border-bottom:1px solid var(--border);background:#fff;position:sticky;top:0;z-index:10;}
+  .drawer-tab{flex:1;padding:0.7rem 0.5rem;font-size:0.8rem;font-weight:600;color:var(--muted);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+  .drawer-tab:hover{color:var(--primary);}
+  .drawer-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
 
-  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;}
-  .detail-item{background:#F8FAFC;border-radius:8px;padding:0.65rem 0.8rem;}
-  .detail-item label{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:0.2rem;}
-  .detail-item .val{font-size:0.92rem;font-weight:700;}
+  .drawer-panel{display:none;padding:1.1rem 1.4rem;}
+  .drawer-panel.active{display:block;}
+
+  /* ── SECTION HEADERS IN DRAWER ── */
+  .d-section{margin-bottom:1.4rem;}
+  .d-section-title{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+
+  /* ── GOAL PROGRESS ── */
+  .goals-list{display:flex;flex-direction:column;gap:0.6rem;}
+  .goal-item{background:#F8FAFC;border-radius:8px;padding:0.7rem 0.85rem;border:1px solid var(--border);}
+  .goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+  .goal-text{font-size:0.85rem;font-weight:600;color:var(--text);flex:1;padding-right:0.5rem;}
+  .goal-status{padding:0.18rem 0.55rem;border-radius:5px;font-size:0.7rem;font-weight:700;white-space:nowrap;flex-shrink:0;}
+  .goal-status.met{background:#D1FAE5;color:#065F46;}
+  .goal-status.progress{background:#FEF3C7;color:#92400E;}
+  .goal-status.not-met{background:#FEE2E2;color:#B91C1C;}
+  .goal-status.na{background:#F3F4F6;color:var(--muted);}
+  .goal-bar-wrap{background:#E5E7EB;border-radius:4px;height:5px;overflow:hidden;}
+  .goal-bar{height:100%;border-radius:4px;transition:width 0.4s;}
+  .goal-bar.met{background:var(--success);}
+  .goal-bar.progress{background:var(--warning);}
+  .goal-bar.not-met{background:var(--danger);}
+  .goal-detail{font-size:0.75rem;color:var(--muted);margin-top:0.35rem;}
+
+  /* ── SHP EINSTEIN RISK ── */
+  .shp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
+  .shp-tile{background:#F8FAFC;border-radius:8px;padding:0.65rem 0.8rem;border:1px solid var(--border);text-align:center;}
+  .shp-tile label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:0.3rem;}
+  .shp-risk-val{font-size:1.3rem;font-weight:800;line-height:1;}
+  .shp-risk-val.low{color:var(--success);}
+  .shp-risk-val.moderate{color:#D97706;}
+  .shp-risk-val.high{color:var(--danger);}
+  .shp-percentile{font-size:0.72rem;color:var(--muted);margin-top:0.15rem;}
+  .shp-bar-wrap{background:#E5E7EB;border-radius:4px;height:6px;overflow:hidden;margin-top:0.35rem;}
+  .shp-bar{height:100%;border-radius:4px;}
+  .shp-bar.low{background:var(--success);}
+  .shp-bar.moderate{background:var(--warning);}
+  .shp-bar.high{background:var(--danger);}
+  .shp-note{font-size:0.75rem;color:var(--muted);background:#F8FAFC;border-radius:7px;padding:0.5rem 0.7rem;border:1px solid var(--border);}
+
+  /* ── VISIT HISTORY ── */
+  .visit-list{display:flex;flex-direction:column;gap:0.45rem;}
+  .visit-item{display:grid;grid-template-columns:72px 130px 1fr;gap:0.5rem;align-items:start;padding:0.55rem 0.75rem;background:#F8FAFC;border-radius:7px;border:1px solid var(--border);font-size:0.8rem;}
+  .visit-date{font-weight:700;color:var(--muted);font-size:0.75rem;}
+  .visit-clinician{font-weight:600;font-size:0.78rem;}
+  .visit-clinician.repeat{color:var(--success);}
+  .visit-clinician.new{color:#7C3AED;}
+  .visit-note{color:var(--text);line-height:1.4;font-style:italic;color:#374151;}
+  .continuity-alert{background:#FEF3C7;border:1px solid #FDE68A;border-radius:7px;padding:0.55rem 0.75rem;font-size:0.78rem;color:#92400E;display:flex;gap:0.4rem;align-items:flex-start;margin-top:0.6rem;}
+  .continuity-good{background:#D1FAE5;border:1px solid #A7F3D0;border-radius:7px;padding:0.55rem 0.75rem;font-size:0.78rem;color:#065F46;display:flex;gap:0.4rem;align-items:flex-start;margin-top:0.6rem;}
+
+  /* ── CERT DETAILS ── */
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
+  .detail-item{background:#F8FAFC;border-radius:8px;padding:0.6rem 0.75rem;}
+  .detail-item label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;display:block;margin-bottom:0.15rem;}
+  .detail-item .val{font-size:0.9rem;font-weight:700;}
   .detail-item .val.red{color:var(--danger);}
   .detail-item .val.yellow{color:#D97706;}
   .detail-item .val.green{color:var(--success);}
 
-  /* Recommendation selector */
-  .rec-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
-  .rec-option{padding:0.6rem 0.5rem;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.15s;font-size:0.82rem;font-weight:600;color:var(--muted);}
+  /* ── DECISION SECTION ── */
+  .rec-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:0.75rem;}
+  .rec-option{padding:0.6rem 0.4rem;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all 0.15s;font-size:0.82rem;font-weight:600;color:var(--muted);}
   .rec-option:hover{border-color:var(--primary);}
   .rec-option.selected.recert{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;}
   .rec-option.selected.discharge{border-color:#10B981;background:#D1FAE5;color:#065F46;}
   .rec-option.selected.pending{border-color:#9CA3AF;background:#F3F4F6;color:#374151;}
 
-  /* Checklist */
-  .checklist{display:flex;flex-direction:column;gap:0.55rem;}
-  .check-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.9rem;background:#F8FAFC;border-radius:8px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
+  /* ── CHECKLIST ── */
+  .checklist{display:flex;flex-direction:column;gap:0.45rem;}
+  .check-item{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.8rem;background:#F8FAFC;border-radius:7px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;}
   .check-item:hover{background:#EFF6FF;border-color:#BFDBFE;}
   .check-item.checked{background:#F0FDF4;border-color:#A7F3D0;}
-  .check-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--success);cursor:pointer;flex-shrink:0;}
-  .check-item .check-label{font-size:0.87rem;font-weight:600;flex:1;}
-  .check-item .check-sub{font-size:0.74rem;color:var(--muted);}
+  .check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--success);cursor:pointer;flex-shrink:0;}
+  .check-item .check-label{font-size:0.85rem;font-weight:600;flex:1;}
   .check-item.checked .check-label{color:var(--success);}
+  .check-item .check-sub{font-size:0.72rem;color:var(--muted);}
 
-  /* Notes */
-  .notes-area{width:100%;padding:0.65rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.87rem;resize:vertical;min-height:80px;}
+  /* ── CASE CONFERENCE ── */
+  .conf-summary{background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem;font-size:0.84rem;line-height:1.7;color:#1F2937;white-space:pre-wrap;font-family:inherit;}
+  .conf-copy-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.55rem;border-radius:8px;font-size:0.83rem;font-weight:600;border:1.5px solid var(--primary);background:#EFF6FF;color:var(--primary);cursor:pointer;margin-top:0.6rem;transition:all 0.15s;}
+  .conf-copy-btn:hover{background:var(--primary);color:#fff;}
+
+  /* ── NOTES ── */
+  .notes-area{width:100%;padding:0.65rem 0.8rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.87rem;resize:vertical;min-height:75px;}
   .notes-area:focus{outline:none;border-color:var(--primary);}
 
-  /* EHR button */
-  .ehr-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.65rem;border-radius:8px;font-size:0.85rem;font-weight:600;border:1.5px solid var(--border);background:#fff;color:var(--muted);cursor:not-allowed;position:relative;margin-top:0.5rem;}
-  .ehr-btn .tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1F2937;color:#fff;font-size:0.72rem;padding:0.35rem 0.6rem;border-radius:6px;white-space:nowrap;font-weight:400;z-index:10;}
+  /* EHR */
+  .ehr-btn{display:flex;align-items:center;justify-content:center;gap:0.4rem;width:100%;padding:0.6rem;border-radius:8px;font-size:0.83rem;font-weight:600;border:1.5px solid var(--border);background:#fff;color:var(--muted);cursor:not-allowed;position:relative;}
+  .ehr-btn .tooltip{display:none;position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:#1F2937;color:#fff;font-size:0.72rem;padding:0.35rem 0.6rem;border-radius:6px;white-space:nowrap;z-index:10;}
   .ehr-btn:hover .tooltip{display:block;}
 
-  /* OASIS window alert */
-  .oasis-window-alert{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:0.65rem 0.9rem;font-size:0.82rem;color:#9A3412;margin-bottom:0.75rem;display:flex;align-items:flex-start;gap:0.5rem;}
+  .oasis-alert{background:#FFF7ED;border:1px solid #FED7AA;border-radius:7px;padding:0.55rem 0.8rem;font-size:0.8rem;color:#9A3412;margin-bottom:0.65rem;display:flex;gap:0.4rem;}
 
-  /* empty state */
   .empty{text-align:center;padding:3rem;color:var(--muted);background:#fff;border-radius:var(--radius);border:2px dashed var(--border);}
-  .empty .em{font-size:2rem;display:block;margin-bottom:0.5rem;}
-
-  /* section label */
-  .section-label{font-size:0.78rem;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.85rem;margin-top:0.25rem;}
-
-  /* toast */
   .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#1F2937;color:#fff;padding:0.7rem 1.1rem;border-radius:8px;font-size:0.85rem;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.2);opacity:0;transform:translateY(8px);transition:all 0.25s;z-index:999;pointer-events:none;}
   .toast.show{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:1.5rem;">
     <span class="logo">enzo health</span>
     <span class="breadcrumb"><a href="../index.html">Home</a> › Recertification &amp; Discharge Agent</span>
   </div>
-  <div class="topbar-right">
-    <span class="demo-pill">⚠️ Demo mode</span>
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <span class="demo-pill">⚠️ Demo — live data via EHR connector</span>
   </div>
 </div>
 
-<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-header">
-    <div>
+    <div style="flex:1;">
       <div class="drawer-title" id="drawerName">—</div>
       <div class="drawer-sub" id="drawerSub">—</div>
     </div>
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
   </div>
-  <div class="drawer-body" id="drawerBody"></div>
+  <!-- Clinical Intelligence Banner -->
+  <div id="ciBanner"></div>
+  <!-- Tabs -->
+  <div class="drawer-tabs">
+    <button class="drawer-tab active" onclick="switchDrawerTab('clinical',this)">🧠 Clinical Picture</button>
+    <button class="drawer-tab" onclick="switchDrawerTab('decision',this)">✅ Decision</button>
+    <button class="drawer-tab" onclick="switchDrawerTab('conference',this)">📋 Case Conference</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-panel active" id="panel-clinical"></div>
+    <div class="drawer-panel" id="panel-decision"></div>
+    <div class="drawer-panel" id="panel-conference"></div>
+  </div>
 </div>
 
-<!-- PAGE -->
 <div class="page">
-
-  <!-- HEADER -->
-  <div class="page-header">
-    <div>
-      <div class="page-title">Recertification &amp; Discharge Agent</div>
-      <div class="page-sub">Clinical Manager view · 14-day advance tracking · 2026 PDGM certification periods</div>
-      <div class="header-meta">
-        <span>Census: <strong id="totalCount">—</strong> active patients</span>
-        <span>·</span>
-        <span>Flagged today: <strong id="flaggedCount" style="color:var(--danger)">—</strong></span>
-        <span>·</span>
-        <span id="todayStr" style="color:var(--muted);">—</span>
-      </div>
-    </div>
+  <div style="margin-bottom:1.75rem;">
+    <div class="page-title">Recertification &amp; Discharge Agent</div>
+    <div class="page-sub">Clinical Manager view · Synthesized from visit transcripts, SHP Einstein data &amp; goal tracking</div>
+    <div class="header-meta">Census: <strong id="totalCount">—</strong> active &nbsp;·&nbsp; Flagged today: <strong id="flaggedCount" style="color:var(--danger);">—</strong> &nbsp;·&nbsp; <span id="todayStr"></span></div>
   </div>
 
-  <!-- KPI TILES -->
   <div class="kpi-grid">
     <div class="kpi-tile status-red" onclick="setFilter('action')">
       <span class="kpi-icon">🚨</span>
@@ -234,19 +282,19 @@
       <span class="kpi-icon">⏳</span>
       <div class="kpi-num yellow" id="kpi-window">—</div>
       <div class="kpi-label">In 14-Day Window</div>
-      <div class="kpi-sub">Recert/discharge decision due</div>
+      <div class="kpi-sub">Decision due soon</div>
     </div>
-    <div class="kpi-tile status-yellow" onclick="setFilter('action')">
-      <span class="kpi-icon">📋</span>
-      <div class="kpi-num yellow" id="kpi-oasis">—</div>
-      <div class="kpi-label">OASIS Not Started</div>
-      <div class="kpi-sub">In window, not yet ordered</div>
+    <div class="kpi-tile status-red" onclick="setFilter('action')">
+      <span class="kpi-icon">🎯</span>
+      <div class="kpi-num red" id="kpi-goals">—</div>
+      <div class="kpi-label">Goals Not Met (In Window)</div>
+      <div class="kpi-sub">May need recertification</div>
     </div>
     <div class="kpi-tile status-yellow" onclick="setFilter('tracking')">
-      <span class="kpi-icon">✍️</span>
-      <div class="kpi-num yellow" id="kpi-phys">—</div>
-      <div class="kpi-label">Physician Orders Pending</div>
-      <div class="kpi-sub">Sent but not yet signed</div>
+      <span class="kpi-icon">🔄</span>
+      <div class="kpi-num yellow" id="kpi-continuity">—</div>
+      <div class="kpi-label">Continuity Concerns</div>
+      <div class="kpi-sub">4+ clinicians per patient</div>
     </div>
     <div class="kpi-tile status-green" onclick="setFilter('completed')">
       <span class="kpi-icon">✅</span>
@@ -256,7 +304,6 @@
     </div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="controls">
     <div class="filter-tabs">
       <button class="filter-tab active" id="tab-action" onclick="setFilter('action')">Action Required <span class="tab-count" id="tc-action">0</span></button>
@@ -266,401 +313,572 @@
     </div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
-      <input type="text" placeholder="Search patient name or MRN…" oninput="filterSearch(this.value)" id="searchInput">
+      <input type="text" placeholder="Search patient name or MRN…" oninput="filterSearch(this.value)">
     </div>
   </div>
 
-  <!-- PATIENT LIST -->
   <div class="section-label" id="listLabel">Action Required</div>
   <div class="patient-list" id="patientList"></div>
-
-</div><!-- /page -->
+</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────
-// Today = April 4, 2026
-const TODAY = new Date(2026, 3, 4); // month is 0-indexed
+// ─────────────────────────────────────────────────────────────
+// PATIENT DATA — rich clinical data per patient
+// In production: pulled from EHR (Scribe transcripts),
+// SHP Einstein API, and OASIS data warehouse
+// ─────────────────────────────────────────────────────────────
+const TODAY = new Date(2026, 3, 4);
 
-function daysFromToday(dateStr) {
-  const d = new Date(dateStr);
-  const diff = Math.round((d - TODAY) / (1000 * 60 * 60 * 24));
-  return diff;
-}
-
-function oasisWindowStart(certEnd) {
-  const d = new Date(certEnd);
-  d.setDate(d.getDate() - 4); // day 56 = 4 days before end
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-}
-
-function fmtDate(str) {
-  return new Date(str).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-}
-
-// Patients array — each patient has full tracking state
 const PATIENTS = [
-  {
-    id:1, name:"Eleanor Marsh", mrn:"MRN 00288", clinician:"J. Rivera, RN",
-    certStart:"2026-02-05", certEnd:"2026-04-06", dx:"Hip fracture s/p ORIF",
-    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
-    recommendation:"pending", clinRec:"pending",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"Patient has been progressing but PT goals not fully met.",
-    status:"active"
-  },
-  {
-    id:2, name:"Samuel Park", mrn:"MRN 00317", clinician:"T. Williams, PT",
-    certStart:"2026-02-08", certEnd:"2026-04-09", dx:"CVA with left hemiplegia",
-    clinGroup:"Neuro/Stroke (B)", insuranceName:"Medicare",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:false,
-    physOrderSent:true, physOrderSigned:false,
-    notes:"OASIS completed 4/2. Awaiting physician signature on recert POC.",
-    status:"active"
-  },
-  {
-    id:3, name:"Irene Lawson", mrn:"MRN 00341", clinician:"M. Chen, RN",
-    certStart:"2026-02-11", certEnd:"2026-04-12", dx:"CHF exacerbation",
-    clinGroup:"Cardiac (H)", insuranceName:"Medicare Advantage",
-    recommendation:"pending", clinRec:"pending",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"",
-    status:"active"
-  },
-  {
-    id:4, name:"Walter Price", mrn:"MRN 00356", clinician:"K. Osei, PT",
-    certStart:"2026-02-13", certEnd:"2026-04-14", dx:"Total knee replacement",
-    clinGroup:"Musculoskeletal Rehab (E)", insuranceName:"Medicare",
-    recommendation:"discharge", clinRec:"discharge",
-    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"Goals met. Independent with HEP. Recommend discharge at end of period.",
-    status:"active"
-  },
-  {
-    id:5, name:"Gloria Martinez", mrn:"MRN 00372", clinician:"S. Patel, RN",
-    certStart:"2026-02-14", certEnd:"2026-04-15", dx:"Type 2 diabetes with foot ulcer",
-    clinGroup:"Endocrine (I)", insuranceName:"Medicaid",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"Wound improving slowly, still requires skilled nursing.",
-    status:"active"
-  },
-  {
-    id:6, name:"Dennis Flynn", mrn:"MRN 00388", clinician:"J. Rivera, RN",
-    certStart:"2026-02-15", certEnd:"2026-04-16", dx:"COPD exacerbation",
-    clinGroup:"Respiratory (L)", insuranceName:"Medicare",
-    recommendation:"pending", clinRec:"recert",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"Clinician recommends recert — awaiting CM review.",
-    status:"active"
-  },
-  {
-    id:7, name:"Shirley Watson", mrn:"MRN 00401", clinician:"M. Chen, RN",
-    certStart:"2026-02-16", certEnd:"2026-04-17", dx:"Wound care post-colostomy",
-    clinGroup:"Wound Care (C)", insuranceName:"Medicare",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:true, physOrderSigned:false,
-    notes:"Stoma site healing, patient still requires skilled wound care.",
-    status:"active"
-  },
-  {
-    id:8, name:"Carl Henderson", mrn:"MRN 00415", clinician:"T. Williams, PT",
-    certStart:"2026-02-17", certEnd:"2026-04-18", dx:"Parkinson's disease, fall risk",
-    clinGroup:"Neuro/Stroke (B)", insuranceName:"Medicare",
-    recommendation:"pending", clinRec:"pending",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"",
-    status:"active"
-  },
-  // In-progress (15–28 days)
-  {
-    id:9, name:"Patricia Holmes", mrn:"MRN 00362", clinician:"K. Osei, PT",
-    certStart:"2026-02-19", certEnd:"2026-04-22", dx:"Hip replacement s/p revision",
-    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"OASIS ordered, scheduled for 4/10.",
-    status:"active"
-  },
-  {
-    id:10, name:"George Alvarez", mrn:"MRN 00512", clinician:"S. Patel, RN",
-    certStart:"2026-02-23", certEnd:"2026-04-26", dx:"Peripheral artery disease",
-    clinGroup:"Cardiac (H)", insuranceName:"Medicare Advantage",
-    recommendation:"pending", clinRec:"pending",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"",
-    status:"active"
-  },
-  {
-    id:11, name:"Dorothy Kim", mrn:"MRN 00501", clinician:"J. Rivera, RN",
-    certStart:"2026-02-25", certEnd:"2026-04-28", dx:"Hypertensive heart disease",
-    clinGroup:"Cardiac (H)", insuranceName:"Medicare",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
-    physOrderSent:false, physOrderSigned:false,
-    notes:"",
-    status:"active"
-  },
-  // Completed
-  {
-    id:12, name:"Margaret Flores", mrn:"MRN 00412", clinician:"M. Chen, RN",
-    certStart:"2026-02-01", certEnd:"2026-04-02", dx:"Diabetes w/ neuropathy",
-    clinGroup:"Endocrine (I)", insuranceName:"Medicare",
-    recommendation:"recert", clinRec:"recert",
-    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
-    physOrderSent:true, physOrderSigned:true,
-    notes:"Recertified 4/1. New cert period begins 4/3.",
-    status:"completed-recert"
-  },
-  {
-    id:13, name:"Robert Nguyen", mrn:"MRN 00388", clinician:"T. Williams, PT",
-    certStart:"2026-01-30", certEnd:"2026-03-31", dx:"Total hip replacement",
-    clinGroup:"Surgical Aftercare (G)", insuranceName:"Medicare",
-    recommendation:"discharge", clinRec:"discharge",
-    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
-    physOrderSent:true, physOrderSigned:true,
-    notes:"All goals met. Discharged 3/30.",
-    status:"completed-discharge"
-  },
-  {
-    id:14, name:"Alice Brennan", mrn:"MRN 00344", clinician:"K. Osei, PT",
-    certStart:"2026-02-02", certEnd:"2026-04-03", dx:"Knee OA post-injection",
-    clinGroup:"Musculoskeletal Rehab (E)", insuranceName:"Medicaid",
-    recommendation:"discharge", clinRec:"discharge",
-    oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
-    physOrderSent:true, physOrderSigned:true,
-    notes:"Discharged 4/3. Patient independent with ADLs.",
-    status:"completed-discharge"
-  }
+{
+  id:1, name:"Eleanor Marsh", mrn:"MRN 00288",
+  certStart:"2026-02-05", certEnd:"2026-04-06",
+  dx:"Hip fracture, s/p ORIF right hip", clinGroup:"Surgical Aftercare (G)",
+  insurance:"Medicare", clinician:"J. Rivera, RN (primary)",
+  recommendation:"pending", clinRec:"recert",
+  oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"",
+  status:"active",
+  // Clinical intelligence
+  aiRec:"recert",
+  aiConfidence:"High",
+  aiSummary:"Patient has completed 9 visits over 58 days with 3 of 4 plan of care goals met. The surgical wound care goal remains open — wound has reduced from 4.2cm to 2.1cm but is not fully healed and still requires skilled nursing assessment. Patient reports pain 4/10 with ambulation on most recent visit, above the goal of ≤3/10. Transfer independence is improving but not consolidated. SHP Einstein hospitalization risk is MODERATE (47th percentile), elevated in part due to age and prior fall history. 4 different clinicians have visited this patient — consider assigning a consistent RN for the recertification period to improve continuity.",
+  shp:{ hospRisk:"Moderate", hospPct:47, emergRisk:"Low", emergPct:28, hhcahps:"3.9", falls:"Moderate" },
+  goals:[
+    {text:"Ambulate 150ft with walker without rest", status:"met", pct:100, detail:"Met on visit 6 (Mar 18). Now ambulating 200ft independently with walker."},
+    {text:"Independent with bed-to-chair transfers", status:"progress", pct:70, detail:"In progress — requires minimal assist in 3/5 trials. Goal not fully met."},
+    {text:"Wound healing: right hip incision <1.5cm", status:"progress", pct:65, detail:"Wound reduced from 4.2cm → 2.1cm. Progress noted but not at goal. Requires continued skilled wound care."},
+    {text:"Pain management ≤3/10 with ambulation", status:"not-met", pct:40, detail:"Pain reported 4–5/10 on last 3 visits. Physician notified; medication review pending."}
+  ],
+  visits:[
+    {date:"Apr 2", clinician:"J. Rivera, RN", isRepeat:true, note:"Wound 2.1cm, pain 4/10 with ambulation. Patient cooperative. Encouraged HEP compliance."},
+    {date:"Mar 29", clinician:"M. Chen, RN", isRepeat:false, note:"New clinician this visit. Wound assessed 2.3cm. Patient reports fatigue. Pain 5/10."},
+    {date:"Mar 25", clinician:"S. Patel, RN", isRepeat:false, note:"Transfer requiring min assist. Wound site clean, 2.6cm. Reviewed fall prevention."},
+    {date:"Mar 21", clinician:"J. Rivera, RN", isRepeat:true, note:"Pain improved to 3/10 today. Wound 2.9cm. Good HEP adherence reported."},
+    {date:"Mar 17", clinician:"T. Williams, PT", isRepeat:false, note:"PT consulted. ROM within limits. Ambulation with walker — 150ft achieved today."}
+  ],
+  uniqueClinicians:4,
+  conferenceNotes:""
+},
+{
+  id:2, name:"Samuel Park", mrn:"MRN 00317",
+  certStart:"2026-02-08", certEnd:"2026-04-09",
+  dx:"CVA with left hemiplegia, expressive aphasia", clinGroup:"Neuro/Stroke (B)",
+  insurance:"Medicare", clinician:"T. Williams, PT (primary)",
+  recommendation:"recert", clinRec:"recert",
+  oasisOrdered:true, oasisCompleted:true, oasisTransmitted:false,
+  physOrderSent:true, physOrderSigned:false,
+  notes:"OASIS completed 4/2. Awaiting physician signature on recert POC.",
+  status:"active",
+  aiRec:"recert",
+  aiConfidence:"High",
+  aiSummary:"Patient is demonstrating active neurological recovery with consistent functional gains across 11 visits. Upper extremity function has improved from 0/5 to 3/5 grip strength on the left. However, 2 of 4 goals remain open — ADL independence is at 70% and aphasia therapy goals are in progress. SHP Einstein hospitalization risk is ELEVATED (68th percentile), reflecting prior acute hospitalization and stroke severity. Good clinician continuity — only 2 clinicians over 11 visits. Recertification is strongly supported: patient is improving, neurological recovery takes time, and discharging now would risk functional regression.",
+  shp:{ hospRisk:"High", hospPct:68, emergRisk:"Moderate", emergPct:52, hhcahps:"4.3", falls:"Low" },
+  goals:[
+    {text:"Left upper extremity grip strength 3/5", status:"met", pct:100, detail:"Goal met on visit 9. Grip strength improved from 0/5 to 3/5 with consistent PT."},
+    {text:"Safe ambulation with AFO on all surfaces", status:"met", pct:100, detail:"Met on visit 7. Patient ambulating safely on carpet, tile, and uneven surfaces with AFO."},
+    {text:"Independent with morning ADLs (dressing, grooming)", status:"progress", pct:70, detail:"Requires moderate assist for lower body dressing. Upper body and grooming independent."},
+    {text:"Functional communication — 20-word vocabulary with aphasia device", status:"progress", pct:55, detail:"SLP working with patient. Consistent improvement. Currently at 11-word functional vocabulary."}
+  ],
+  visits:[
+    {date:"Apr 1", clinician:"T. Williams, PT", isRepeat:true, note:"Left grip 3/5 — goal met. Aphasia device use improving. ADLs 70% independent."},
+    {date:"Mar 28", clinician:"T. Williams, PT", isRepeat:true, note:"Ambulation stable with AFO. Patient showing frustration with communication — normal for CVA recovery."},
+    {date:"Mar 24", clinician:"T. Williams, PT", isRepeat:true, note:"ROM exercises completed. Caregiver educated on facilitated communication techniques."},
+    {date:"Mar 20", clinician:"M. Chen, RN", isRepeat:false, note:"SN skilled assessment. Vitals stable. No signs of DVT. Caregiver engaged and compliant."},
+    {date:"Mar 16", clinician:"T. Williams, PT", isRepeat:true, note:"AFO fit confirmed. Patient ambulating 100ft independently. Progress toward goal noted."}
+  ],
+  uniqueClinicians:2,
+  conferenceNotes:""
+},
+{
+  id:3, name:"Irene Lawson", mrn:"MRN 00341",
+  certStart:"2026-02-11", certEnd:"2026-04-12",
+  dx:"CHF exacerbation, NYHA Class III", clinGroup:"Cardiac (H)",
+  insurance:"Medicare Advantage", clinician:"M. Chen, RN (primary)",
+  recommendation:"pending", clinRec:"pending",
+  oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"",
+  status:"active",
+  aiRec:"watch",
+  aiConfidence:"Moderate",
+  aiSummary:"Clinical picture is mixed. Patient's weight has been stable for 10 days and edema has reduced, suggesting good response to current diuretic regimen. However, 2 of 4 goals remain in progress and the patient reported dyspnea on exertion (DOE) on 3 of the last 5 visits. SHP Einstein hospitalization risk is HIGH (72nd percentile) — CHF patients in this risk band have a 3x higher 30-day readmission rate. This patient warrants careful clinical consideration before discharge. Recommend: hold decision pending clinician input. If DOE resolves and weight remains stable for 14+ days, discharge may be appropriate. Clinician should assess functional reserve at next visit.",
+  shp:{ hospRisk:"High", hospPct:72, emergRisk:"High", emergPct:61, hhcahps:"4.0", falls:"Moderate" },
+  goals:[
+    {text:"Daily weight within 2 lbs of dry weight", status:"met", pct:100, detail:"Weight stable at 148 lbs (dry weight 147 lbs) for 10 consecutive days."},
+    {text:"Edema 1+ or less in bilateral lower extremities", status:"met", pct:100, detail:"Edema resolved to trace bilateral. Current diuretic regimen effective."},
+    {text:"Ambulate 100ft without dyspnea at rest", status:"progress", pct:60, detail:"Patient ambulates 60ft before reporting exertional dyspnea. Goal not yet met."},
+    {text:"Patient/caregiver independently manages CHF protocol", status:"progress", pct:55, detail:"Patient can identify 3 of 5 red flag symptoms. Daily weight log compliance 70%."}
+  ],
+  visits:[
+    {date:"Apr 2", clinician:"M. Chen, RN", isRepeat:true, note:"Weight 148. Edema trace bilateral. SOB on exertion after 60ft. BP 138/84. Mood fair."},
+    {date:"Mar 28", clinician:"J. Rivera, RN", isRepeat:false, note:"Weight 149.5 — within range. Patient reported 2 pillow orthopnea last night. Discussed with MD."},
+    {date:"Mar 24", clinician:"M. Chen, RN", isRepeat:true, note:"Weight stable 148. Edema 1+ resolved. Reviewed fluid restriction compliance — improving."},
+    {date:"Mar 20", clinician:"S. Patel, RN", isRepeat:false, note:"New clinician visit. Weight 149. Patient anxious about discharge. DOE on exertion noted."},
+    {date:"Mar 16", clinician:"M. Chen, RN", isRepeat:true, note:"Weight 148. No orthopnea. Patient educated on daily weight log. Caregiver present."}
+  ],
+  uniqueClinicians:3,
+  conferenceNotes:""
+},
+{
+  id:4, name:"Walter Price", mrn:"MRN 00356",
+  certStart:"2026-02-13", certEnd:"2026-04-14",
+  dx:"Total knee replacement, right knee", clinGroup:"Musculoskeletal Rehab (E)",
+  insurance:"Medicare", clinician:"K. Osei, PT (primary)",
+  recommendation:"discharge", clinRec:"discharge",
+  oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"Goals met. Independent with HEP. Recommend discharge at end of period.",
+  status:"active",
+  aiRec:"discharge",
+  aiConfidence:"High",
+  aiSummary:"Patient has met all 4 plan of care goals. Right knee ROM is 118° (goal 110°), patient is independent with stair negotiation, pain is consistently ≤2/10, and home exercise program adherence is excellent. 10 visits over 60 days with only 2 clinicians — good continuity. SHP Einstein hospitalization risk is LOW (9th percentile). No falls, no acute events, no skilled care needs identified. This patient meets discharge criteria. Discharge at end of certification period is clinically appropriate and well-supported. POC order and discharge OASIS should be submitted this week.",
+  shp:{ hospRisk:"Low", hospPct:9, emergRisk:"Low", emergPct:11, hhcahps:"4.8", falls:"Low" },
+  goals:[
+    {text:"Right knee ROM ≥ 110° flexion", status:"met", pct:100, detail:"ROM 118° at last visit (goal 110°). Consistent improvement across all visits."},
+    {text:"Independent stair negotiation step-over-step", status:"met", pct:100, detail:"Met on visit 7. Patient ascending/descending 12 stairs independently."},
+    {text:"Pain ≤3/10 at rest and with ADLs", status:"met", pct:100, detail:"Pain 2/10 at rest, 2/10 with ADLs on last 3 visits. Goal exceeded."},
+    {text:"Independent with HEP — 5 exercises daily", status:"met", pct:100, detail:"100% self-reported compliance. Caregiver confirmed. Patient demonstrates correctly without cues."}
+  ],
+  visits:[
+    {date:"Apr 1", clinician:"K. Osei, PT", isRepeat:true, note:"All goals met. ROM 118°. Pain 2/10. Patient independent. Discussed discharge plan with patient — accepting."},
+    {date:"Mar 25", clinician:"K. Osei, PT", isRepeat:true, note:"Stairs 12 steps independently. Pain 2/10. HEP demonstrated perfectly. Discharge OASIS scheduled."},
+    {date:"Mar 19", clinician:"K. Osei, PT", isRepeat:true, note:"ROM 115°. Pain 3/10 after activity, 2/10 at rest. Stair goal met today."},
+    {date:"Mar 13", clinician:"K. Osei, PT", isRepeat:true, note:"ROM 112°. Improving consistently. Pain well controlled. Patient motivated."},
+    {date:"Mar 7", clinician:"M. Chen, RN", isRepeat:false, note:"SN visit for wound check. Incision fully healed. No signs of infection. Released to PT only."}
+  ],
+  uniqueClinicians:2,
+  conferenceNotes:""
+},
+{
+  id:5, name:"Gloria Martinez", mrn:"MRN 00372",
+  certStart:"2026-02-14", certEnd:"2026-04-15",
+  dx:"Type 2 diabetes with chronic non-healing foot ulcer", clinGroup:"Endocrine (I)",
+  insurance:"Medicaid", clinician:"S. Patel, RN (primary)",
+  recommendation:"recert", clinRec:"recert",
+  oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"Wound improving slowly, still requires skilled nursing.",
+  status:"active",
+  aiRec:"recert",
+  aiConfidence:"High",
+  aiSummary:"Patient has an open, non-healing diabetic foot ulcer that continues to require skilled nursing assessment and wound care. Wound has reduced from 3.8cm to 2.4cm — progress is being made, but healing is slow due to underlying glycemic control challenges (most recent A1C 9.2%). Discharge at this stage would place the patient at significant risk for wound deterioration, infection, and possible amputation. SHP Einstein hospitalization risk is HIGH (71st percentile), consistent with poorly controlled diabetes and active wound. 3 goals remain open. Recertification is clinically necessary and well-documented.",
+  shp:{ hospRisk:"High", hospPct:71, emergRisk:"Moderate", emergPct:48, hhcahps:"4.1", falls:"Moderate" },
+  goals:[
+    {text:"Wound healing: plantar surface <1.5cm x 1.5cm", status:"progress", pct:45, detail:"Wound 2.4cm x 2.1cm (from 3.8cm x 3.5cm). Progressing but not at goal. Requires continued skilled care."},
+    {text:"Blood glucose fasting ≤130 mg/dL (3 consecutive readings)", status:"progress", pct:50, detail:"Glucose trending down: avg 158 mg/dL this week vs 198 mg/dL at SOC. A1C 9.2% — not at goal."},
+    {text:"Patient independent with wound dressing changes", status:"not-met", pct:30, detail:"Patient attempts dressing changes but technique inconsistent. Requires skilled supervision."},
+    {text:"No signs of wound infection", status:"met", pct:100, detail:"No erythema, warmth, or purulent discharge at last 4 visits. Wound bed clean."}
+  ],
+  visits:[
+    {date:"Apr 3", clinician:"S. Patel, RN", isRepeat:true, note:"Wound 2.4cm x 2.1cm. Glucose 152 mg/dL fasting. Dressing changed. Patient tried independently — needs work."},
+    {date:"Mar 30", clinician:"S. Patel, RN", isRepeat:true, note:"Wound 2.6cm. Glucose 161. Good wound bed. Reviewed diabetic foot care. A1C result 9.2 — discussed with MD."},
+    {date:"Mar 26", clinician:"J. Rivera, RN", isRepeat:false, note:"Covering for S. Patel. Wound 2.7cm. Clean. Patient frustrated with slow healing — counseled and encouraged."},
+    {date:"Mar 22", clinician:"S. Patel, RN", isRepeat:true, note:"Wound 2.9cm. Good progress this week. Patient attempting self-care — technique improving slowly."},
+    {date:"Mar 18", clinician:"S. Patel, RN", isRepeat:true, note:"Wound 3.1cm. Glycemic control improving with dietary changes. Patient engaged in education."}
+  ],
+  uniqueClinicians:2,
+  conferenceNotes:""
+},
+{
+  id:6, name:"Dennis Flynn", mrn:"MRN 00388",
+  certStart:"2026-02-15", certEnd:"2026-04-16",
+  dx:"COPD exacerbation, FEV1 38% predicted", clinGroup:"Respiratory (L)",
+  insurance:"Medicare", clinician:"J. Rivera, RN (primary)",
+  recommendation:"pending", clinRec:"recert",
+  oasisOrdered:false, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"Clinician recommends recert — awaiting CM review.",
+  status:"active",
+  aiRec:"recert",
+  aiConfidence:"Moderate",
+  aiSummary:"Patient has severe COPD (FEV1 38%) with 2 goals still in progress. Dyspnea management and inhaler technique goals are improving but not fully met. Notably, 4 different clinicians have seen this patient over 11 visits — there is a clear continuity concern, and clinical notes reflect inconsistent education approaches. SHP Einstein hospitalization risk is HIGH (74th percentile), consistent with severe obstructive disease and prior hospitalization. The clinician recommends recertification, and the clinical data supports this. CM review is needed.",
+  shp:{ hospRisk:"High", hospPct:74, emergRisk:"High", emergPct:65, hhcahps:"3.8", falls:"Low" },
+  goals:[
+    {text:"Dyspnea ≤3/10 with ADLs (Borg scale)", status:"progress", pct:65, detail:"Dyspnea 4/10 on most recent visit, down from 7/10 at SOC. Improving but not at goal."},
+    {text:"Correct inhaler technique demonstrated independently", status:"progress", pct:70, detail:"3 of 4 steps performed correctly on last observation. Spacer use inconsistent."},
+    {text:"Oxygen saturation ≥92% with light activity", status:"met", pct:100, detail:"SpO2 94–96% with light activity on last 4 visits. Goal met."},
+    {text:"Patient identifies 3 COPD exacerbation warning signs", status:"not-met", pct:40, detail:"Patient identified 2 of 3 signs at last teach-back. Education ongoing — disrupted by clinician rotation."}
+  ],
+  visits:[
+    {date:"Apr 1", clinician:"J. Rivera, RN", isRepeat:true, note:"SpO2 95% with ambulation. Dyspnea 4/10. Inhaler technique 3/4 steps correct. Reviewed action plan."},
+    {date:"Mar 27", clinician:"M. Chen, RN", isRepeat:false, note:"New clinician. Restarted inhaler education from beginning — patient confused about previous instructions."},
+    {date:"Mar 23", clinician:"S. Patel, RN", isRepeat:false, note:"3rd different RN this month. Completed teach-back — patient identified 2/3 warning signs."},
+    {date:"Mar 19", clinician:"T. Williams, PT", isRepeat:false, note:"Pulmonary rehab exercises. Pursed-lip breathing technique improved. SpO2 stable."},
+    {date:"Mar 15", clinician:"J. Rivera, RN", isRepeat:true, note:"SpO2 93%. Dyspnea 5/10. Reviewed energy conservation techniques. Family educated."}
+  ],
+  uniqueClinicians:4,
+  conferenceNotes:""
+},
+{
+  id:7, name:"Shirley Watson", mrn:"MRN 00401",
+  certStart:"2026-02-16", certEnd:"2026-04-17",
+  dx:"Wound care post-colostomy, stoma complications", clinGroup:"Wound Care (C)",
+  insurance:"Medicare", clinician:"M. Chen, RN (primary)",
+  recommendation:"recert", clinRec:"recert",
+  oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:true, physOrderSigned:false,
+  notes:"Stoma site healing, patient still requires skilled wound care.",
+  status:"active",
+  aiRec:"recert",
+  aiConfidence:"High",
+  aiSummary:"Post-colostomy stoma care remains an active skilled care need. Patient is progressing but has not achieved independence with ostomy care — the primary goal. Stoma site peristomal skin irritation, while improving, still requires skilled nursing assessment and intervention. WOC nurse consultation was completed on Mar 22. SHP Einstein hospitalization risk is LOW-MODERATE (33rd percentile), reflecting good overall medical stability. Recertification for continued wound and ostomy care is clinically appropriate. Patient motivation is high.",
+  shp:{ hospRisk:"Low", hospPct:33, emergRisk:"Low", emergPct:22, hhcahps:"4.5", falls:"Low" },
+  goals:[
+    {text:"Independent with colostomy bag changes", status:"progress", pct:80, detail:"Patient completing bag changes with minimal cueing. Technique improving significantly."},
+    {text:"Peristomal skin intact and free of irritation", status:"progress", pct:70, detail:"Skin irritation reducing. 2cm area of erythema remains periostomally. Barrier cream applied."},
+    {text:"Patient identifies signs of stoma complications", status:"met", pct:100, detail:"Patient correctly identifies prolapse, retraction, and necrosis signs. Education goal met visit 6."},
+    {text:"Output within normal parameters (300–500mL/day)", status:"met", pct:100, detail:"Output 380–450mL/day consistently for 2 weeks. Dietary adjustments effective."}
+  ],
+  visits:[
+    {date:"Apr 3", clinician:"M. Chen, RN", isRepeat:true, note:"Bag change with minimal cues — patient doing well. Peristomal skin 2cm erythema, applying barrier."},
+    {date:"Mar 30", clinician:"M. Chen, RN", isRepeat:true, note:"Output normal. Skin improving. Patient confident with ostomy care. Discussed discharge timeline."},
+    {date:"Mar 26", clinician:"M. Chen, RN", isRepeat:true, note:"WOC nurse follow-up — barrier wafer adjusted. Patient practicing independently."},
+    {date:"Mar 22", clinician:"WOC Consult", isRepeat:false, note:"WOC nurse consultation. New barrier wafer prescribed. Technique corrections provided."},
+    {date:"Mar 18", clinician:"M. Chen, RN", isRepeat:true, note:"Peristomal irritation 4cm — improving from 6cm last week. Barrier cream added to regimen."}
+  ],
+  uniqueClinicians:2,
+  conferenceNotes:""
+},
+// In-progress (15–28 days)
+{
+  id:8, name:"Patricia Holmes", mrn:"MRN 00362",
+  certStart:"2026-02-19", certEnd:"2026-04-22",
+  dx:"Hip replacement s/p revision, complex post-op", clinGroup:"Surgical Aftercare (G)",
+  insurance:"Medicare", clinician:"K. Osei, PT (primary)",
+  recommendation:"recert", clinRec:"recert",
+  oasisOrdered:true, oasisCompleted:false, oasisTransmitted:false,
+  physOrderSent:false, physOrderSigned:false,
+  notes:"OASIS ordered, scheduled for 4/10.",
+  status:"active",
+  aiRec:"recert",
+  aiConfidence:"Moderate",
+  aiSummary:"Patient is progressing post hip revision surgery. Complex post-op case — revision surgeries have longer recovery timelines. 2 of 4 goals in progress with 18 days remaining in cert period. SHP risk moderate. Recommend recert decision early in the 14-day window to allow adequate time for OASIS and physician order. OASIS is scheduled for 4/10.",
+  shp:{ hospRisk:"Moderate", hospPct:41, emergRisk:"Low", emergPct:29, hhcahps:"4.2", falls:"Moderate" },
+  goals:[
+    {text:"Ambulate 200ft with walker", status:"progress", pct:75, detail:"Currently ambulating 150ft. Goal not yet met."},
+    {text:"Stair negotiation — 6 steps with rail", status:"not-met", pct:30, detail:"Not yet attempted stairs. Hip precautions still in place."},
+    {text:"Independent with hip precaution education", status:"met", pct:100, detail:"Patient and caregiver verbalize all precautions correctly."},
+    {text:"Pain ≤3/10 with ambulation", status:"progress", pct:60, detail:"Pain 3–4/10 with ambulation. Improving."}
+  ],
+  visits:[
+    {date:"Apr 2", clinician:"K. Osei, PT", isRepeat:true, note:"Ambulation 150ft. Pain 3/10 today — best yet. Hip precautions maintained. Stair eval pending."},
+    {date:"Mar 28", clinician:"K. Osei, PT", isRepeat:true, note:"Progress good. ROM improving. Patient motivated. Discussed OASIS scheduling."},
+    {date:"Mar 24", clinician:"M. Chen, RN", isRepeat:false, note:"SN wound check. Incision well-healed. No signs of infection. Cleared for full PT."},
+    {date:"Mar 20", clinician:"K. Osei, PT", isRepeat:true, note:"Ambulation 120ft. Pain 4/10. Hip precautions reviewed. Slow but consistent progress."},
+    {date:"Mar 16", clinician:"K. Osei, PT", isRepeat:true, note:"Initial PT eval post-revision. Hip precautions strict. Short-distance ambulation started."}
+  ],
+  uniqueClinicians:2,
+  conferenceNotes:""
+},
+// Completed
+{
+  id:9, name:"Margaret Flores", mrn:"MRN 00412",
+  certStart:"2026-02-01", certEnd:"2026-04-02",
+  dx:"Type 2 diabetes with peripheral neuropathy", clinGroup:"Endocrine (I)",
+  insurance:"Medicare", clinician:"M. Chen, RN",
+  recommendation:"recert", clinRec:"recert",
+  oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
+  physOrderSent:true, physOrderSigned:true,
+  notes:"Recertified 4/1. New cert period begins 4/3.",
+  status:"completed-recert",
+  aiRec:"recert",
+  aiConfidence:"High",
+  aiSummary:"Patient recertified for continued diabetes management and neuropathy monitoring.",
+  shp:{ hospRisk:"Moderate", hospPct:44, emergRisk:"Low", emergPct:31, hhcahps:"4.4", falls:"Low" },
+  goals:[
+    {text:"A1C reduction to <8%", status:"progress", pct:70, detail:"A1C 8.4%, down from 10.1% at SOC."},
+    {text:"Foot care independence", status:"met", pct:100, detail:"Patient performing daily foot inspections correctly."}
+  ],
+  visits:[],
+  uniqueClinicians:1,
+  conferenceNotes:""
+},
+{
+  id:10, name:"Robert Nguyen", mrn:"MRN 00388",
+  certStart:"2026-01-30", certEnd:"2026-03-31",
+  dx:"Total hip replacement, left hip", clinGroup:"Surgical Aftercare (G)",
+  insurance:"Medicare", clinician:"T. Williams, PT",
+  recommendation:"discharge", clinRec:"discharge",
+  oasisOrdered:true, oasisCompleted:true, oasisTransmitted:true,
+  physOrderSent:true, physOrderSigned:true,
+  notes:"All goals met. Discharged 3/30.",
+  status:"completed-discharge",
+  aiRec:"discharge",
+  aiConfidence:"High",
+  aiSummary:"All goals met. Patient discharged appropriately.",
+  shp:{ hospRisk:"Low", hospPct:12, emergRisk:"Low", emergPct:9, hhcahps:"4.9", falls:"Low" },
+  goals:[
+    {text:"Ambulate stairs independently", status:"met", pct:100, detail:""},
+    {text:"Pain ≤3/10", status:"met", pct:100, detail:""}
+  ],
+  visits:[],
+  uniqueClinicians:1,
+  conferenceNotes:""
+}
 ];
 
-// ─────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────
-let activeFilter = 'action';
-let searchQuery = '';
+// ─────────────────────────────
+// HELPERS
+// ─────────────────────────────
+function daysFromToday(dateStr){ return Math.round((new Date(dateStr)-TODAY)/(86400000)); }
+function fmtDate(s){ return new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function oasisWindowStart(certEnd){ const d=new Date(certEnd); d.setDate(d.getDate()-4); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
 
-// ─────────────────────────────────────────
-// COMPUTED
-// ─────────────────────────────────────────
-function getDaysLeft(p) {
-  return daysFromToday(p.certEnd);
-}
-
-function getUrgency(p) {
-  if (p.status !== 'active') return 'done';
-  const d = getDaysLeft(p);
-  if (d <= 7) return 'critical';
-  if (d <= 14) return 'high';
+function getUrgency(p){
+  if(p.status!=='active') return 'done';
+  const d=daysFromToday(p.certEnd);
+  if(d<=7) return 'critical';
+  if(d<=14) return 'high';
   return 'tracking';
 }
+function needsAction(p){ return p.status==='active' && daysFromToday(p.certEnd)<=14; }
+function isInProgress(p){ return p.status==='active' && daysFromToday(p.certEnd)>14; }
+function isCompleted(p){ return p.status==='completed-recert'||p.status==='completed-discharge'; }
+function goalsNotMet(p){ return p.goals.filter(g=>g.status==='not-met'||g.status==='progress').length; }
+function hasContinuityConcern(p){ return p.uniqueClinicians>=4; }
 
-function needsAction(p) {
-  if (p.status !== 'active') return false;
-  const d = getDaysLeft(p);
-  return d <= 14;
+// ─────────────────────────────
+// PATIENT ROW RENDER
+// ─────────────────────────────
+function recBadge(p){
+  if(p.status==='completed-recert') return '<span class="rec-badge recert">Recertified ✓</span>';
+  if(p.status==='completed-discharge') return '<span class="rec-badge discharge">Discharged ✓</span>';
+  if(p.clinRec!=='pending'&&p.recommendation!=='pending'&&p.clinRec!==p.recommendation)
+    return '<span class="rec-badge" style="background:#FEE2E2;color:#B91C1C;">⚠️ Conflict</span>';
+  if(p.aiRec==='discharge') return '<span class="rec-badge discharge">AI: Discharge</span>';
+  if(p.aiRec==='recert') return '<span class="rec-badge recert">AI: Recertify</span>';
+  return '<span class="rec-badge pending">Watch</span>';
 }
+function daysColor(d){ return d<=7?'red':d<=14?'yellow':'green'; }
 
-function isInProgress(p) {
-  if (p.status !== 'active') return false;
-  const d = getDaysLeft(p);
-  return d > 14 && d <= 30;
-}
+function renderRow(p){
+  const days=daysFromToday(p.certEnd);
+  const urg=getUrgency(p);
+  const dc=isCompleted(p)?'muted':daysColor(days);
+  const daysHtml=isCompleted(p)
+    ?`<div class="days-num muted">✓</div><div class="days-label">Done</div>`
+    :`<div class="days-num ${dc}">${days<0?'OVR':days}</div><div class="days-label">${days<0?'Overdue':'Days left'}</div>`;
+  const metCount=p.goals.filter(g=>g.status==='met').length;
+  const totalGoals=p.goals.length;
+  const goalChip=isCompleted(p)?'':`<span class="meta-chip ${metCount===totalGoals?'green':goalsNotMet(p)>1?'red':'yellow'}">${metCount}/${totalGoals} goals met</span>`;
+  const contChip=hasContinuityConcern(p)?`<span class="meta-chip red">⚠️ ${p.uniqueClinicians} clinicians</span>`:`<span class="meta-chip green">✓ Continuity</span>`;
+  const riskChip=`<span class="meta-chip ${p.shp.hospPct>=60?'red':p.shp.hospPct>=35?'yellow':'green'}">Hosp risk: ${p.shp.hospRisk}</span>`;
 
-function isCompleted(p) {
-  return p.status === 'completed-recert' || p.status === 'completed-discharge';
-}
-
-// ─────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────
-function urgencyLabel(u) {
-  if (u === 'critical') return 'Critical';
-  if (u === 'high') return 'High';
-  if (u === 'tracking') return 'Tracking';
-  return 'Complete';
-}
-
-function daysColor(d) {
-  if (d < 0) return 'red';
-  if (d <= 7) return 'red';
-  if (d <= 14) return 'yellow';
-  return 'green';
-}
-
-function recBadge(p) {
-  if (p.status === 'completed-recert') return '<span class="rec-badge recert">Recertified ✓</span>';
-  if (p.status === 'completed-discharge') return '<span class="rec-badge discharge">Discharged ✓</span>';
-  // Conflict: clinician and CM disagree
-  if (p.clinRec !== 'pending' && p.recommendation !== 'pending' && p.clinRec !== p.recommendation) {
-    return `<span class="rec-badge" style="background:#FEE2E2;color:#B91C1C;font-size:0.72rem;">⚠️ Conflict</span>`;
-  }
-  // CM has signed off
-  if (p.recommendation === 'recert') return '<span class="rec-badge recert">CM: Recertify</span>';
-  if (p.recommendation === 'discharge') return '<span class="rec-badge discharge">CM: Discharge</span>';
-  // Clinician rec only
-  if (p.clinRec === 'recert') return '<span class="rec-badge" style="background:#EFF6FF;color:#3B82F6;">Clin: Recertify</span>';
-  if (p.clinRec === 'discharge') return '<span class="rec-badge" style="background:#ECFDF5;color:#059669;">Clin: Discharge</span>';
-  return '<span class="rec-badge pending">Pending</span>';
-}
-
-function statusDot(done) {
-  return done ? 'dot-done' : 'dot-pending';
-}
-
-function renderRow(p) {
-  const days = getDaysLeft(p);
-  const urgency = getUrgency(p);
-  const dc = isCompleted(p) ? 'muted' : daysColor(days);
-  const daysDisplay = isCompleted(p)
-    ? `<div class="days-num muted">✓</div><div class="days-label">Complete</div>`
-    : `<div class="days-num ${dc}">${days < 0 ? 'OVR' : days}</div><div class="days-label">${days < 0 ? 'Overdue' : 'Days left'}</div>`;
-
-  return `
-  <div class="patient-row ${urgency}" onclick="openDrawer(${p.id})">
-    <span class="urgency-badge ${urgency}">${urgencyLabel(urgency)}</span>
+  return `<div class="patient-row ${urg}" onclick="openDrawer(${p.id})">
+    <span class="urgency-badge ${urg}">${urg==='done'?'Complete':urg.charAt(0).toUpperCase()+urg.slice(1)}</span>
     <div class="patient-info">
       <div class="patient-name">${p.name}</div>
       <div class="patient-meta">
         <span class="meta-chip blue">${p.mrn}</span>
-        <span class="meta-chip">${p.dx}</span>
-        <span class="meta-chip">${p.clinician}</span>
-        <span class="meta-chip">${p.insuranceName}</span>
+        <span class="meta-chip">${p.dx.substring(0,38)}${p.dx.length>38?'…':''}</span>
+        ${goalChip}${riskChip}${contChip}
       </div>
     </div>
-    <div class="status-col">
-      <div class="status-item"><div class="status-dot ${statusDot(p.oasisOrdered)}"></div><span>OASIS ordered</span></div>
-      <div class="status-item"><div class="status-dot ${statusDot(p.oasisTransmitted)}"></div><span>OASIS transmitted</span></div>
-      <div class="status-item"><div class="status-dot ${statusDot(p.physOrderSigned)}"></div><span>MD order signed</span></div>
+    <div class="row-right">
+      <div class="days-display">${daysHtml}</div>
+      ${recBadge(p)}
     </div>
-    <div class="days-col">${daysDisplay}</div>
-    <div class="rec-col">${recBadge(p)}</div>
   </div>`;
 }
 
-function filteredPatients() {
-  let list = PATIENTS;
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    list = list.filter(p => p.name.toLowerCase().includes(q) || p.mrn.toLowerCase().includes(q));
-  }
-  if (activeFilter === 'action') return list.filter(needsAction).sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
-  if (activeFilter === 'tracking') return list.filter(isInProgress).sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
-  if (activeFilter === 'all') return list.filter(p => p.status === 'active').sort((a,b) => getDaysLeft(a) - getDaysLeft(b));
-  if (activeFilter === 'completed') return list.filter(isCompleted);
+// ─────────────────────────────
+// FILTER + RENDER LIST
+// ─────────────────────────────
+let activeFilter='action', searchQuery='';
+function filteredPatients(){
+  let list=PATIENTS;
+  if(searchQuery){ const q=searchQuery.toLowerCase(); list=list.filter(p=>p.name.toLowerCase().includes(q)||p.mrn.toLowerCase().includes(q)); }
+  if(activeFilter==='action') return list.filter(needsAction).sort((a,b)=>daysFromToday(a.certEnd)-daysFromToday(b.certEnd));
+  if(activeFilter==='tracking') return list.filter(isInProgress).sort((a,b)=>daysFromToday(a.certEnd)-daysFromToday(b.certEnd));
+  if(activeFilter==='all') return list.filter(p=>p.status==='active').sort((a,b)=>daysFromToday(a.certEnd)-daysFromToday(b.certEnd));
+  if(activeFilter==='completed') return list.filter(isCompleted);
   return list;
 }
-
-function renderList() {
-  const items = filteredPatients();
-  const el = document.getElementById('patientList');
-  if (!items.length) {
-    el.innerHTML = `<div class="empty"><span class="em">🎉</span>No patients in this category right now.</div>`;
-    return;
-  }
-  el.innerHTML = items.map(renderRow).join('');
-
-  const labels = {action:'Action Required (≤14 Days)', tracking:'In Progress (15–30 Days)', all:'All Active Patients', completed:'Completed This Month'};
-  document.getElementById('listLabel').textContent = labels[activeFilter] || '';
+function renderList(){
+  const items=filteredPatients();
+  document.getElementById('patientList').innerHTML=items.length
+    ?items.map(renderRow).join('')
+    :`<div class="empty">🎉 No patients in this category right now.</div>`;
+  const labels={action:'Action Required (≤14 Days)',tracking:'In Progress (15–30 Days)',all:'All Active Patients',completed:'Completed This Month'};
+  document.getElementById('listLabel').textContent=labels[activeFilter]||'';
 }
-
-function updateKPIs() {
-  const active = PATIENTS.filter(p => p.status === 'active');
-  document.getElementById('kpi-critical').textContent = active.filter(p => getDaysLeft(p) <= 7).length;
-  document.getElementById('kpi-window').textContent = active.filter(p => getDaysLeft(p) <= 14).length;
-  document.getElementById('kpi-oasis').textContent = active.filter(p => getDaysLeft(p) <= 14 && !p.oasisOrdered).length;
-  document.getElementById('kpi-phys').textContent = active.filter(p => p.physOrderSent && !p.physOrderSigned).length;
-  document.getElementById('kpi-done').textContent = PATIENTS.filter(isCompleted).length;
-
-  document.getElementById('tc-action').textContent = PATIENTS.filter(needsAction).length;
-  document.getElementById('tc-tracking').textContent = PATIENTS.filter(isInProgress).length;
-  document.getElementById('tc-all').textContent = PATIENTS.filter(p => p.status === 'active').length;
-  document.getElementById('tc-completed').textContent = PATIENTS.filter(isCompleted).length;
-
-  document.getElementById('totalCount').textContent = PATIENTS.filter(p => p.status === 'active').length;
-  document.getElementById('flaggedCount').textContent = PATIENTS.filter(p => p.status === 'active' && getDaysLeft(p) <= 14).length;
+function updateKPIs(){
+  const active=PATIENTS.filter(p=>p.status==='active');
+  document.getElementById('kpi-critical').textContent=active.filter(p=>daysFromToday(p.certEnd)<=7).length;
+  document.getElementById('kpi-window').textContent=active.filter(p=>daysFromToday(p.certEnd)<=14).length;
+  document.getElementById('kpi-goals').textContent=active.filter(p=>needsAction(p)&&goalsNotMet(p)>0).length;
+  document.getElementById('kpi-continuity').textContent=active.filter(hasContinuityConcern).length;
+  document.getElementById('kpi-done').textContent=PATIENTS.filter(isCompleted).length;
+  document.getElementById('tc-action').textContent=PATIENTS.filter(needsAction).length;
+  document.getElementById('tc-tracking').textContent=PATIENTS.filter(isInProgress).length;
+  document.getElementById('tc-all').textContent=PATIENTS.filter(p=>p.status==='active').length;
+  document.getElementById('tc-completed').textContent=PATIENTS.filter(isCompleted).length;
+  document.getElementById('totalCount').textContent=PATIENTS.filter(p=>p.status==='active').length;
+  document.getElementById('flaggedCount').textContent=PATIENTS.filter(p=>p.status==='active'&&daysFromToday(p.certEnd)<=14).length;
 }
+function setFilter(f){ activeFilter=f; ['action','tracking','all','completed'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===f)); renderList(); }
+function filterSearch(v){ searchQuery=v; renderList(); }
 
-function updateTabs() {
-  ['action','tracking','all','completed'].forEach(f => {
-    document.getElementById(`tab-${f}`).classList.toggle('active', f === activeFilter);
-  });
-}
-
-function setFilter(f) {
-  activeFilter = f;
-  updateTabs();
-  renderList();
-}
-
-function filterSearch(val) {
-  searchQuery = val;
-  renderList();
-}
-
-// ─────────────────────────────────────────
+// ─────────────────────────────
 // DRAWER
-// ─────────────────────────────────────────
-function openDrawer(id) {
-  const p = PATIENTS.find(x => x.id === id);
-  if (!p) return;
-  const days = getDaysLeft(p);
-  const oasisWinStart = oasisWindowStart(p.certEnd);
+// ─────────────────────────────
+let currentDrawerPatient=null;
+let currentDrawerTab='clinical';
 
-  document.getElementById('drawerName').textContent = p.name;
-  document.getElementById('drawerSub').textContent = `${p.mrn} · ${p.clinician} · ${p.clinGroup}`;
+function openDrawer(id){
+  const p=PATIENTS.find(x=>x.id===id);
+  if(!p) return;
+  currentDrawerPatient=id;
+  document.getElementById('drawerName').textContent=p.name;
+  document.getElementById('drawerSub').textContent=`${p.mrn} · ${p.clinician} · ${p.clinGroup} · ${p.insurance}`;
+  renderCIBanner(p);
+  renderClinicalPanel(p);
+  renderDecisionPanel(p);
+  renderConferencePanel(p);
+  // reset to clinical tab
+  switchDrawerTab('clinical', document.querySelector('.drawer-tab'));
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('open'); document.getElementById('drawer').classList.remove('open'); }
 
-  const inWindow = p.status === 'active' && days <= 14;
-  const oasisWindowAlert = inWindow && !p.oasisOrdered
-    ? `<div class="oasis-window-alert">⚠️ <div><strong>OASIS window opens ${oasisWinStart}</strong> — order must be placed and completed before cert period end on ${fmtDate(p.certEnd)}.</div></div>`
-    : '';
+function switchDrawerTab(tab, btn){
+  document.querySelectorAll('.drawer-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.drawer-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active'); else document.querySelectorAll('.drawer-tab')[tab==='clinical'?0:tab==='decision'?1:2].classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  currentDrawerTab=tab;
+}
 
-  document.getElementById('drawerBody').innerHTML = `
-    <!-- DETAILS GRID -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Certification Period</div>
-      <div class="detail-grid">
-        <div class="detail-item"><label>Period Start</label><div class="val">${fmtDate(p.certStart)}</div></div>
-        <div class="detail-item"><label>Period End</label><div class="val ${daysColor(days)}">${fmtDate(p.certEnd)}</div></div>
-        <div class="detail-item"><label>Days Remaining</label><div class="val ${p.status !== 'active' ? '' : daysColor(days)}">${p.status !== 'active' ? 'Completed' : (days < 0 ? 'Overdue' : days + ' days')}</div></div>
-        <div class="detail-item"><label>OASIS Window Opens</label><div class="val">${oasisWinStart}</div></div>
+function renderCIBanner(p){
+  const cls=p.aiRec==='discharge'?'rec-discharge':p.aiRec==='recert'?'rec-recert':'rec-watch';
+  const pill=p.aiRec==='discharge'?'discharge':p.aiRec==='recert'?'recert':'watch';
+  const pillText=p.aiRec==='discharge'?'Recommend: Discharge':p.aiRec==='recert'?'Recommend: Recertify':'Watch & Decide';
+  document.getElementById('ciBanner').innerHTML=`
+    <div class="ci-banner ${cls}">
+      <div class="ci-header">
+        <div class="ci-label">🧠 Clinical Intelligence · Confidence: ${p.aiConfidence}</div>
+        <span class="ci-rec-pill ${pill}">${pillText}</span>
       </div>
-      <div class="detail-grid">
-        <div class="detail-item"><label>Primary Diagnosis</label><div class="val" style="font-size:0.82rem">${p.dx}</div></div>
-        <div class="detail-item"><label>Clinical Group</label><div class="val" style="font-size:0.82rem">${p.clinGroup}</div></div>
+      <div class="ci-text">${p.aiSummary}</div>
+      <div class="ci-sources">
+        <span class="ci-source">📝 ${p.visits.length} visit transcripts</span>
+        <span class="ci-source">📊 SHP Einstein</span>
+        <span class="ci-source">🎯 ${p.goals.length} POC goals</span>
+        <span class="ci-source">👥 ${p.uniqueClinicians} clinician${p.uniqueClinicians!==1?'s':''}</span>
+        <span class="ci-source">Demo mode</span>
+      </div>
+    </div>`;
+}
+
+function renderClinicalPanel(p){
+  // Goals
+  const goalsHtml=p.goals.map(g=>`
+    <div class="goal-item">
+      <div class="goal-header">
+        <div class="goal-text">${g.text}</div>
+        <span class="goal-status ${g.status}">${g.status==='met'?'✓ Met':g.status==='progress'?'In Progress':g.status==='not-met'?'Not Met':'N/A'}</span>
+      </div>
+      <div class="goal-bar-wrap"><div class="goal-bar ${g.status}" style="width:${g.pct}%"></div></div>
+      <div class="goal-detail">${g.detail}</div>
+    </div>`).join('');
+
+  // SHP
+  const shpHtml=`
+    <div class="shp-grid">
+      <div class="shp-tile">
+        <label>30-Day Hosp Risk</label>
+        <div class="shp-risk-val ${p.shp.hospRisk.toLowerCase()}">${p.shp.hospRisk}</div>
+        <div class="shp-percentile">${p.shp.hospPct}th percentile</div>
+        <div class="shp-bar-wrap"><div class="shp-bar ${p.shp.hospRisk.toLowerCase()}" style="width:${p.shp.hospPct}%"></div></div>
+      </div>
+      <div class="shp-tile">
+        <label>Emergent Care Risk</label>
+        <div class="shp-risk-val ${p.shp.emergRisk.toLowerCase()}">${p.shp.emergRisk}</div>
+        <div class="shp-percentile">${p.shp.emergPct}th percentile</div>
+        <div class="shp-bar-wrap"><div class="shp-bar ${p.shp.emergRisk.toLowerCase()}" style="width:${p.shp.emergPct}%"></div></div>
+      </div>
+      <div class="shp-tile">
+        <label>HHCAHPS Predicted</label>
+        <div class="shp-risk-val" style="color:var(--primary)">${p.shp.hhcahps}/5.0</div>
+        <div class="shp-percentile">Patient satisfaction score</div>
+      </div>
+      <div class="shp-tile">
+        <label>Fall Risk (Einstein)</label>
+        <div class="shp-risk-val ${p.shp.falls.toLowerCase()}">${p.shp.falls}</div>
+        <div class="shp-percentile">Based on OASIS + visit data</div>
       </div>
     </div>
+    <div class="shp-note">⚡ SHP Einstein scores are predictive, not diagnostic. Use alongside clinical judgment and visit data. Live scores require SHP API connection.</div>`;
 
-    <!-- RECOMMENDATION — TWO-STEP COLLABORATIVE DECISION -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Step 1 — Clinician Recommendation</div>
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.6rem;">Treating clinician submits their clinical recommendation first</div>
+  // Visits
+  const uniqClinicians=[...new Set(p.visits.map(v=>v.clinician))];
+  const contHtml=p.uniqueClinicians>=4
+    ?`<div class="continuity-alert">⚠️ <div><strong>Continuity concern:</strong> ${p.uniqueClinicians} different clinicians visited this patient. Inconsistent care relationships can delay goal progression and reduce patient trust. Consider assigning a primary clinician for the recertification period.</div></div>`
+    :p.uniqueClinicians<=2?`<div class="continuity-good">✓ <div><strong>Good continuity:</strong> Only ${p.uniqueClinicians} clinician${p.uniqueClinicians!==1?'s have':' has'} seen this patient — strong therapeutic relationship supporting goal progression.</div></div>`:
+    `<div class="continuity-good" style="background:#EFF6FF;border-color:#BFDBFE;color:#1D4ED8;">ℹ️ <div>${p.uniqueClinicians} clinicians have visited this patient this certification period.</div></div>`;
+
+  const visitsHtml=p.visits.length?p.visits.map(v=>`
+    <div class="visit-item">
+      <div class="visit-date">${v.date}</div>
+      <div class="visit-clinician ${v.isRepeat?'repeat':'new'}">${v.clinician}${v.isRepeat?'':' 🆕'}</div>
+      <div class="visit-note">"${v.note}"</div>
+    </div>`).join('')
+    :`<div style="color:var(--muted);font-size:0.82rem;font-style:italic;">No visit history available.</div>`;
+
+  document.getElementById('panel-clinical').innerHTML=`
+    <div class="d-section">
+      <div class="d-section-title">Plan of Care Goals (${p.goals.filter(g=>g.status==='met').length}/${p.goals.length} met)</div>
+      <div class="goals-list">${goalsHtml}</div>
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">SHP Einstein Risk Scores</div>
+      ${shpHtml}
+    </div>
+    <div class="d-section">
+      <div class="d-section-title">Visit History — Last ${p.visits.length} Visits</div>
+      <div class="visit-list">${visitsHtml}</div>
+      ${contHtml}
+    </div>`;
+}
+
+function renderDecisionPanel(p){
+  const days=daysFromToday(p.certEnd);
+  const inWindow=p.status==='active'&&days<=14;
+  const oasisAlert=inWindow&&!p.oasisOrdered
+    ?`<div class="oasis-alert">⚠️ <div><strong>OASIS window opens ${oasisWindowStart(p.certEnd)}</strong> — assessment must be completed before cert period end on ${fmtDate(p.certEnd)}.</div></div>`:'';
+
+  document.getElementById('panel-decision').innerHTML=`
+    <div class="d-section">
+      <div class="d-section-title">Certification Period</div>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Period Start</label><div class="val">${fmtDate(p.certStart)}</div></div>
+        <div class="detail-item"><label>Period End</label><div class="val ${p.status!=='active'?'':daysColor(days)}">${fmtDate(p.certEnd)}</div></div>
+        <div class="detail-item"><label>Days Remaining</label><div class="val ${p.status!=='active'?'':daysColor(days)}">${p.status!=='active'?'Completed':days<0?'Overdue':days+' days'}</div></div>
+        <div class="detail-item"><label>OASIS Window Opens</label><div class="val">${oasisWindowStart(p.certEnd)}</div></div>
+      </div>
+      ${oasisAlert}
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Step 1 — Clinician Recommendation</div>
+      <div style="font-size:0.79rem;color:var(--muted);margin-bottom:0.55rem;">Field clinician submits their clinical recommendation based on visit observations</div>
       <div class="rec-selector">
         <div class="rec-option ${p.clinRec==='recert'?'selected recert':''}" onclick="setClinicianRec(${p.id},'recert')">🔄 Recertify</div>
         <div class="rec-option ${p.clinRec==='discharge'?'selected discharge':''}" onclick="setClinicianRec(${p.id},'discharge')">🏁 Discharge</div>
         <div class="rec-option ${p.clinRec==='pending'?'selected pending':''}" onclick="setClinicianRec(${p.id},'pending')">⏳ Pending</div>
       </div>
     </div>
-    <div class="drawer-section">
-      <div class="drawer-section-title">Step 2 — Clinical Manager Sign-Off</div>
-      ${oasisWindowAlert}
-      ${p.clinRec === 'pending'
-        ? `<div style="font-size:0.82rem;color:var(--muted);background:#F8FAFC;border-radius:8px;padding:0.65rem 0.9rem;margin-bottom:0.75rem;">⏳ Awaiting clinician recommendation before CM sign-off</div>`
-        : `<div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.6rem;">Clinician recommends: <strong style="color:${p.clinRec==='recert'?'#1D4ED8':p.clinRec==='discharge'?'#065F46':'var(--muted)'};">${p.clinRec.charAt(0).toUpperCase()+p.clinRec.slice(1)}</strong> — review and confirm or override below</div>`
-      }
+
+    <div class="d-section">
+      <div class="d-section-title">Step 2 — Clinical Manager Sign-Off</div>
+      ${p.clinRec==='pending'
+        ?`<div style="font-size:0.82rem;color:var(--muted);background:#F8FAFC;border-radius:7px;padding:0.6rem 0.8rem;margin-bottom:0.65rem;">⏳ Awaiting clinician recommendation</div>`
+        :`<div style="font-size:0.79rem;color:var(--muted);margin-bottom:0.55rem;">Clinician recommends <strong style="color:${p.clinRec==='recert'?'#1D4ED8':'#065F46'}">${p.clinRec}</strong> — review clinical picture above and confirm or override</div>`}
       <div class="rec-selector">
         <div class="rec-option ${p.recommendation==='recert'?'selected recert':''}" onclick="setRec(${p.id},'recert')">✅ Approve Recertify</div>
         <div class="rec-option ${p.recommendation==='discharge'?'selected discharge':''}" onclick="setRec(${p.id},'discharge')">✅ Approve Discharge</div>
@@ -668,110 +886,117 @@ function openDrawer(id) {
       </div>
     </div>
 
-    <!-- CHECKLIST -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Compliance Checklist</div>
+    <div class="d-section">
+      <div class="d-section-title">Compliance Checklist</div>
       <div class="checklist">
-        <div class="check-item ${p.oasisOrdered?'checked':''}" onclick="toggle(${p.id},'oasisOrdered')">
-          <input type="checkbox" ${p.oasisOrdered?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisOrdered')">
-          <div><div class="check-label">OASIS ordered</div><div class="check-sub">Recertification assessment ordered from field clinician</div></div>
-        </div>
-        <div class="check-item ${p.oasisCompleted?'checked':''}" onclick="toggle(${p.id},'oasisCompleted')">
-          <input type="checkbox" ${p.oasisCompleted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisCompleted')">
-          <div><div class="check-label">OASIS completed</div><div class="check-sub">Assessment completed and locked in the EHR</div></div>
-        </div>
-        <div class="check-item ${p.oasisTransmitted?'checked':''}" onclick="toggle(${p.id},'oasisTransmitted')">
-          <input type="checkbox" ${p.oasisTransmitted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisTransmitted')">
-          <div><div class="check-label">OASIS transmitted to CMS</div><div class="check-sub">Sent via HAVEN/iQIES within required window</div></div>
-        </div>
-        <div class="check-item ${p.physOrderSent?'checked':''}" onclick="toggle(${p.id},'physOrderSent')">
-          <input type="checkbox" ${p.physOrderSent?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSent')">
-          <div><div class="check-label">Physician order / POC sent</div><div class="check-sub">Plan of care sent to physician for signature</div></div>
-        </div>
-        <div class="check-item ${p.physOrderSigned?'checked':''}" onclick="toggle(${p.id},'physOrderSigned')">
-          <input type="checkbox" ${p.physOrderSigned?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSigned')">
-          <div><div class="check-label">Physician order signed</div><div class="check-sub">Signed POC received and filed in EHR</div></div>
-        </div>
+        <div class="check-item ${p.oasisOrdered?'checked':''}" onclick="toggle(${p.id},'oasisOrdered')"><input type="checkbox" ${p.oasisOrdered?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisOrdered')"><div><div class="check-label">OASIS ordered</div><div class="check-sub">Recertification assessment ordered from clinician</div></div></div>
+        <div class="check-item ${p.oasisCompleted?'checked':''}" onclick="toggle(${p.id},'oasisCompleted')"><input type="checkbox" ${p.oasisCompleted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisCompleted')"><div><div class="check-label">OASIS completed &amp; locked</div><div class="check-sub">Assessment completed in EHR</div></div></div>
+        <div class="check-item ${p.oasisTransmitted?'checked':''}" onclick="toggle(${p.id},'oasisTransmitted')"><input type="checkbox" ${p.oasisTransmitted?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'oasisTransmitted')"><div><div class="check-label">OASIS transmitted to CMS</div><div class="check-sub">Sent via iQIES within required window</div></div></div>
+        <div class="check-item ${p.physOrderSent?'checked':''}" onclick="toggle(${p.id},'physOrderSent')"><input type="checkbox" ${p.physOrderSent?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSent')"><div><div class="check-label">Plan of care sent to physician</div><div class="check-sub">POC sent for signature</div></div></div>
+        <div class="check-item ${p.physOrderSigned?'checked':''}" onclick="toggle(${p.id},'physOrderSigned')"><input type="checkbox" ${p.physOrderSigned?'checked':''} onclick="event.stopPropagation();toggle(${p.id},'physOrderSigned')"><div><div class="check-label">Physician order signed</div><div class="check-sub">Signed POC received and filed</div></div></div>
       </div>
     </div>
 
-    <!-- NOTES -->
-    <div class="drawer-section">
-      <div class="drawer-section-title">Clinical Manager Notes</div>
-      <textarea class="notes-area" placeholder="Add notes…" onchange="saveNotes(${p.id},this.value)">${p.notes}</textarea>
+    <div class="d-section">
+      <button class="ehr-btn">Open Patient in EHR <span style="margin-left:4px">↗</span><span class="tooltip">EHR connector — coming soon</span></button>
+    </div>`;
+}
+
+function renderConferencePanel(p){
+  const metGoals=p.goals.filter(g=>g.status==='met').map(g=>`  ✓ ${g.text}`).join('\n');
+  const openGoals=p.goals.filter(g=>g.status!=='met').map(g=>`  • ${g.text} — ${g.detail}`).join('\n');
+  const latestVisit=p.visits[0];
+  const latestNote=latestVisit?`Latest visit (${latestVisit.date}, ${latestVisit.clinician}):\n  "${latestVisit.note}"`:'No recent visit notes.';
+  const contNote=p.uniqueClinicians>=4?`\n⚠️ CONTINUITY CONCERN: ${p.uniqueClinicians} different clinicians this period — recommend consistent primary clinician going forward.`:'';
+  const shpLine=`SHP Einstein: Hospitalization risk ${p.shp.hospRisk} (${p.shp.hospPct}th percentile), Emergent care risk ${p.shp.emergRisk}`;
+  const aiLine=`AI Clinical Recommendation: ${p.aiRec==='discharge'?'DISCHARGE':'RECERTIFY'} (Confidence: ${p.aiConfidence})`;
+  const summary=
+`CASE CONFERENCE SUMMARY — ${p.name}
+Generated: ${TODAY.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PATIENT: ${p.name} · ${p.mrn}
+DX: ${p.dx}
+CLINICIAN: ${p.clinician}
+CERT PERIOD: ${fmtDate(p.certStart)} → ${fmtDate(p.certEnd)} (${Math.max(0,daysFromToday(p.certEnd))} days remaining)
+
+CLINICAL SUMMARY:
+${p.aiSummary}
+
+GOALS MET (${p.goals.filter(g=>g.status==='met').length}/${p.goals.length}):
+${metGoals||'  (none fully met)'}
+
+GOALS IN PROGRESS / NOT MET:
+${openGoals||'  (all goals met)'}
+
+${latestNote}
+
+RISK:
+${shpLine}${contNote}
+
+RECOMMENDATION:
+${aiLine}
+Clinician Rec: ${p.clinRec.toUpperCase()}
+CM Decision: ${p.recommendation.toUpperCase()}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+  document.getElementById('panel-conference').innerHTML=`
+    <div class="d-section">
+      <div class="d-section-title">Case Conference Summary <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.75rem;color:var(--muted);">Ready to paste into your case conference notes</span></div>
+      <div class="conf-summary" id="confText">${summary}</div>
+      <button class="conf-copy-btn" onclick="copySummary()">📋 Copy to clipboard</button>
     </div>
-
-    <!-- EHR -->
-    <div class="drawer-section">
-      <button class="ehr-btn">Open Patient in EHR <svg style="width:13px;height:13px;margin-left:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
-    </div>
-  `;
-
-  document.getElementById('drawerOverlay').classList.add('open');
-  document.getElementById('drawer').classList.add('open');
+    <div class="d-section">
+      <div class="d-section-title">Clinical Manager Notes</div>
+      <textarea class="notes-area" placeholder="Add case conference notes, action items, follow-up…" onchange="saveNotes(${p.id},this.value)">${p.notes}</textarea>
+    </div>`;
 }
 
-function closeDrawer() {
-  document.getElementById('drawerOverlay').classList.remove('open');
-  document.getElementById('drawer').classList.remove('open');
+// ─────────────────────────────
+// ACTIONS
+// ─────────────────────────────
+function setClinicianRec(id,rec){
+  const p=PATIENTS.find(x=>x.id===id);
+  if(!p) return;
+  p.clinRec=rec;
+  if(p.recommendation==='pending') p.recommendation=rec;
+  openDrawer(id);
+  updateKPIs(); renderList();
+  showToast(`Clinician rec: "${rec}" logged for ${p.name}`);
+}
+function setRec(id,rec){
+  const p=PATIENTS.find(x=>x.id===id);
+  if(!p) return;
+  p.recommendation=rec;
+  openDrawer(id);
+  updateKPIs(); renderList();
+  showToast(`CM approved: "${rec}" for ${p.name}`);
+}
+function toggle(id,field){
+  const p=PATIENTS.find(x=>x.id===id);
+  if(!p) return;
+  p[field]=!p[field];
+  openDrawer(id);
+  updateKPIs(); renderList();
+  showToast(`Updated for ${p.name}`);
+}
+function saveNotes(id,val){
+  const p=PATIENTS.find(x=>x.id===id);
+  if(p){ p.notes=val; showToast('Notes saved'); }
+}
+function copySummary(){
+  const txt=document.getElementById('confText');
+  if(txt){ navigator.clipboard.writeText(txt.textContent).then(()=>showToast('Case conference summary copied!')); }
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-function setClinicianRec(id, rec) {
-  const p = PATIENTS.find(x => x.id === id);
-  if (p) {
-    p.clinRec = rec;
-    // If no CM decision yet, pre-populate it to match clinician (CM can override)
-    if (p.recommendation === 'pending') p.recommendation = rec;
-    openDrawer(id);
-    updateKPIs();
-    renderList();
-    showToast(`Clinician recommendation: "${rec}" — awaiting CM sign-off for ${p.name}`);
-  }
-}
-
-function setRec(id, rec) {
-  const p = PATIENTS.find(x => x.id === id);
-  if (p) {
-    p.recommendation = rec;
-    openDrawer(id);
-    updateKPIs();
-    renderList();
-    showToast(`CM approved: "${rec}" for ${p.name}`);
-  }
-}
-
-function toggle(id, field) {
-  const p = PATIENTS.find(x => x.id === id);
-  if (p) {
-    p[field] = !p[field];
-    openDrawer(id); // re-render drawer
-    updateKPIs();
-    renderList();
-    showToast(`Updated: ${field.replace(/([A-Z])/g,' $1').toLowerCase()} for ${p.name}`);
-  }
-}
-
-function saveNotes(id, val) {
-  const p = PATIENTS.find(x => x.id === id);
-  if (p) {
-    p.notes = val;
-    showToast('Notes saved');
-  }
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
-// ─────────────────────────────────────────
+// ─────────────────────────────
 // INIT
-// ─────────────────────────────────────────
-document.getElementById('todayStr').textContent =
-  TODAY.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-
+// ─────────────────────────────
+document.getElementById('todayStr').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 updateKPIs();
 renderList();
 </script>
