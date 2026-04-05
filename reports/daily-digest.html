@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Digest — Enzo Health</title>
+<style>
+  :root {
+    --primary:#2563EB;--primary-dark:#1D4ED8;--success:#10B981;--warning:#F59E0B;
+    --danger:#EF4444;--muted:#6B7280;--border:#E5E7EB;--bg:#F8FAFC;--text:#111827;
+    --shadow:0 1px 4px rgba(0,0,0,0.07);--shadow-md:0 4px 16px rgba(0,0,0,0.10);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* ── TOPBAR ── */
+  .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{font-weight:800;font-size:1.1rem;letter-spacing:-0.03em;color:var(--primary);}
+  .breadcrumb{font-size:0.82rem;color:var(--muted);}
+  .breadcrumb a{color:var(--muted);text-decoration:none;}
+  .breadcrumb a:hover{color:var(--primary);}
+  .topbar-right{display:flex;align-items:center;gap:0.75rem;}
+  .today-badge{background:#EFF6FF;color:var(--primary);font-size:0.78rem;font-weight:600;padding:0.25rem 0.65rem;border-radius:20px;border:1px solid #BFDBFE;}
+  .live-dot{width:7px;height:7px;background:var(--success);border-radius:50%;display:inline-block;margin-right:4px;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+  /* ── PAGE ── */
+  .page{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+  /* ── ROLE TABS ── */
+  .role-tabs{display:flex;gap:0.5rem;margin-bottom:1.75rem;background:#fff;padding:0.4rem;border-radius:12px;border:1px solid var(--border);width:fit-content;box-shadow:var(--shadow);}
+  .role-tab{padding:0.45rem 1.1rem;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
+  .role-tab:hover{background:var(--bg);}
+  .role-tab.active{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.3);}
+
+  /* ── GREETING ── */
+  .greeting-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;}
+  .greeting-title{font-size:1.55rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.2rem;}
+  .greeting-sub{color:var(--muted);font-size:0.92rem;}
+  .greeting-sub strong{color:var(--danger);}
+  .greeting-sub .ok{color:var(--success);}
+  .refresh-btn{background:#fff;border:1px solid var(--border);border-radius:8px;padding:0.45rem 0.9rem;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:0.4rem;}
+  .refresh-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+  /* ── KPI TILES ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.85rem;margin-bottom:2rem;}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}.
+  @media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+  .kpi-tile{background:#fff;border-radius:var(--radius);padding:1.1rem 1rem;border:1.5px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;transition:box-shadow 0.15s,border-color 0.15s;cursor:default;}
+  .kpi-tile:hover{box-shadow:var(--shadow-md);}
+  .kpi-tile.status-red{border-color:#FECACA;background:linear-gradient(135deg,#FFF5F5,#fff);}
+  .kpi-tile.status-yellow{border-color:#FDE68A;background:linear-gradient(135deg,#FFFBEB,#fff);}
+  .kpi-tile.status-green{border-color:#A7F3D0;background:linear-gradient(135deg,#F0FDF4,#fff);}
+  .kpi-tile.status-blue{border-color:#BFDBFE;background:linear-gradient(135deg,#EFF6FF,#fff);}
+  .kpi-icon{font-size:1.3rem;margin-bottom:0.5rem;display:block;}
+  .kpi-num{font-size:2rem;font-weight:800;letter-spacing:-0.03em;line-height:1;}
+  .kpi-num.red{color:var(--danger);}
+  .kpi-num.yellow{color:#D97706;}
+  .kpi-num.green{color:var(--success);}
+  .kpi-num.blue{color:var(--primary);}
+  .kpi-label{font-size:0.76rem;font-weight:600;color:var(--muted);margin-top:0.3rem;text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;}
+  .kpi-trend{font-size:0.75rem;margin-top:0.4rem;font-weight:600;}
+  .kpi-trend.up-bad{color:var(--danger);}
+  .kpi-trend.down-good{color:var(--success);}
+  .kpi-trend.neutral{color:var(--muted);}
+  .kpi-trend.good{color:var(--success);}
+
+  /* ── TODO SECTION ── */
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;}
+  .section-title{font-size:1.05rem;font-weight:700;}
+  .count-pill{background:var(--danger);color:#fff;border-radius:20px;padding:0.15rem 0.6rem;font-size:0.75rem;font-weight:700;}
+  .count-pill.yellow{background:#F59E0B;}
+  .count-pill.green{background:var(--success);}
+
+  .todo-list{display:flex;flex-direction:column;gap:0.6rem;}
+  .todo-card{background:#fff;border-radius:10px;border:1.5px solid var(--border);padding:0.85rem 1rem;display:grid;grid-template-columns:auto 1fr auto;gap:0.75rem;align-items:start;box-shadow:var(--shadow);transition:box-shadow 0.15s;}
+  .todo-card:hover{box-shadow:var(--shadow-md);}
+  .todo-card.high{border-left:4px solid var(--danger);}
+  .todo-card.medium{border-left:4px solid var(--warning);}
+  .todo-card.low{border-left:4px solid var(--success);}
+
+  .priority-badge{padding:0.2rem 0.55rem;border-radius:5px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;margin-top:2px;}
+  .priority-badge.high{background:#FEE2E2;color:#B91C1C;}
+  .priority-badge.medium{background:#FEF3C7;color:#92400E;}
+  .priority-badge.low{background:#D1FAE5;color:#065F46;}
+
+  .todo-body{}
+  .todo-action{font-size:0.9rem;font-weight:600;margin-bottom:0.25rem;color:var(--text);}
+  .todo-meta{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+  .patient-chip{background:#F3F4F6;border-radius:5px;padding:0.15rem 0.5rem;font-size:0.75rem;font-weight:600;color:#374151;}
+  .mrn-chip{background:#EFF6FF;color:var(--primary);border-radius:5px;padding:0.15rem 0.5rem;font-size:0.72rem;font-weight:600;}
+  .due-chip{font-size:0.74rem;color:var(--muted);display:flex;align-items:center;gap:3px;}
+  .due-chip.overdue{color:var(--danger);font-weight:600;}
+  .category-chip{background:#F3F4F6;border-radius:5px;padding:0.15rem 0.5rem;font-size:0.72rem;color:var(--muted);}
+
+  .ehr-btn{display:flex;align-items:center;gap:0.3rem;padding:0.35rem 0.7rem;border-radius:7px;font-size:0.78rem;font-weight:600;border:1.5px solid var(--border);background:#fff;color:var(--muted);cursor:not-allowed;white-space:nowrap;position:relative;}
+  .ehr-btn .tooltip{display:none;position:absolute;right:0;top:calc(100% + 6px);background:#1F2937;color:#fff;font-size:0.72rem;padding:0.35rem 0.6rem;border-radius:6px;white-space:nowrap;font-weight:400;z-index:10;}
+  .ehr-btn:hover .tooltip{display:block;}
+  .ehr-btn svg{width:13px;height:13px;opacity:0.5;}
+
+  .empty-state{text-align:center;padding:2.5rem;color:var(--muted);background:#fff;border-radius:var(--radius);border:1.5px dashed var(--border);}
+  .empty-state .emoji{font-size:2rem;display:block;margin-bottom:0.5rem;}
+
+  /* ── ROLE VIEWS ── */
+  .role-view{display:none;}
+  .role-view.active{display:block;}
+
+  /* ── DEMO BANNER ── */
+  .demo-banner{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:0.6rem 1rem;font-size:0.8rem;color:#92400E;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <span class="logo">enzo health</span>
+    <span class="breadcrumb"><a href="../index.html">Home</a> › Daily Digest</span>
+  </div>
+  <div class="topbar-right">
+    <span class="today-badge"><span class="live-dot"></span><span id="todayLabel">Today</span></span>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- DEMO BANNER -->
+  <div class="demo-banner">
+    ⚠️ <strong>Demo mode</strong> — KPI data is illustrative. Live data will populate once Railway database connection is active.
+  </div>
+
+  <!-- ROLE TABS -->
+  <div class="role-tabs">
+    <button class="role-tab active" onclick="switchRole('cm')">Clinical Manager</button>
+    <button class="role-tab" onclick="switchRole('sched')">Scheduler</button>
+    <button class="role-tab" onclick="switchRole('qa')">QA &amp; Compliance</button>
+    <button class="role-tab" onclick="switchRole('billing')">Billing</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       CLINICAL MANAGER VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="role-view active" id="view-cm">
+    <div class="greeting-row">
+      <div>
+        <div class="greeting-title">Good morning, Clinical Manager 👋</div>
+        <div class="greeting-sub">You have <strong>3 high-priority items</strong> needing action today — <span id="cmDate"></span></div>
+      </div>
+      <button class="refresh-btn" onclick="setDates()">↻ Refresh</button>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">📋</span>
+        <div class="kpi-num red">4</div>
+        <div class="kpi-label">OASIS Due Today / Overdue</div>
+        <div class="kpi-trend up-bad">↑ 2 vs yesterday</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">📅</span>
+        <div class="kpi-num yellow">7</div>
+        <div class="kpi-label">Plans of Care Expiring ≤ 7 Days</div>
+        <div class="kpi-trend neutral">— same as yesterday</div>
+      </div>
+      <div class="kpi-tile status-green">
+        <span class="kpi-icon">✅</span>
+        <div class="kpi-num green">91%</div>
+        <div class="kpi-label">Visit Compliance (This Week)</div>
+        <div class="kpi-trend down-good">↑ 3% vs last week</div>
+      </div>
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">🏥</span>
+        <div class="kpi-num red">2</div>
+        <div class="kpi-label">Hospitalization / ER Alerts</div>
+        <div class="kpi-trend up-bad">New since yesterday</div>
+      </div>
+      <div class="kpi-tile status-blue">
+        <span class="kpi-icon">🔚</span>
+        <div class="kpi-num blue">5</div>
+        <div class="kpi-label">Episodes Closing This Week</div>
+        <div class="kpi-trend neutral">Review for discharge</div>
+      </div>
+    </div>
+
+    <!-- TO-DO -->
+    <div class="section-header">
+      <div class="section-title">Priority To-Do List</div>
+      <span class="count-pill">3 High · 4 Medium</span>
+    </div>
+    <div class="todo-list">
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">OASIS M0100 overdue — SOC assessment not transmitted</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Margaret Flores</span>
+            <span class="mrn-chip">MRN 00412</span>
+            <span class="due-chip overdue">⏰ Overdue 2 days</span>
+            <span class="category-chip">OASIS / Compliance</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Hospitalization alert — ER visit; assess for resumption of care</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Robert Nguyen</span>
+            <span class="mrn-chip">MRN 00388</span>
+            <span class="due-chip overdue">⏰ Flagged today</span>
+            <span class="category-chip">Hospitalization</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Plan of care expiring in 2 days — physician signature needed</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Dorothy Kim</span>
+            <span class="mrn-chip">MRN 00501</span>
+            <span class="due-chip overdue">⏰ Expires in 2 days</span>
+            <span class="category-chip">Plan of Care</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">OASIS due today — schedule clinician review before EOD</div>
+          <div class="todo-meta">
+            <span class="patient-chip">James Carter</span>
+            <span class="mrn-chip">MRN 00477</span>
+            <span class="due-chip">📅 Due today by 5:00 PM</span>
+            <span class="category-chip">OASIS</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">Episode closing Friday — confirm discharge documentation is complete</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Susan Patel</span>
+            <span class="mrn-chip">MRN 00356</span>
+            <span class="due-chip">📅 Episode ends in 3 days</span>
+            <span class="category-chip">Discharge</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       SCHEDULER VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="role-view" id="view-sched">
+    <div class="greeting-row">
+      <div>
+        <div class="greeting-title">Good morning, Scheduler 👋</div>
+        <div class="greeting-sub">You have <strong>2 high-priority items</strong> needing action today — <span id="schedDate"></span></div>
+      </div>
+      <button class="refresh-btn" onclick="setDates()">↻ Refresh</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">📍</span>
+        <div class="kpi-num red">6</div>
+        <div class="kpi-label">Unscheduled Visits — Today</div>
+        <div class="kpi-trend up-bad">Needs assignment</div>
+      </div>
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">⚠️</span>
+        <div class="kpi-num red">3</div>
+        <div class="kpi-label">Missed Visits (Last 48h)</div>
+        <div class="kpi-trend up-bad">2 unresolved</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">🔐</span>
+        <div class="kpi-num yellow">4</div>
+        <div class="kpi-label">Patients Near Auth Limit</div>
+        <div class="kpi-trend neutral">≤ 2 visits remaining</div>
+      </div>
+      <div class="kpi-tile status-green">
+        <span class="kpi-icon">👩‍⚕️</span>
+        <div class="kpi-num green">78%</div>
+        <div class="kpi-label">Clinician Capacity (Today)</div>
+        <div class="kpi-trend good">2 clinicians available</div>
+      </div>
+      <div class="kpi-tile status-blue">
+        <span class="kpi-icon">📬</span>
+        <div class="kpi-num blue">3</div>
+        <div class="kpi-label">Open Referrals Pending Assignment</div>
+        <div class="kpi-trend neutral">Received this week</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Priority To-Do List</div>
+      <span class="count-pill">2 High · 5 Medium</span>
+    </div>
+    <div class="todo-list">
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Missed skilled nursing visit — no show, reschedule today or document reason</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Harold Greene</span>
+            <span class="mrn-chip">MRN 00293</span>
+            <span class="due-chip overdue">⏰ Missed yesterday</span>
+            <span class="category-chip">Missed Visit</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Authorization expires in 2 visits — submit extension request to payer today</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Linda Torres</span>
+            <span class="mrn-chip">MRN 00419</span>
+            <span class="due-chip overdue">⏰ 1 visit remaining on auth</span>
+            <span class="category-chip">Authorization</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">Assign PT visit — unscheduled, no clinician assigned</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Evelyn Walsh</span>
+            <span class="mrn-chip">MRN 00467</span>
+            <span class="due-chip">📅 Visit window: today–tomorrow</span>
+            <span class="category-chip">Unscheduled</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">New referral — assign primary clinician and schedule SOC visit</div>
+          <div class="todo-meta">
+            <span class="patient-chip">George Alvarez</span>
+            <span class="mrn-chip">MRN 00512</span>
+            <span class="due-chip">📅 Referral received 2 days ago</span>
+            <span class="category-chip">New Referral</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       QA / COMPLIANCE VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="role-view" id="view-qa">
+    <div class="greeting-row">
+      <div>
+        <div class="greeting-title">Good morning, QA &amp; Compliance 👋</div>
+        <div class="greeting-sub">You have <strong>4 high-priority items</strong> needing action today — <span id="qaDate"></span></div>
+      </div>
+      <button class="refresh-btn" onclick="setDates()">↻ Refresh</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">🔍</span>
+        <div class="kpi-num red">8</div>
+        <div class="kpi-label">OASIS Pending QA Review</div>
+        <div class="kpi-trend up-bad">↑ 3 added today</div>
+      </div>
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">🚩</span>
+        <div class="kpi-num red">5</div>
+        <div class="kpi-label">Open Deficiency Flags</div>
+        <div class="kpi-trend up-bad">2 high severity</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">📝</span>
+        <div class="kpi-num yellow">11</div>
+        <div class="kpi-label">Documentation Incomplete ≥ 72h</div>
+        <div class="kpi-trend neutral">↓ 2 resolved today</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">🧮</span>
+        <div class="kpi-num yellow">3</div>
+        <div class="kpi-label">HIPPS Coding Errors Flagged</div>
+        <div class="kpi-trend neutral">Mismatch vs OASIS</div>
+      </div>
+      <div class="kpi-tile status-green">
+        <span class="kpi-icon">🛡️</span>
+        <div class="kpi-num green">87%</div>
+        <div class="kpi-label">Survey Readiness Score</div>
+        <div class="kpi-trend down-good">↑ 2% this week</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Priority To-Do List</div>
+      <span class="count-pill">4 High · 3 Medium</span>
+    </div>
+    <div class="todo-list">
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">HIPPS code mismatch — OASIS functional score doesn't match billed level</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Alice Brennan</span>
+            <span class="mrn-chip">MRN 00344</span>
+            <span class="due-chip overdue">⏰ Claim pending — resolve before submission</span>
+            <span class="category-chip">HIPPS / Coding</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Deficiency — M1840 (toilet transfer) scoring inconsistent across visits</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Thomas Reed</span>
+            <span class="mrn-chip">MRN 00408</span>
+            <span class="due-chip overdue">⏰ Flagged for 3 days</span>
+            <span class="category-chip">OASIS Deficiency</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">OASIS review — recertification assessment submitted, QA sign-off needed</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Carol Simmons</span>
+            <span class="mrn-chip">MRN 00391</span>
+            <span class="due-chip overdue">⏰ In queue 4 days</span>
+            <span class="category-chip">OASIS QA</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">Visit note incomplete beyond 72 hours — supervisory note needed</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Frank Okafor</span>
+            <span class="mrn-chip">MRN 00455</span>
+            <span class="due-chip overdue">⏰ Note overdue 4 days</span>
+            <span class="category-chip">Documentation</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">Review OASIS M1030 (Therapies received) — potential coding gap vs physician orders</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Betty Morrison</span>
+            <span class="mrn-chip">MRN 00372</span>
+            <span class="due-chip">📅 Review by end of week</span>
+            <span class="category-chip">OASIS QA</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BILLING VIEW
+  ══════════════════════════════════════════════ -->
+  <div class="role-view" id="view-billing">
+    <div class="greeting-row">
+      <div>
+        <div class="greeting-title">Good morning, Billing 👋</div>
+        <div class="greeting-sub">You have <strong>2 high-priority items</strong> needing action today — <span id="billingDate"></span></div>
+      </div>
+      <button class="refresh-btn" onclick="setDates()">↻ Refresh</button>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">💵</span>
+        <div class="kpi-num red">9</div>
+        <div class="kpi-label">Unbilled Episodes Ready to Claim</div>
+        <div class="kpi-trend up-bad">~$56,400 at risk</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">📤</span>
+        <div class="kpi-num yellow">6</div>
+        <div class="kpi-label">RAPs / Claims Pending Submission</div>
+        <div class="kpi-trend neutral">Awaiting sign-off</div>
+      </div>
+      <div class="kpi-tile status-yellow">
+        <span class="kpi-icon">🧮</span>
+        <div class="kpi-num yellow">3</div>
+        <div class="kpi-label">HIPPS Codes Pending Verification</div>
+        <div class="kpi-trend neutral">QA flagged</div>
+      </div>
+      <div class="kpi-tile status-red">
+        <span class="kpi-icon">🔓</span>
+        <div class="kpi-num red">4</div>
+        <div class="kpi-label">Authorization Gaps</div>
+        <div class="kpi-trend up-bad">No active auth on file</div>
+      </div>
+      <div class="kpi-tile status-blue">
+        <span class="kpi-icon">📆</span>
+        <div class="kpi-num blue">8</div>
+        <div class="kpi-label">Days to Billing Cycle Close</div>
+        <div class="kpi-trend neutral">Submit by Apr 12</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Priority To-Do List</div>
+      <span class="count-pill">2 High · 4 Medium</span>
+    </div>
+    <div class="todo-list">
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">No active authorization — visits being rendered without coverage; pause or obtain auth today</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Raymond Chu</span>
+            <span class="mrn-chip">MRN 00398</span>
+            <span class="due-chip overdue">⏰ Auth expired 5 days ago</span>
+            <span class="category-chip">Authorization</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card high">
+        <span class="priority-badge high">High</span>
+        <div class="todo-body">
+          <div class="todo-action">HIPPS code mismatch blocking claim — verify OASIS functional level with QA before submitting</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Alice Brennan</span>
+            <span class="mrn-chip">MRN 00344</span>
+            <span class="due-chip overdue">⏰ Claim on hold</span>
+            <span class="category-chip">HIPPS / Claim</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">Episode complete — submit final claim, all documentation signed</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Patricia Holmes</span>
+            <span class="mrn-chip">MRN 00362</span>
+            <span class="due-chip">📅 Episode closed 3 days ago</span>
+            <span class="category-chip">Final Claim</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">RAP ready to submit — SOC date confirmed, HIPPS verified</div>
+          <div class="todo-meta">
+            <span class="patient-chip">George Alvarez</span>
+            <span class="mrn-chip">MRN 00512</span>
+            <span class="due-chip">📅 Submit within 5 days of SOC</span>
+            <span class="category-chip">RAP</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+      <div class="todo-card medium">
+        <span class="priority-badge medium">Medium</span>
+        <div class="todo-body">
+          <div class="todo-action">Review unbilled episode — 30-day period closed, awaiting final OASIS lock</div>
+          <div class="todo-meta">
+            <span class="patient-chip">Wanda Jefferson</span>
+            <span class="mrn-chip">MRN 00433</span>
+            <span class="due-chip">📅 8 days until cycle close</span>
+            <span class="category-chip">Unbilled Episode</span>
+          </div>
+        </div>
+        <button class="ehr-btn">Open in EHR <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="tooltip">EHR connector — coming soon</span></button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+function switchRole(role) {
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.role-view').forEach(v => v.classList.remove('active'));
+  const map = {cm:'view-cm', sched:'view-sched', qa:'view-qa', billing:'view-billing'};
+  document.getElementById(map[role]).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function setDates() {
+  const now = new Date();
+  const opts = {weekday:'long', year:'numeric', month:'long', day:'numeric'};
+  const str = now.toLocaleDateString('en-US', opts);
+  document.getElementById('todayLabel').textContent = str;
+  ['cmDate','schedDate','qaDate','billingDate'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = str;
+  });
+}
+
+setDates();
+</script>
+</body>
+</html>
